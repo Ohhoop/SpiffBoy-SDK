@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "MAIN",
+        "MusicOn": "MUSIK: NYALA",
+        "MusicOff": "MUSIK: MATI",
+        "Best": "REKOR %1",
+        "Count": "HALO %1",
+        "Hello": "HALO!",
+        "HintButtons": "A HALO  B MUSIK",
+        "HintStart": "START MENU"
+    }
+}

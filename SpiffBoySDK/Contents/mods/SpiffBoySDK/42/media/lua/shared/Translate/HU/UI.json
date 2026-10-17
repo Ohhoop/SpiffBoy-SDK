@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Eszközök",
+    "UI_SpiffBoySDK_Console": "Konzol",
+    "UI_SpiffBoySDK_Battery": "Elem",
+    "UI_SpiffBoySDK_Headphones": "Fejhallgató",
+    "UI_SpiffBoySDK_Earbuds": "Fülhallgató",
+    "UI_SpiffBoySDK_LinkCable": "Linkkábel",
+    "UI_SpiffBoySDK_Cartridges": "Játékkazetták",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "Konzolban",
+    "UI_SpiffBoySDK_AllCartridges": "Minden játékkazetta",
+    "UI_SpiffBoySDK_NoCartridges": "Nincs regisztrált játékkazetta",
+    "UI_SpiffBoySDK_ConsoleWith": "Konzol ezzel: %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Nincs hely: %1"
+}

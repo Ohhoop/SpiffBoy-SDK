@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "HRÁT",
+        "MusicOn": "HUDBA: ZAP",
+        "MusicOff": "HUDBA: VYP",
+        "Best": "REKORD %1",
+        "Count": "AHOJ %1",
+        "Hello": "AHOJ!",
+        "HintButtons": "A AHOJ  B HUDBA",
+        "HintStart": "START MENU"
+    }
+}

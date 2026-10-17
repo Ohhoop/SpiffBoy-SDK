@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "设备",
+    "UI_SpiffBoySDK_Console": "主机",
+    "UI_SpiffBoySDK_Battery": "电池",
+    "UI_SpiffBoySDK_Headphones": "头戴式耳机",
+    "UI_SpiffBoySDK_Earbuds": "入耳式耳机",
+    "UI_SpiffBoySDK_LinkCable": "联机线",
+    "UI_SpiffBoySDK_Cartridges": "游戏卡带",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "在主机中",
+    "UI_SpiffBoySDK_AllCartridges": "所有游戏卡带",
+    "UI_SpiffBoySDK_NoCartridges": "未注册任何游戏卡带",
+    "UI_SpiffBoySDK_ConsoleWith": "装有 %1 的主机",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "空间不足：%1"
+}

@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "OYNA",
+        "MusicOn": "MÜZİK: AÇIK",
+        "MusicOff": "MÜZİK: KAPALI",
+        "Best": "REKOR %1",
+        "Count": "MERHABA %1",
+        "Hello": "MERHABA!",
+        "HintButtons": "A MERHABA  B MÜZİK",
+        "HintStart": "START MENÜ"
+    }
+}

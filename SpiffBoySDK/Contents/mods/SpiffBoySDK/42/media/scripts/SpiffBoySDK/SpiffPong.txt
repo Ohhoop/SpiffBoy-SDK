@@ -1,0 +1,20 @@
+module SpiffBoySDK
+{
+    item Cartridge_SpiffPong
+    {
+        DisplayCategory = Entertainment,
+        ItemType = base:normal,
+        Weight = 0.1,
+        Icon = SpiffBoySDK_Cartridge_SpiffPong,
+        MetalValue = 1.0,
+        Tags = base:hasmetal;spiffboy:cartridge,
+        WorldStaticModel = SpiffBoySDK.Cartridge_SpiffPong,
+    }
+
+    model Cartridge_SpiffPong
+    {
+        mesh = SpiffBoy/Cartridge,
+        texture = SpiffBoySDK/SpiffBoySDKCartridge_SpiffPong,
+        scale = 0.3,
+    }
+}

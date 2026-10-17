@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Dispozitive",
+    "UI_SpiffBoySDK_Console": "Consolă",
+    "UI_SpiffBoySDK_Battery": "Baterie",
+    "UI_SpiffBoySDK_Headphones": "Căști",
+    "UI_SpiffBoySDK_Earbuds": "Căști intraauriculare",
+    "UI_SpiffBoySDK_LinkCable": "Cablu link",
+    "UI_SpiffBoySDK_Cartridges": "Cartușe",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "Într-o consolă",
+    "UI_SpiffBoySDK_AllCartridges": "Toate cartușele",
+    "UI_SpiffBoySDK_NoCartridges": "Niciun cartuș înregistrat",
+    "UI_SpiffBoySDK_ConsoleWith": "Consolă cu %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Fără loc: %1"
+}

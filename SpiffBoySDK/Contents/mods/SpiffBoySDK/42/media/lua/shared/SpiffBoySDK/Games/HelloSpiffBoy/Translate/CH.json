@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "開始遊戲",
+        "MusicOn": "音樂：開",
+        "MusicOff": "音樂：關",
+        "Best": "最佳 %1",
+        "Count": "問候 %1",
+        "Hello": "你好！",
+        "HintButtons": "A 你好  B 音樂",
+        "HintStart": "START 選單"
+    }
+}

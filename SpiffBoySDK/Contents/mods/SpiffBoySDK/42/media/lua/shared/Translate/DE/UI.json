@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Geräte",
+    "UI_SpiffBoySDK_Console": "Konsole",
+    "UI_SpiffBoySDK_Battery": "Batterie",
+    "UI_SpiffBoySDK_Headphones": "Kopfhörer",
+    "UI_SpiffBoySDK_Earbuds": "Ohrhörer",
+    "UI_SpiffBoySDK_LinkCable": "Linkkabel",
+    "UI_SpiffBoySDK_Cartridges": "Spielmodule",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "In einer Konsole",
+    "UI_SpiffBoySDK_AllCartridges": "Alle Spielmodule",
+    "UI_SpiffBoySDK_NoCartridges": "Kein Spielmodul registriert",
+    "UI_SpiffBoySDK_ConsoleWith": "Konsole mit %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Kein Platz: %1"
+}

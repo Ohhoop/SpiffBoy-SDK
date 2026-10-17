@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "プレイ",
+        "MusicOn": "音楽:オン",
+        "MusicOff": "音楽:オフ",
+        "Best": "ベスト %1",
+        "Count": "ハロー %1",
+        "Hello": "ハロー！",
+        "HintButtons": "A ハロー  B 音楽",
+        "HintStart": "START メニュー"
+    }
+}

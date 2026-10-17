@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Dispositius",
+    "UI_SpiffBoySDK_Console": "Consola",
+    "UI_SpiffBoySDK_Battery": "Bateria",
+    "UI_SpiffBoySDK_Headphones": "Auriculars",
+    "UI_SpiffBoySDK_Earbuds": "Auriculars intraurals",
+    "UI_SpiffBoySDK_LinkCable": "Cable d'enllaç",
+    "UI_SpiffBoySDK_Cartridges": "Cartutxos",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "En una consola",
+    "UI_SpiffBoySDK_AllCartridges": "Tots els cartutxos",
+    "UI_SpiffBoySDK_NoCartridges": "Cap cartutx registrat",
+    "UI_SpiffBoySDK_ConsoleWith": "Consola amb %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Sense espai: %1"
+}

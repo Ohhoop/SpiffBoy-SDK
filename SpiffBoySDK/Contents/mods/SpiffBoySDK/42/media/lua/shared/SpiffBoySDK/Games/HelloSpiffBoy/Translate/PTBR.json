@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "JOGAR",
+        "MusicOn": "MÚSICA: SIM",
+        "MusicOff": "MÚSICA: NÃO",
+        "Best": "RECORDE %1",
+        "Count": "OLÁS %1",
+        "Hello": "OLÁ!",
+        "HintButtons": "A OLÁ  B MÚSICA",
+        "HintStart": "START MENU"
+    }
+}

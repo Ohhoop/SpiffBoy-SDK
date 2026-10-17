@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "Strewberrie",
+        "MusicOn": "Strewberrie: Strew",
+        "MusicOff": "Strewberrie: Berrie",
+        "Best": "Strewberrie %1",
+        "Count": "Strewberrie %1",
+        "Hello": "Strewberrie!",
+        "HintButtons": "A Strewberrie  B Strewberrie",
+        "HintStart": "START Strewberrie"
+    }
+}

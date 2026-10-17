@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "เล่น",
+        "MusicOn": "เพลง: เปิด",
+        "MusicOff": "เพลง: ปิด",
+        "Best": "สูงสุด %1",
+        "Count": "สวัสดี %1",
+        "Hello": "สวัสดี!",
+        "HintButtons": "A สวัสดี  B เพลง",
+        "HintStart": "START เมนู"
+    }
+}

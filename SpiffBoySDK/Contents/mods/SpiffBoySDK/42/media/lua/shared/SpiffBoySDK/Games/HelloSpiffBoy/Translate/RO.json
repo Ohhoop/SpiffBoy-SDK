@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "JOACĂ",
+        "MusicOn": "MUZICĂ: PORNIT",
+        "MusicOff": "MUZICĂ: OPRIT",
+        "Best": "RECORD %1",
+        "Count": "SALUTURI %1",
+        "Hello": "SALUT!",
+        "HintButtons": "A SALUT  B MUZICĂ",
+        "HintStart": "START MENIU"
+    }
+}

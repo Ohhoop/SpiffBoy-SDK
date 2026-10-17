@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Laitteet",
+    "UI_SpiffBoySDK_Console": "Konsoli",
+    "UI_SpiffBoySDK_Battery": "Paristo",
+    "UI_SpiffBoySDK_Headphones": "Kuulokkeet",
+    "UI_SpiffBoySDK_Earbuds": "Nappikuulokkeet",
+    "UI_SpiffBoySDK_LinkCable": "Linkkikaapeli",
+    "UI_SpiffBoySDK_Cartridges": "Pelikasetit",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "Konsolissa",
+    "UI_SpiffBoySDK_AllCartridges": "Kaikki pelikasetit",
+    "UI_SpiffBoySDK_NoCartridges": "Ei rekisteröityjä pelikasetteja",
+    "UI_SpiffBoySDK_ConsoleWith": "Konsoli, jossa %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Ei tilaa: %1"
+}

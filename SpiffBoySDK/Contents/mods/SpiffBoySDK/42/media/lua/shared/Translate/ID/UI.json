@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Perangkat",
+    "UI_SpiffBoySDK_Console": "Konsol",
+    "UI_SpiffBoySDK_Battery": "Baterai",
+    "UI_SpiffBoySDK_Headphones": "Headphone",
+    "UI_SpiffBoySDK_Earbuds": "Earbud",
+    "UI_SpiffBoySDK_LinkCable": "Kabel link",
+    "UI_SpiffBoySDK_Cartridges": "Kartrid",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "Di konsol",
+    "UI_SpiffBoySDK_AllCartridges": "Semua kartrid",
+    "UI_SpiffBoySDK_NoCartridges": "Tidak ada kartrid terdaftar",
+    "UI_SpiffBoySDK_ConsoleWith": "Konsol dengan %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Tidak ada ruang: %1"
+}

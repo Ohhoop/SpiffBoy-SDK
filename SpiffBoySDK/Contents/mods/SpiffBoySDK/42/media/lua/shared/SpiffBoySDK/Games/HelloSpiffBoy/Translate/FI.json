@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "PELAA",
+        "MusicOn": "MUSIIKKI: PÄÄLLÄ",
+        "MusicOff": "MUSIIKKI: POIS",
+        "Best": "ENNÄTYS %1",
+        "Count": "TERVEHDYKSET %1",
+        "Hello": "HEI!",
+        "HintButtons": "A HEI  B MUSIIKKI",
+        "HintStart": "START VALIKKO"
+    }
+}

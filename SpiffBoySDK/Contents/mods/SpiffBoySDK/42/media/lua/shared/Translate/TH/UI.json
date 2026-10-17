@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "อุปกรณ์",
+    "UI_SpiffBoySDK_Console": "เครื่องเล่น",
+    "UI_SpiffBoySDK_Battery": "แบตเตอรี่",
+    "UI_SpiffBoySDK_Headphones": "หูฟัง",
+    "UI_SpiffBoySDK_Earbuds": "หูฟังเอียร์บัด",
+    "UI_SpiffBoySDK_LinkCable": "สายลิงก์",
+    "UI_SpiffBoySDK_Cartridges": "ตลับเกม",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "ในเครื่องเล่น",
+    "UI_SpiffBoySDK_AllCartridges": "ตลับเกมทั้งหมด",
+    "UI_SpiffBoySDK_NoCartridges": "ไม่มีตลับเกมที่ลงทะเบียน",
+    "UI_SpiffBoySDK_ConsoleWith": "เครื่องเล่นที่มี %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "ไม่มีที่ว่าง: %1"
+}

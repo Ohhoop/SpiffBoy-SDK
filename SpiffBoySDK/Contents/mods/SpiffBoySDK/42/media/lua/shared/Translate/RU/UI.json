@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Устройства",
+    "UI_SpiffBoySDK_Console": "Консоль",
+    "UI_SpiffBoySDK_Battery": "Батарейка",
+    "UI_SpiffBoySDK_Headphones": "Наушники",
+    "UI_SpiffBoySDK_Earbuds": "Наушники-вкладыши",
+    "UI_SpiffBoySDK_LinkCable": "Линк-кабель",
+    "UI_SpiffBoySDK_Cartridges": "Картриджи",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "В консоли",
+    "UI_SpiffBoySDK_AllCartridges": "Все картриджи",
+    "UI_SpiffBoySDK_NoCartridges": "Нет зарегистрированных картриджей",
+    "UI_SpiffBoySDK_ConsoleWith": "Консоль с %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Нет места: %1"
+}

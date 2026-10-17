@@ -1,0 +1,13 @@
+{
+    "UI": {
+        "Title": "HELLO SPIFFBOY",
+        "Play": "JÁTÉK",
+        "MusicOn": "ZENE: BE",
+        "MusicOff": "ZENE: KI",
+        "Best": "REKORD %1",
+        "Count": "SZIÁK %1",
+        "Hello": "SZIA!",
+        "HintButtons": "A SZIA  B ZENE",
+        "HintStart": "START MENÜ"
+    }
+}

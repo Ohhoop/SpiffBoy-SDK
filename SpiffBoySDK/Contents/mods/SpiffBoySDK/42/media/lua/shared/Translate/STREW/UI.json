@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Strewberrie",
+    "UI_SpiffBoySDK_Console": "Strewberrie",
+    "UI_SpiffBoySDK_Battery": "Strewberrie",
+    "UI_SpiffBoySDK_Headphones": "Strewberrie",
+    "UI_SpiffBoySDK_Earbuds": "Strewberrie",
+    "UI_SpiffBoySDK_LinkCable": "Strewberrie Strewberrie",
+    "UI_SpiffBoySDK_Cartridges": "Strewberrie",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "Strewberrie Strewberrie",
+    "UI_SpiffBoySDK_AllCartridges": "Strewberrie Strewberrie",
+    "UI_SpiffBoySDK_NoCartridges": "Strewberrie Strewberrie",
+    "UI_SpiffBoySDK_ConsoleWith": "Strewberrie %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Strewberrie: %1"
+}

@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "장치",
+    "UI_SpiffBoySDK_Console": "콘솔",
+    "UI_SpiffBoySDK_Battery": "배터리",
+    "UI_SpiffBoySDK_Headphones": "헤드폰",
+    "UI_SpiffBoySDK_Earbuds": "이어폰",
+    "UI_SpiffBoySDK_LinkCable": "통신 케이블",
+    "UI_SpiffBoySDK_Cartridges": "게임 카트리지",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "콘솔에 장착",
+    "UI_SpiffBoySDK_AllCartridges": "모든 게임 카트리지",
+    "UI_SpiffBoySDK_NoCartridges": "등록된 게임 카트리지 없음",
+    "UI_SpiffBoySDK_ConsoleWith": "%1 장착 콘솔",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "공간 부족: %1"
+}

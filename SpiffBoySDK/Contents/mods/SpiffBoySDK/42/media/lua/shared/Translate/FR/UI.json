@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Appareils",
+    "UI_SpiffBoySDK_Console": "Console",
+    "UI_SpiffBoySDK_Battery": "Pile",
+    "UI_SpiffBoySDK_Headphones": "Casque audio",
+    "UI_SpiffBoySDK_Earbuds": "Écouteurs intra-auriculaires",
+    "UI_SpiffBoySDK_LinkCable": "Câble de liaison",
+    "UI_SpiffBoySDK_Cartridges": "Cassettes",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "Dans une console",
+    "UI_SpiffBoySDK_AllCartridges": "Toutes les cassettes",
+    "UI_SpiffBoySDK_NoCartridges": "Aucune cassette enregistrée",
+    "UI_SpiffBoySDK_ConsoleWith": "Console avec %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Pas de place : %1"
+}

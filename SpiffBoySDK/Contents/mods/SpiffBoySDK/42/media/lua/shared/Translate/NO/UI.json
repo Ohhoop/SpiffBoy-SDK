@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Enheter",
+    "UI_SpiffBoySDK_Console": "Konsoll",
+    "UI_SpiffBoySDK_Battery": "Batteri",
+    "UI_SpiffBoySDK_Headphones": "Hodetelefoner",
+    "UI_SpiffBoySDK_Earbuds": "Ørepropper",
+    "UI_SpiffBoySDK_LinkCable": "Linkkabel",
+    "UI_SpiffBoySDK_Cartridges": "Spillkassetter",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "I en konsoll",
+    "UI_SpiffBoySDK_AllCartridges": "Alle spillkassetter",
+    "UI_SpiffBoySDK_NoCartridges": "Ingen spillkassett registrert",
+    "UI_SpiffBoySDK_ConsoleWith": "Konsoll med %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Ikke plass: %1"
+}

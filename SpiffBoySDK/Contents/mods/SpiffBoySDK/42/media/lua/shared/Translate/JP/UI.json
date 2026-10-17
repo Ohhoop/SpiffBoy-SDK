@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "デバイス",
+    "UI_SpiffBoySDK_Console": "ゲーム機",
+    "UI_SpiffBoySDK_Battery": "電池",
+    "UI_SpiffBoySDK_Headphones": "ヘッドホン",
+    "UI_SpiffBoySDK_Earbuds": "イヤホン",
+    "UI_SpiffBoySDK_LinkCable": "通信ケーブル",
+    "UI_SpiffBoySDK_Cartridges": "ゲームカセット",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "ゲーム機の中",
+    "UI_SpiffBoySDK_AllCartridges": "すべてのゲームカセット",
+    "UI_SpiffBoySDK_NoCartridges": "登録されたゲームカセットはありません",
+    "UI_SpiffBoySDK_ConsoleWith": "%1入りのゲーム機",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "空きがありません: %1"
+}

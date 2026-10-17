@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Dispositivi",
+    "UI_SpiffBoySDK_Console": "Console",
+    "UI_SpiffBoySDK_Battery": "Batteria",
+    "UI_SpiffBoySDK_Headphones": "Cuffie",
+    "UI_SpiffBoySDK_Earbuds": "Auricolari",
+    "UI_SpiffBoySDK_LinkCable": "Cavo link",
+    "UI_SpiffBoySDK_Cartridges": "Cartucce",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "In una console",
+    "UI_SpiffBoySDK_AllCartridges": "Tutte le cartucce",
+    "UI_SpiffBoySDK_NoCartridges": "Nessuna cartuccia registrata",
+    "UI_SpiffBoySDK_ConsoleWith": "Console con %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Nessuno spazio: %1"
+}

@@ -1,0 +1,17 @@
+{
+    "UI_SpiffBoySDK_Title": "SpiffBoy SDK",
+    "UI_SpiffBoySDK_Devices": "Zařízení",
+    "UI_SpiffBoySDK_Console": "Konzole",
+    "UI_SpiffBoySDK_Battery": "Baterie",
+    "UI_SpiffBoySDK_Headphones": "Sluchátka",
+    "UI_SpiffBoySDK_Earbuds": "Sluchátka do uší",
+    "UI_SpiffBoySDK_LinkCable": "Propojovací kabel",
+    "UI_SpiffBoySDK_Cartridges": "Herní kazety",
+    "UI_SpiffBoySDK_CartridgeLabel": "%1 (%2)",
+    "UI_SpiffBoySDK_InConsole": "V konzoli",
+    "UI_SpiffBoySDK_AllCartridges": "Všechny herní kazety",
+    "UI_SpiffBoySDK_NoCartridges": "Žádná registrovaná herní kazeta",
+    "UI_SpiffBoySDK_ConsoleWith": "Konzole s %1",
+    "UI_SpiffBoySDK_Added": "+%1 %2",
+    "UI_SpiffBoySDK_NoRoom": "Není místo: %1"
+}
