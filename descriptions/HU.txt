@@ -1,0 +1,34 @@
+[h2]Mi ez[/h2]
+A SpiffBoy SDK a [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url] kézi konzol fejlesztőkészlete. Ahogy a konzolgyártók is készleteket adtak a játékstúdióknak, ez is mindent megad, ami a saját játékkazettáid elkészítéséhez kell: tanulásra szánt példakazettákat, fejlesztői menüt, dokumentációt, eszközöket és tesztrobotokat.
+
+Ehhez a modhoz a SpiffBoy szükséges.
+
+[h2]Mi van a modban[/h2]
+- Hello SpiffBoy: a legkisebb teljes kazetta. Spiffo a nyilakkal mozog, A-val köszön, lejátszik egy rövid dallamot, elmenti a legjobb pontszámodat és lefordított szövegeket mutat. A kódja soronként kommentált, és gyakorlófeladatok is járnak hozzá a megoldásaikkal.
+- Spiff-Pong: egy teljes kazetta. Címképernyő, menük, meccs a konzol vagy egy barátod ellen a linkkábelen, zene és hangeffektek a hangchipen, legjobb pontszámok monogrammal és beállítások. A kódja elmagyarázza, hogyan épül fel egy teljes játék, azt is, hogyan marad szinkronban két konzol a kábelen.
+- A SpiffBoy SDK menü: kattints jobb gombbal a világban, és válaszd a SpiffBoy SDK pontot. Ad egy konzolt, elemeket, fejhallgatót, fülhallgatót, a linkkábelt és minden kazettát, ami a játékodban telepítve van, legyen az a SpiffBoyból, az SDK-ból vagy bármilyen más modból, külön vagy már konzolba helyezve. Többjátékos módban csak azok a játékosok használhatják, akik tárgyakat adhatnak hozzá, és a szerver minden kérést ellenőriz.
+
+A példakazetták sosem találhatók zsákmányként: az SDK menüből kapod meg őket.
+
+[h2]Mi van a készletben[/h2]
+A teljes készlet magában a modban található, az SDK mappájában: mods/SpiffBoySDK/SDK
+- Dokumentáció lépésről lépésre: első lépések, hogyan működik egy kazetta, a képernyő és a négy árnyalata, a hangchip és a kottaírása, mentés, szövegek és fordítások, a linkkábel, a kazetta tárgy és a 3D modellje, tesztelés, a játék Lua nyelvének buktatói, közzététel.
+- Eszközök: alakítsd a rajzaidat sprite-okká a képernyőhöz, készítsd el a kazettád 3D modelljét, címkéjét és leltárikonját, ellenőrizd a szövegeidet minden nyelven, és egyetlen paranccsal hozz létre új kazettát a példából.
+- Tesztrobotok: a játékon kívül futtatják a kazettádat, több ezer képkockát néhány másodperc alatt, hogy kiszűrjék az összeomlásokat, a hiányzó szövegeket és a túl nehezen kirajzolható képkockákat.
+
+[h2]Kérdések és válaszok[/h2]
+Q: Kell ez a mod ahhoz, hogy SpiffBoyjal játsszak?
+A: Nem. A SpiffBoy önállóan is működik. Az SDK azoknak a játékosoknak szól, akik saját játékokat akarnak készíteni, vagy ki akarják próbálni a példakazettákat.
+
+Q: Lehetnek a kazettáim a saját modomban?
+A: Igen, épp ez a lényeg. A modod igényli a SpiffBoyt, regisztrálja a kazettáit, és saját grafikát, szövegeket és zenét hoz magával. A konzol mindent megtalál a mododban.
+
+Q: Biztonságos hozzáadni vagy eltávolítani egy mentés közben?
+A: Igen. Az SDK semmit sem ment a világodba. Az eltávolítása csak a példakazettákat és a menüt veszi el.
+
+Nyugodtan oszd meg a visszajelzéseidet, hibajelentéseidet, ötleteidet és az általad készített játékokat a hozzászólásokban, mindent elolvasok.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK

@@ -1,0 +1,34 @@
+[h2]Apa itu[/h2]
+SpiffBoy SDK ialah kit pembangunan untuk konsol pegang tangan [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url]. Seperti kit yang diberikan oleh pembuat konsol kepada studio permainan, ia memberi anda segala yang diperlukan untuk membuat kartrij permainan anda sendiri: kartrij contoh untuk dipelajari, menu pembangun, dokumentasi, alatan dan robot ujian.
+
+Mod ini memerlukan SpiffBoy.
+
+[h2]Kandungan mod[/h2]
+- Hello SpiffBoy: kartrij lengkap yang paling kecil. Spiffo bergerak dengan anak panah, menyapa dengan A, memainkan lagu pendek, menyimpan skor terbaik anda dan memaparkan teks yang diterjemahkan. Kodnya diberi komen baris demi baris, dan disertakan latihan berserta jawapannya.
+- Spiff-Pong: kartrij lengkap. Skrin tajuk, menu, perlawanan menentang konsol atau menentang rakan melalui kabel link, muzik dan kesan bunyi pada cip bunyi, skor terbaik dengan nama ringkas, serta pilihan. Kodnya menerangkan cara permainan penuh dibina, termasuk cara dua konsol kekal selari melalui kabel.
+- Menu SpiffBoy SDK: klik kanan di dunia dan pilih SpiffBoy SDK. Ia memberi anda konsol, bateri, fon kepala, fon telinga, kabel link dan setiap kartrij yang dipasang dalam permainan anda, sama ada daripada SpiffBoy, daripada SDK atau daripada mana-mana mod lain, berasingan atau sudah dimasukkan ke dalam konsol. Dalam berbilang pemain, ia dikhaskan untuk pemain yang dibenarkan menambah item, dan pelayan menyemak setiap permintaan.
+
+Kartrij contoh tidak pernah ditemui sebagai rampasan: anda mendapatkannya daripada menu SDK.
+
+[h2]Kandungan kit[/h2]
+Kit penuh disertakan dalam mod itu sendiri, dalam folder SDK: mods/SpiffBoySDK/SDK
+- Dokumentasi langkah demi langkah: bermula, cara kartrij berfungsi, skrin dan empat tonanya, cip bunyi dan notasi muziknya, penyimpanan, teks dan terjemahan, kabel link, item kartrij dan model 3D-nya, pengujian, perangkap Lua dalam permainan, penerbitan.
+- Alatan: tukar lukisan anda menjadi sprite untuk skrin, hasilkan model 3D, label dan ikon inventori kartrij anda, semak teks anda dalam setiap bahasa, dan cipta kartrij baharu daripada contoh dengan satu arahan.
+- Robot ujian: menjalankan kartrij anda di luar permainan, beribu-ribu bingkai dalam beberapa saat, untuk mengesan ranap, teks yang hilang dan bingkai yang terlalu berat untuk dilukis.
+
+[h2]Soal Jawab[/h2]
+Q: Adakah saya memerlukan mod ini untuk bermain SpiffBoy?
+A: Tidak. SpiffBoy berfungsi dengan sendirinya. SDK adalah untuk pemain yang mahu membuat permainan sendiri, atau mencuba kartrij contoh.
+
+Q: Bolehkah kartrij saya berada dalam mod saya sendiri?
+A: Boleh, itulah tujuannya. Mod anda memerlukan SpiffBoy, mendaftarkan kartrijnya, dan membawa grafik, teks dan muziknya sendiri. Konsol menemui segalanya dalam mod anda.
+
+Q: Adakah selamat untuk menambah atau membuangnya di tengah simpanan?
+A: Ya. SDK tidak menyimpan apa-apa dalam dunia anda. Membuangnya hanya menghilangkan kartrij contoh dan menu.
+
+Jangan segan berkongsi maklum balas, laporan pepijat, idea dan permainan yang anda hasilkan di ruangan komen, saya membaca semuanya.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK

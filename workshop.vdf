@@ -1,0 +1,10 @@
+"workshopitem"
+{
+	"appid"		"108600"
+	"publishedfileid"		"3825220785"
+	"title"		"SpiffBoy SDK [B42.21]"
+	"visibility"		"0"
+	"contentfolder"		"SpiffBoySDK/Contents"
+	"previewfile"		"../Development/art/poster/thumbnail.gif"
+	"changenote"		"0.1.0: first version of the SpiffBoy SDK"
+}

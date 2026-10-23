@@ -1,0 +1,34 @@
+[h2]Ce que c'est[/h2]
+Le SpiffBoy SDK est le kit de développement de la console portable [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url]. Comme les kits que les fabricants de consoles fournissaient aux studios, il vous donne tout ce qu'il faut pour créer vos propres cassettes de jeu : des cassettes d'exemple pour apprendre, un menu développeur, de la documentation, des outils et des robots de test.
+
+Ce mod nécessite SpiffBoy.
+
+[h2]Ce que contient le mod[/h2]
+- Hello SpiffBoy : la plus petite cassette complète. Spiffo se déplace avec les flèches, dit bonjour avec A, joue un petit air, sauvegarde votre meilleur score et affiche des textes traduits. Son code est commenté ligne par ligne, et elle est livrée avec des exercices pratiques et leurs solutions.
+- Spiff-Pong : une cassette complète. Écran titre, menus, un match contre la console ou contre un ami par le câble de liaison, musique et bruitages sur la puce sonore, meilleurs scores avec initiales, et options. Son code explique comment se construit un jeu complet, y compris comment deux consoles restent synchronisées sur le câble.
+- Le menu SpiffBoy SDK : faites un clic droit dans le monde et choisissez SpiffBoy SDK. Il vous donne une console, des piles, un casque, des écouteurs, le câble de liaison, et chaque cassette installée dans votre partie, qu'elle vienne de SpiffBoy, du SDK ou de n'importe quel autre mod, seule ou déjà insérée dans une console. En multijoueur, il est réservé aux joueurs autorisés à ajouter des objets, et le serveur vérifie chaque demande.
+
+Les cassettes d'exemple ne se trouvent jamais dans le butin : vous les obtenez par le menu du SDK.
+
+[h2]Ce que contient le kit[/h2]
+Le kit complet est livré avec le mod lui-même, dans son dossier SDK : mods/SpiffBoySDK/SDK
+- Documentation, étape par étape : premiers pas, fonctionnement d'une cassette, l'écran et ses quatre teintes, la puce sonore et sa notation musicale, la sauvegarde, les textes et les traductions, le câble de liaison, l'objet cassette et son modèle 3D, les tests, les pièges du Lua du jeu, la publication.
+- Outils : transformez vos dessins en sprites pour l'écran, créez le modèle 3D, l'étiquette et l'icône d'inventaire de votre cassette, vérifiez vos textes dans toutes les langues, et créez une nouvelle cassette à partir de l'exemple en une seule commande.
+- Robots de test : faites tourner votre cassette hors du jeu, des milliers d'images en quelques secondes, pour repérer les plantages, les textes manquants et les images trop lourdes à dessiner.
+
+[h2]Questions et réponses[/h2]
+Q : Ai-je besoin de ce mod pour jouer à SpiffBoy ?
+A : Non. SpiffBoy fonctionne seul. Le SDK s'adresse aux joueurs qui veulent créer leurs propres jeux, ou essayer les cassettes d'exemple.
+
+Q : Mes cassettes peuvent-elles vivre dans mon propre mod ?
+A : Oui, c'est tout l'intérêt. Votre mod nécessite SpiffBoy, enregistre ses cassettes et fournit ses propres graphismes, textes et musiques. La console trouve tout dans votre mod.
+
+Q : Est-ce que je peux l'ajouter ou le retirer en cours de partie ?
+A : Oui. Le SDK n'enregistre rien dans votre monde. Le retirer enlève seulement les cassettes d'exemple et le menu.
+
+N'hésitez pas à partager vos retours, rapports de bugs, idées et les jeux que vous créez dans les commentaires, je lis tout.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK

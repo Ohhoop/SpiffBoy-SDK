@@ -1,0 +1,34 @@
+[h2]Wat het is[/h2]
+De SpiffBoy SDK is de ontwikkelkit van de handheld console [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url]. Net als de kits die consolemakers aan gamestudio's gaven, krijg je alles wat je nodig hebt om je eigen spelcassettes te maken: voorbeeldcassettes om van te leren, een ontwikkelaarsmenu, documentatie, tools en testrobots.
+
+Deze mod vereist SpiffBoy.
+
+[h2]Wat er in de mod zit[/h2]
+- Hello SpiffBoy: de kleinste complete cassette. Spiffo beweegt met de pijltjes, zegt hallo met A, speelt een kort deuntje, slaat je beste score op en toont vertaalde teksten. De code is regel voor regel van commentaar voorzien en wordt geleverd met oefeningen en hun oplossingen.
+- Spiff-Pong: een complete cassette. Titelscherm, menu's, een potje tegen de console of tegen een vriend via de linkkabel, muziek en geluidseffecten op de geluidschip, topscores met initialen en opties. De code legt uit hoe een volledig spel in elkaar zit, ook hoe twee consoles via de kabel synchroon blijven.
+- Het menu SpiffBoy SDK: klik met rechts in de wereld en kies SpiffBoy SDK. Het geeft je een console, batterijen, een koptelefoon, oordopjes, de linkkabel en elke cassette die in je spel is geïnstalleerd, uit SpiffBoy, uit de SDK of uit een andere mod, los of al in een console gestoken. In multiplayer is het voorbehouden aan spelers die items mogen toevoegen, en de server controleert elk verzoek.
+
+De voorbeeldcassettes worden nooit als buit gevonden: je krijgt ze via het SDK-menu.
+
+[h2]Wat er in de kit zit[/h2]
+De volledige kit zit in de mod zelf, in de map SDK: mods/SpiffBoySDK/SDK
+- Documentatie, stap voor stap: aan de slag, hoe een cassette werkt, het scherm en zijn vier tinten, de geluidschip en zijn muzieknotatie, opslaan, teksten en vertalingen, de linkkabel, het cassette-item en zijn 3D-model, testen, de valkuilen van de Lua van het spel, publiceren.
+- Tools: zet je tekeningen om in sprites voor het scherm, maak het 3D-model, het label en het inventarisicoon van je cassette, controleer je teksten in elke taal en maak met één commando een nieuwe cassette op basis van het voorbeeld.
+- Testrobots: spelen je cassette buiten het spel, duizenden frames in een paar seconden, om crashes, ontbrekende teksten en frames die te zwaar zijn om te tekenen op te sporen.
+
+[h2]Vragen en antwoorden[/h2]
+Q: Heb ik deze mod nodig om SpiffBoy te spelen?
+A: Nee. SpiffBoy werkt op zichzelf. De SDK is voor spelers die hun eigen spellen willen maken of de voorbeeldcassettes willen uitproberen.
+
+Q: Kunnen mijn cassettes in mijn eigen mod staan?
+A: Ja, daar draait het juist om. Je mod vereist SpiffBoy, registreert zijn cassettes en brengt zijn eigen graphics, teksten en muziek mee. De console vindt alles in je mod.
+
+Q: Kan ik het veilig toevoegen of verwijderen midden in een save?
+A: Ja. De SDK slaat niets op in je wereld. Als je hem verwijdert, verdwijnen alleen de voorbeeldcassettes en het menu.
+
+Deel gerust je feedback, bugmeldingen, ideeën en de spellen die je maakt in de reacties, ik lees alles.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK

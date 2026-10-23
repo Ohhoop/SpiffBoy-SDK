@@ -1,0 +1,34 @@
+[h2]Cos'è[/h2]
+Lo SpiffBoy SDK è il kit di sviluppo della console portatile [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url]. Come i kit che i produttori di console fornivano agli studi di sviluppo, ti dà tutto il necessario per creare le tue cartucce di gioco: cartucce di esempio da cui imparare, un menu sviluppatore, documentazione, strumenti e robot di test.
+
+Questa mod richiede SpiffBoy.
+
+[h2]Cosa c'è nella mod[/h2]
+- Hello SpiffBoy: la più piccola cartuccia completa. Spiffo si muove con le frecce, saluta con A, suona un breve motivo, salva il tuo record e mostra testi tradotti. Il suo codice è commentato riga per riga e include esercizi pratici con le relative soluzioni.
+- Spiff-Pong: una cartuccia completa. Schermata del titolo, menu, una partita contro la console o contro un amico tramite il cavo link, musica ed effetti sonori sul chip audio, record con iniziali e opzioni. Il suo codice spiega come si costruisce un gioco completo, compreso il modo in cui due console restano sincronizzate sul cavo.
+- Il menu SpiffBoy SDK: fai clic destro nel mondo e scegli SpiffBoy SDK. Ti fornisce una console, batterie, cuffie, auricolari, il cavo link e ogni cartuccia installata nella tua partita, che venga da SpiffBoy, dall'SDK o da qualsiasi altra mod, da sola o già inserita in una console. In multigiocatore è riservato ai giocatori autorizzati ad aggiungere oggetti, e il server controlla ogni richiesta.
+
+Le cartucce di esempio non si trovano mai come bottino: le ottieni dal menu dell'SDK.
+
+[h2]Cosa c'è nel kit[/h2]
+Il kit completo è incluso nella mod stessa, nella sua cartella SDK: mods/SpiffBoySDK/SDK
+- Documentazione passo dopo passo: primi passi, come funziona una cartuccia, lo schermo e le sue quattro tonalità, il chip audio e la sua notazione musicale, il salvataggio, testi e traduzioni, il cavo link, l'oggetto cartuccia e il suo modello 3D, i test, le insidie del Lua del gioco, la pubblicazione.
+- Strumenti: trasforma i tuoi disegni in sprite per lo schermo, crea il modello 3D, l'etichetta e l'icona d'inventario della tua cartuccia, controlla i tuoi testi in ogni lingua e crea una nuova cartuccia partendo dall'esempio con un solo comando.
+- Robot di test: fanno girare la tua cartuccia fuori dal gioco, migliaia di fotogrammi in pochi secondi, per scovare crash, testi mancanti e fotogrammi troppo pesanti da disegnare.
+
+[h2]Domande e risposte[/h2]
+Q: Mi serve questa mod per giocare a SpiffBoy?
+A: No. SpiffBoy funziona da solo. L'SDK è per chi vuole creare i propri giochi o provare le cartucce di esempio.
+
+Q: Le mie cartucce possono stare nella mia mod?
+A: Sì, è proprio questo lo scopo. La tua mod richiede SpiffBoy, registra le sue cartucce e porta con sé grafica, testi e musica propri. La console trova tutto nella tua mod.
+
+Q: È sicuro aggiungerlo o rimuoverlo a partita in corso?
+A: Sì. L'SDK non salva nulla nel tuo mondo. Rimuoverlo toglie soltanto le cartucce di esempio e il menu.
+
+Sentiti libero di condividere feedback, segnalazioni di bug, idee e i giochi che crei nella sezione commenti, leggo tutto.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK

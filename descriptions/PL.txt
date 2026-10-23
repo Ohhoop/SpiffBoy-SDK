@@ -1,0 +1,34 @@
+[h2]Czym jest[/h2]
+SpiffBoy SDK to zestaw deweloperski przenośnej konsoli [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url]. Tak jak zestawy, które producenci konsol dawali studiom, daje ci wszystko, czego potrzebujesz, by tworzyć własne kartridże z grami: przykładowe kartridże do nauki, menu dewelopera, dokumentację, narzędzia i roboty testowe.
+
+Ten mod wymaga SpiffBoy.
+
+[h2]Co jest w modzie[/h2]
+- Hello SpiffBoy: najmniejszy kompletny kartridż. Spiffo porusza się strzałkami, wita się po wciśnięciu A, gra krótką melodię, zapisuje twój najlepszy wynik i wyświetla przetłumaczone teksty. Jego kod jest skomentowany linijka po linijce, a do tego dochodzą ćwiczenia wraz z rozwiązaniami.
+- Spiff-Pong: kompletny kartridż. Ekran tytułowy, menu, mecz z konsolą albo ze znajomym przez kabel link, muzyka i efekty dźwiękowe na układzie dźwiękowym, najlepsze wyniki z inicjałami oraz opcje. Jego kod pokazuje, jak zbudowana jest pełna gra, w tym jak dwie konsole pozostają zsynchronizowane przez kabel.
+- Menu SpiffBoy SDK: kliknij prawym przyciskiem w świecie i wybierz SpiffBoy SDK. Daje ci konsolę, baterie, słuchawki, słuchawki douszne, kabel link i każdy kartridż zainstalowany w twojej grze, czy to ze SpiffBoy, z SDK, czy z dowolnego innego moda, osobno albo już włożony do konsoli. W trybie wieloosobowym jest zarezerwowane dla graczy z uprawnieniem do dodawania przedmiotów, a serwer sprawdza każde żądanie.
+
+Przykładowych kartridży nigdy nie znajdziesz jako łupu: dostajesz je z menu SDK.
+
+[h2]Co jest w zestawie[/h2]
+Cały zestaw jest dołączony do samego moda, w jego folderze SDK: mods/SpiffBoySDK/SDK
+- Dokumentacja krok po kroku: pierwsze kroki, jak działa kartridż, ekran i jego cztery odcienie, układ dźwiękowy i jego zapis nutowy, zapisywanie, teksty i tłumaczenia, kabel link, przedmiot kartridża i jego model 3D, testowanie, pułapki Lua w grze, publikowanie.
+- Narzędzia: zamień swoje grafiki w sprite'y na ekran, przygotuj model 3D, etykietę i ikonę ekwipunku swojego kartridża, sprawdź teksty we wszystkich językach i jednym poleceniem utwórz nowy kartridż na bazie przykładu.
+- Roboty testowe: uruchamiają twój kartridż poza grą, tysiące klatek w kilka sekund, żeby wyłapać crashe, brakujące teksty i klatki zbyt ciężkie do narysowania.
+
+[h2]Pytania i odpowiedzi[/h2]
+Q: Czy potrzebuję tego moda, żeby grać w SpiffBoy?
+A: Nie. SpiffBoy działa samodzielnie. SDK jest dla graczy, którzy chcą tworzyć własne gry albo wypróbować przykładowe kartridże.
+
+Q: Czy moje kartridże mogą znajdować się w moim własnym modzie?
+A: Tak, o to właśnie chodzi. Twój mod wymaga SpiffBoy, rejestruje swoje kartridże i zawiera własne grafiki, teksty i muzykę. Konsola znajduje wszystko w twoim modzie.
+
+Q: Czy można go bezpiecznie dodać lub usunąć w trakcie zapisu gry?
+A: Tak. SDK nic nie zapisuje w twoim świecie. Usunięcie go zabiera tylko przykładowe kartridże i menu.
+
+Śmiało dziel się opiniami, zgłoszeniami błędów, pomysłami i grami, które tworzysz, w komentarzach, czytam wszystko.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK

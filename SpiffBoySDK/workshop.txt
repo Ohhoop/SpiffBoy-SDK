@@ -1,0 +1,5 @@
+version=1
+title=SpiffBoy SDK
+description=The development kit of the SpiffBoy handheld console.
+tags=Build 42;Misc
+visibility=public

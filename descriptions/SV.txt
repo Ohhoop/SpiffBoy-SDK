@@ -1,0 +1,34 @@
+[h2]Vad det är[/h2]
+SpiffBoy SDK är utvecklingskitet till den handhållna konsolen [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url]. Precis som de kit konsoltillverkarna gav till spelstudiorna ger det dig allt du behöver för att göra dina egna spelkassetter: exempelkassetter att lära dig av, en utvecklarmeny, dokumentation, verktyg och testrobotar.
+
+Den här modden kräver SpiffBoy.
+
+[h2]Vad modden innehåller[/h2]
+- Hello SpiffBoy: den minsta kompletta kassetten. Spiffo rör sig med piltangenterna, säger hej med A, spelar en kort melodi, sparar ditt bästa resultat och visar översatta texter. Koden är kommenterad rad för rad, och den kommer med övningsuppgifter och lösningar.
+- Spiff-Pong: en komplett kassett. Titelskärm, menyer, en match mot konsolen eller mot en kompis via länkkabeln, musik och ljudeffekter på ljudchippet, topplista med initialer och inställningar. Koden förklarar hur ett helt spel byggs upp, även hur två konsoler håller sig synkade via kabeln.
+- Menyn SpiffBoy SDK: högerklicka i världen och välj SpiffBoy SDK. Den ger dig en konsol, batterier, hörlurar, öronsnäckor, länkkabeln och varje kassett som är installerad i ditt spel, från SpiffBoy, från SDK:t eller från vilken annan mod som helst, lös eller redan isatt i en konsol. I multiplayer är den förbehållen spelare som får lägga till föremål, och servern kontrollerar varje förfrågan.
+
+Exempelkassetterna hittas aldrig som loot: du får dem från SDK-menyn.
+
+[h2]Vad kitet innehåller[/h2]
+Hela kitet följer med själva modden, i dess SDK-mapp: mods/SpiffBoySDK/SDK
+- Dokumentation, steg för steg: kom igång, hur en kassett fungerar, skärmen och dess fyra nyanser, ljudchippet och dess notskrift, sparande, texter och översättningar, länkkabeln, kassettföremålet och dess 3D-modell, testning, fallgroparna i spelets Lua, publicering.
+- Verktyg: gör om din grafik till sprites för skärmen, skapa 3D-modellen, etiketten och inventarieikonen för din kassett, kontrollera dina texter på alla språk och skapa en ny kassett från exemplet med ett enda kommando.
+- Testrobotar: kör din kassett utanför spelet, tusentals bildrutor på några sekunder, för att fånga krascher, saknade texter och bildrutor som är för tunga att rita.
+
+[h2]Frågor och svar[/h2]
+Q: Behöver jag den här modden för att spela SpiffBoy?
+A: Nej. SpiffBoy fungerar helt på egen hand. SDK:t är till för spelare som vill göra egna spel eller testa exempelkassetterna.
+
+Q: Kan mina kassetter ligga i min egen mod?
+A: Ja, det är hela poängen. Din mod kräver SpiffBoy, registrerar sina kassetter och har med sig egen grafik, egna texter och egen musik. Konsolen hittar allt i din mod.
+
+Q: Är det säkert att lägga till eller ta bort den mitt i ett sparat spel?
+A: Ja. SDK:t sparar ingenting i din värld. Tar du bort det försvinner bara exempelkassetterna och menyn.
+
+Dela gärna din feedback, dina buggrapporter, idéer och spelen du gör i kommentarsfältet, jag läser allt.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK

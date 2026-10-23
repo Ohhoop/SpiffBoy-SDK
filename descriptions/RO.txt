@@ -1,0 +1,34 @@
+[h2]Ce este[/h2]
+SpiffBoy SDK este kitul de dezvoltare al consolei portabile [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url]. La fel ca kiturile pe care producătorii de console le dădeau studiourilor, îți oferă tot ce îți trebuie ca să îți faci propriile cartușe de joc: cartușe exemplu din care să înveți, un meniu de dezvoltator, documentație, unelte și roboți de test.
+
+Acest mod necesită SpiffBoy.
+
+[h2]Ce conține modul[/h2]
+- Hello SpiffBoy: cel mai mic cartuș complet. Spiffo se mișcă din săgeți, salută cu A, cântă o melodie scurtă, îți salvează cel mai bun scor și afișează texte traduse. Codul lui este comentat linie cu linie și vine cu exerciții practice și soluțiile lor.
+- Spiff-Pong: un cartuș complet. Ecran de titlu, meniuri, un meci împotriva consolei sau a unui prieten prin cablul link, muzică și efecte sonore pe cipul de sunet, cele mai bune scoruri cu inițiale și opțiuni. Codul lui explică cum se construiește un joc întreg, inclusiv cum două console rămân sincronizate prin cablu.
+- Meniul SpiffBoy SDK: dă clic dreapta în lume și alege SpiffBoy SDK. Îți dă o consolă, baterii, căști, căști intraauriculare, cablul link și fiecare cartuș instalat în jocul tău, fie din SpiffBoy, din SDK sau din orice alt mod, separat sau deja introdus într-o consolă. În multiplayer este rezervat jucătorilor care au voie să adauge obiecte, iar serverul verifică fiecare cerere.
+
+Cartușele exemplu nu se găsesc niciodată ca pradă: le primești din meniul SDK.
+
+[h2]Ce conține kitul[/h2]
+Kitul complet vine în modul însuși, în folderul său SDK: mods/SpiffBoySDK/SDK
+- Documentație, pas cu pas: primii pași, cum funcționează un cartuș, ecranul și cele patru nuanțe ale sale, cipul de sunet și notația lui muzicală, salvarea, textele și traducerile, cablul link, obiectul cartuș și modelul său 3D, testarea, capcanele Lua din joc, publicarea.
+- Unelte: transformă-ți desenele în sprite-uri pentru ecran, creează modelul 3D, eticheta și iconița de inventar ale cartușului tău, verifică-ți textele în toate limbile și creează un cartuș nou pornind de la exemplu cu o singură comandă.
+- Roboți de test: rulează cartușul tău în afara jocului, mii de cadre în câteva secunde, ca să prindă crash-urile, textele lipsă și cadrele prea grele de desenat.
+
+[h2]Întrebări și răspunsuri[/h2]
+Q: Am nevoie de acest mod ca să joc SpiffBoy?
+A: Nu. SpiffBoy funcționează singur. SDK-ul este pentru jucătorii care vor să își facă propriile jocuri sau să încerce cartușele exemplu.
+
+Q: Cartușele mele pot sta în propriul meu mod?
+A: Da, exact asta e ideea. Modul tău necesită SpiffBoy, își înregistrează cartușele și vine cu propria grafică, propriile texte și propria muzică. Consola găsește totul în modul tău.
+
+Q: Este sigur să îl adaug sau să îl scot în mijlocul unei salvări?
+A: Da. SDK-ul nu salvează nimic în lumea ta. Dacă îl scoți, dispar doar cartușele exemplu și meniul.
+
+Nu ezita să îți împărtășești părerile, rapoartele de bug, ideile și jocurile pe care le faci în secțiunea de comentarii, citesc tot.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK

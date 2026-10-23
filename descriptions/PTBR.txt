@@ -1,0 +1,34 @@
+[h2]O que é[/h2]
+O SpiffBoy SDK é o kit de desenvolvimento do console portátil [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url]. Assim como os kits que as fabricantes de consoles entregavam aos estúdios, ele te dá tudo o que você precisa para criar seus próprios cartuchos de jogo: cartuchos de exemplo para aprender, um menu de desenvolvedor, documentação, ferramentas e robôs de teste.
+
+Este mod requer o SpiffBoy.
+
+[h2]O que vem no mod[/h2]
+- Hello SpiffBoy: o menor cartucho completo. O Spiffo anda com as setas, diz oi com A, toca uma musiquinha, salva sua melhor pontuação e mostra textos traduzidos. O código é comentado linha por linha e vem com exercícios práticos e suas soluções.
+- Spiff-Pong: um cartucho completo. Tela de título, menus, uma partida contra o console ou contra um amigo pelo cabo link, música e efeitos sonoros no chip de som, recordes com iniciais e opções. O código explica como um jogo completo é construído, inclusive como dois consoles ficam sincronizados pelo cabo.
+- O menu SpiffBoy SDK: clique com o botão direito no mundo e escolha SpiffBoy SDK. Ele te dá um console, pilhas, fones de ouvido, fones intra-auriculares, o cabo link e todos os cartuchos instalados no seu jogo, sejam do SpiffBoy, do SDK ou de qualquer outro mod, avulsos ou já encaixados em um console. No multiplayer ele é reservado aos jogadores com permissão para adicionar itens, e o servidor confere cada pedido.
+
+Os cartuchos de exemplo nunca aparecem como loot: você os pega pelo menu do SDK.
+
+[h2]O que vem no kit[/h2]
+O kit completo vem dentro do próprio mod, na pasta SDK: mods/SpiffBoySDK/SDK
+- Documentação, passo a passo: primeiros passos, como um cartucho funciona, a tela e seus quatro tons, o chip de som e sua notação musical, o salvamento, textos e traduções, o cabo link, o item cartucho e seu modelo 3D, os testes, as armadilhas do Lua do jogo, a publicação.
+- Ferramentas: transforme suas artes em sprites para a tela, crie o modelo 3D, o rótulo e o ícone de inventário do seu cartucho, confira seus textos em todos os idiomas e crie um cartucho novo a partir do exemplo com um único comando.
+- Robôs de teste: rodam seu cartucho fora do jogo, milhares de quadros em poucos segundos, para pegar crashes, textos faltando e quadros pesados demais para desenhar.
+
+[h2]Perguntas e respostas[/h2]
+Q: Preciso deste mod para jogar SpiffBoy?
+A: Não. O SpiffBoy funciona sozinho. O SDK é para quem quer criar seus próprios jogos ou testar os cartuchos de exemplo.
+
+Q: Meus cartuchos podem ficar no meu próprio mod?
+A: Sim, essa é justamente a ideia. Seu mod requer o SpiffBoy, registra seus cartuchos e traz suas próprias artes, textos e músicas. O console encontra tudo no seu mod.
+
+Q: É seguro adicionar ou remover no meio de um save?
+A: Sim. O SDK não salva nada no seu mundo. Removê-lo só tira os cartuchos de exemplo e o menu.
+
+Fique à vontade para compartilhar feedback, relatos de bugs, ideias e os jogos que você criar na seção de comentários, eu leio tudo.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK

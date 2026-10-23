@@ -1,0 +1,34 @@
+[h2]Nedir[/h2]
+SpiffBoy SDK, [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3825220364]SpiffBoy[/url] el konsolunun geliştirme kitidir. Konsol üreticilerinin oyun stüdyolarına verdiği kitler gibi, kendi oyun kartuşlarını yapman için gereken her şeyi sunar: üzerinden öğrenebileceğin örnek kartuşlar, bir geliştirici menüsü, dokümantasyon, araçlar ve test robotları.
+
+Bu mod SpiffBoy gerektirir.
+
+[h2]Modda neler var[/h2]
+- Hello SpiffBoy: en küçük eksiksiz kartuş. Spiffo ok tuşlarıyla hareket eder, A ile merhaba der, kısa bir melodi çalar, en yüksek skorunu kaydeder ve çevrilmiş metinler gösterir. Kodu satır satır açıklanmıştır ve yanında çözümleriyle birlikte alıştırmalar gelir.
+- Spiff-Pong: eksiksiz bir kartuş. Başlık ekranı, menüler, konsola ya da bağlantı kablosuyla bir arkadaşına karşı maç, ses çipinde müzik ve ses efektleri, baş harflerle en yüksek skorlar ve ayarlar. Kodu, eksiksiz bir oyunun nasıl kurulduğunu, iki konsolun kablo üzerinden nasıl senkron kaldığı dahil anlatır.
+- SpiffBoy SDK menüsü: dünyaya sağ tıkla ve SpiffBoy SDK'yı seç. Sana bir konsol, piller, kulaklık, kulak içi kulaklık, bağlantı kablosu ve oyununda kurulu olan her kartuşu verir; SpiffBoy'dan, SDK'dan ya da başka herhangi bir moddan gelsin, tek başına ya da bir konsola takılı olarak. Çok oyunculu modda eşya ekleme izni olan oyunculara ayrılmıştır ve sunucu her isteği kontrol eder.
+
+Örnek kartuşlar hiçbir zaman ganimet olarak bulunmaz: onları SDK menüsünden alırsın.
+
+[h2]Kitte neler var[/h2]
+Kitin tamamı modun kendisiyle birlikte gelir, SDK klasöründe: mods/SpiffBoySDK/SDK
+- Adım adım dokümantasyon: başlarken, bir kartuş nasıl çalışır, ekran ve dört tonu, ses çipi ve nota yazımı, kaydetme, metinler ve çeviriler, bağlantı kablosu, kartuş eşyası ve 3D modeli, test etme, oyunun Lua'sındaki tuzaklar, yayınlama.
+- Araçlar: çizimlerini ekran için sprite'lara dönüştür, kartuşunun 3D modelini, etiketini ve envanter simgesini oluştur, metinlerini her dilde kontrol et ve örnekten tek bir komutla yeni bir kartuş oluştur.
+- Test robotları: kartuşunu oyunun dışında çalıştırır, birkaç saniyede binlerce kare, böylece çökmeleri, eksik metinleri ve çizilmesi fazla ağır kareleri yakalar.
+
+[h2]Soru ve Cevap[/h2]
+Q: SpiffBoy oynamak için bu moda ihtiyacım var mı?
+A: Hayır. SpiffBoy tek başına çalışır. SDK, kendi oyunlarını yapmak ya da örnek kartuşları denemek isteyen oyuncular içindir.
+
+Q: Kartuşlarım kendi modumda yer alabilir mi?
+A: Evet, bütün mesele bu. Modun SpiffBoy gerektirir, kartuşlarını kaydeder ve kendi görsellerini, metinlerini ve müziğini getirir. Konsol her şeyi senin modunda bulur.
+
+Q: Kayıt ortasında eklemek veya kaldırmak güvenli mi?
+A: Evet. SDK dünyana hiçbir şey kaydetmez. Kaldırmak yalnızca örnek kartuşları ve menüyü kaldırır.
+
+Geri bildirimlerinizi, hata raporlarınızı, fikirlerinizi ve yaptığınız oyunları yorumlar bölümünde paylaşmaktan çekinmeyin, her şeyi okuyorum.
+
+[img]https://i.imgur.com/lja52Fs.gif[/img]
+
+Workshop ID: 3825220785
+Mod ID: SpiffBoySDK
