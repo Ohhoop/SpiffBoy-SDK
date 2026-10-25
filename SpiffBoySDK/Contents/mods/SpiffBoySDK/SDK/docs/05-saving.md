@@ -8,33 +8,56 @@ When the game starts, the base class loads the save of the cartridge into `self.
 
 Nothing is written until you call `persist`. When the console is switched off, the game stops without saving: the changes since the last `persist` are lost.
 
-From Hello SpiffBoy:
+### When to save
 
-```lua
-function SpiffBoySDKHelloGame:toggleMusic()
-    self.musicOn = not self.musicOn
-    self.save.music = self.musicOn
-    self:persist()
-    self:applyMusic()
-    self.sequencer:effect(Music.TOGGLE)
-end
+A cartridge saves like the games of its time: there is no saving on its own, no saving while the player plays. It writes its save at three kinds of moments, each one the answer to a press of the player:
+
+- the end of a game, for its score: the press that confirms the end screen, or the last letter of the initials;
+- a save the player asks for: a SAVE entry in a menu, as in an adventure;
+- the options, once, when the player leaves the options screen after changing something.
+
+Never when the player leaves a screen in the middle of a game, never when the console is switched off, never in every tick. Some games of the time saved nothing at all, or gave the player a code to write down; those are choices too.
+
+The console holds you to it: `persist` works only during the tick in which the player pressed a button of the console, A, B, Start or any of the four directions, whichever your game reads. Called anywhere else, in `init`, on a timer, when a match is decided by the clock or by the other console, it raises an error and the game stops:
+
+```
+SpiffBoy: [SB-SAVE-PRESS] the game SpaceRace tried to save without a button press, and nothing was written. Fix: save on the press that answers it: the end screen confirmed, a SAVE entry, the options left. See: SDK docs/05-saving.md, When to save.
 ```
 
-### When to persist
+A save on a timer can pass while the player happens to press a direction at that tick, and fail on the next game. The robot catches it: it presses buttons at random and also pauses one to five seconds without any button, so a game that saves on its own meets ticks without a press. The robot adds where the call came from, `persist called at lua/client/<Ns>/Games/<Id>/Game.lua:<line>`, before `. Fix:`.
 
-`persist` rewrites the item; in multiplayer it sends the save to the server, which writes it. Call it when something worth keeping changed, at a natural moment: when the player leaves the play screen with a new best score, when the player leaves the options after changing something, when a match ends. Never in every tick: the server takes only a few messages of each console per second and ignores the rest, so saves sent in a rush can be lost.
+`persist` rewrites the item; in multiplayer it sends the save to the server, which writes it. Write everything that changed in one `persist`.
 
-Hello SpiffBoy shows a new best count on screen at once but writes it only in `leavePlay`, once per visit, and only when it changed:
+Hello SpiffBoy saves at the end of a round. Nothing is written during the round nor when the player gives it up with Start; the end screen waits for A or Start, and that press writes the best count and the music option together, only when one of them changed:
 
 ```lua
-function SpiffBoySDKHelloGame:leavePlay()
+function SpiffBoySDKHelloGame:tickOver(input)
+    self.overTicks = self.overTicks + 1
+    local pressed = input.pressed
+    if pressed.a or pressed.start then
+        self.sequencer:effect(Music.SELECT)
+        self:saveRound()
+        self:enterTitle()
+    end
+end
+
+function SpiffBoySDKHelloGame:saveRound()
+    local changed = false
     if self.best ~= self.save.best then
         self.save.best = self.best
+        changed = true
+    end
+    if self.musicOn ~= readMusic(self.save) then
+        self.save.options = { music = self.musicOn }
+        changed = true
+    end
+    if changed then
         self:persist()
     end
-    self:enterTitle()
 end
 ```
+
+The music option has no options screen in Hello SpiffBoy: B or the title menu switch it in the game, and it reaches the cartridge with the next end of a round.
 
 ## What a save can hold
 
@@ -54,7 +77,7 @@ Nothing else is allowed: no function, no texture, no other kind of value.
 `persist` checks the save before writing it. A save that breaks a limit is not written at all: `persist` raises an error that names the game, the first limit broken and its place in the save, and the game stops as on any other error ([Crashes](02-how-a-cartridge-works.md#crashes)). The log then reads, for example:
 
 ```
-SpiffBoy: the game SpaceRace cannot save, the save at records.names.1 holds a string of 140 characters, at most 128 are kept
+SpiffBoy: [SB-SAVE-LIMIT] the game SpaceRace cannot save, the save at records.names.1 holds a string of 140 characters, at most 128 are kept, and nothing was written. Fix: keep the save within the limits and measure it with SpiffBoy.SaveData.measure. See: SDK docs/05-saving.md, Watching the size.
 ```
 
 The server checks every save it receives the same way and refuses a save that breaks a limit as a whole. The [robot](09-testing.md#the-robot) runs the same check in `persist`, so a save that breaks a limit shows there as a crash, as soon as the robot plays far enough to write it.
@@ -97,11 +120,12 @@ local function readBest(save)
 end
 ```
 
-and a setting that is on for a new cartridge like this:
+and a setting that is on for a new cartridge, kept in the entry of the options, like this:
 
 ```lua
 local function readMusic(save)
-    return save.music ~= false
+    local options = save.options
+    return type(options) ~= "table" or options.music ~= false
 end
 ```
 
@@ -179,7 +203,7 @@ The flow in the game:
 
 ## Pattern: options
 
-Options (music on or off, difficulty, speed) belong in the save, so they are set once per cartridge. Read them in `init`, change them on the options screen, and write and persist once, when the player leaves the screen, only if something changed:
+Options (music on or off, difficulty, speed) belong in the save, in an entry of their own, `self.save.options`, apart from the scores and the progress, so they are set once per cartridge. Read them in `init`, change them on the options screen, and write and persist once, when the player leaves the screen with a button, only if something changed:
 
 ```lua
 if pressed.a or pressed.b or pressed.start then

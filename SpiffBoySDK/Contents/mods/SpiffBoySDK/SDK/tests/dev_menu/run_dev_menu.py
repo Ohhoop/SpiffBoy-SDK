@@ -9,6 +9,9 @@ Exits with an error when any check fails.
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "robots"))
+import run_robots  # noqa: E402
+
 from lupa.lua51 import LuaRuntime
 
 HERE = Path(__file__).resolve().parent
@@ -18,6 +21,7 @@ SIDES = ("shared", "client", "server")
 def main():
     """Loads the harness with the module reader of both mods, runs it and exits with its failure count."""
     spiffboy, sdk = Path(sys.argv[1]), Path(sys.argv[2])
+    run_robots.require_spiffboy(spiffboy)
     roots = [media / "lua" / side for media in (sdk, spiffboy) for side in SIDES]
 
     def read_module(name):

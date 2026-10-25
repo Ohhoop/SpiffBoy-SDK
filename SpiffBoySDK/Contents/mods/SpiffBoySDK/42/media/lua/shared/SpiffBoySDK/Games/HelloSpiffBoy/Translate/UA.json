@@ -8,6 +8,8 @@
         "Count": "ПРИВІТИ %1",
         "Hello": "ПРИВІТ!",
         "HintButtons": "A ПРИВІТ  B МУЗИКА",
-        "HintStart": "START МЕНЮ"
+        "HintStart": "START МЕНЮ",
+        "TimeUp": "ЧАС ВИЙШОВ!",
+        "NewBest": "НОВИЙ РЕКОРД!"
     }
 }

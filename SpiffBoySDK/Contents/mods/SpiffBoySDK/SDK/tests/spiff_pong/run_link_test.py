@@ -35,11 +35,7 @@ SCENARIOS = [
 def run(spiffboy, sdk):
     """Loads the preamble of the robots and the test, plays every scenario and returns the results with the number of missing texts."""
     lua = LuaRuntime(unpack_returned_tuples=True)
-    roots = lua.table_from([str(sdk / "lua").replace("\\", "/"), str(spiffboy / "lua").replace("\\", "/")])
-    folders = lua.table_from({run_robots.mod_id(media): str(media.parent).replace("\\", "/") for media in (spiffboy, sdk)})
-    load = lua.eval("function(path, ...) local f = assert(loadfile(path)); return f(...) end")
-    load(str(ROBOTS / "preamble.lua"), roots, folders)
-    lua.globals().ROBOT.texts = lua.table_from(run_robots.english_texts(spiffboy, sdk))
+    load = run_robots.load_preamble(lua, spiffboy, sdk, "EN")
     scenarios = lua.table_from([lua.table_from(s) for s in SCENARIOS])
     results = load(str(HERE / "link_test.lua"), scenarios)
     rows = [dict(results[i].items()) for i in range(1, len(SCENARIOS) + 1)]
@@ -54,7 +50,7 @@ def verdict(scenario, row):
     if row["most"] >= MAX_CALLS:
         failures.append(f"{row['most']} draw calls")
     if scenario.get("solo"):
-        if not row["sawRecords"] or row["saves"] < 2 or row["records"] < 1 or row["wins"] + row["losses"] != 1:
+        if not row["sawRecords"] or row["saves"] != 1 or row["records"] < 1 or row["wins"] + row["losses"] != 1:
             failures.append("the match alone did not end on saved best scores")
         return failures
     if row["mismatches"] or row["checksums"]:
@@ -79,6 +75,7 @@ def verdict(scenario, row):
 def main():
     """Runs the scenarios, prints a line for each and a summary, and exits with 1 on any failure."""
     spiffboy, sdk = Path(sys.argv[1]), Path(sys.argv[2])
+    run_robots.require_spiffboy(spiffboy)
     rows, missing = run(spiffboy, sdk)
     failed = 0
     for scenario, row in zip(SCENARIOS, rows):

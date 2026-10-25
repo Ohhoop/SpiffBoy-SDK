@@ -8,6 +8,8 @@
         "Count": "AHOJ %1",
         "Hello": "AHOJ!",
         "HintButtons": "A AHOJ  B HUDBA",
-        "HintStart": "START MENU"
+        "HintStart": "START MENU",
+        "TimeUp": "ČAS VYPRŠEL!",
+        "NewBest": "NOVÝ REKORD!"
     }
 }

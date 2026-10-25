@@ -8,6 +8,8 @@
         "Count": "MERHABA %1",
         "Hello": "MERHABA!",
         "HintButtons": "A MERHABA  B MÜZİK",
-        "HintStart": "START MENÜ"
+        "HintStart": "START MENÜ",
+        "TimeUp": "SÜRE DOLDU!",
+        "NewBest": "YENİ REKOR!"
     }
 }

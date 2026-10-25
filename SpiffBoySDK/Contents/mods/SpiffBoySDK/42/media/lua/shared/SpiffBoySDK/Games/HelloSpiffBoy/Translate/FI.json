@@ -5,9 +5,11 @@
         "MusicOn": "MUSIIKKI: PÄÄLLÄ",
         "MusicOff": "MUSIIKKI: POIS",
         "Best": "ENNÄTYS %1",
-        "Count": "TERVEHDYKSET %1",
+        "Count": "TERVEHDYS %1",
         "Hello": "HEI!",
         "HintButtons": "A HEI  B MUSIIKKI",
-        "HintStart": "START VALIKKO"
+        "HintStart": "START VALIKKO",
+        "TimeUp": "AIKA LOPPUI!",
+        "NewBest": "UUSI ENNÄTYS!"
     }
 }

@@ -1,13 +1,18 @@
 """Creates a new cartridge in a mod from the Hello SpiffBoy example of the SpiffBoy SDK, with every name of the example renamed.
 
 It copies, from the media folder of the SDK to the media folder of the mod:
-    lua/shared/SpiffBoySDK/Games/HelloSpiffBoy/Definition.lua and Translate/*.json   ->  lua/shared/<Namespace>/Games/<Id>/
+    lua/shared/SpiffBoySDK/Games/HelloSpiffBoy/Definition.lua and Translate/EN.json  ->  lua/shared/<Namespace>/Games/<Id>/
     lua/client/SpiffBoySDK/Games/HelloSpiffBoy/*.lua (Game.lua, Music.lua)           ->  lua/client/<Namespace>/Games/<Id>/
     ui/SpiffBoySDK/Games/HelloSpiffBoy/*.png (spiffo.png, label.png)                 ->  ui/<Namespace>/Games/<Id>/
     scripts/SpiffBoySDK/HelloSpiffBoy.txt (the item and its 3D model)                ->  scripts/<Namespace>/<Id>.txt
     textures/SpiffBoySDK/SpiffBoySDKCartridge_HelloSpiffBoy.png (model texture)      ->  textures/<Namespace>/<Namespace>Cartridge_<Id>.png
     textures/Item_SpiffBoySDK_Cartridge_HelloSpiffBoy.png (inventory icon)           ->  textures/Item_<Module>_Cartridge_<Id>.png
-and writes lua/shared/<Namespace>/Core.lua, which defines the global table <Namespace> and <Namespace>.MOD_ID, when the mod
+The other languages of the example are left out: the console shows the English texts of a game in every language it has no
+file for. The comments of the Lua files that point to the exercises of Hello SpiffBoy are left out too. The definition of the
+new cartridge describes it as a cartridge of its own and gives it the loot weight 2 of the cartridges of SpiffBoy, where the
+example has 0. It also writes
+lua/shared/Translate/EN/ItemName.json, the English name of the item, when the mod has no such file, and otherwise prints the
+line to add to it. It also writes lua/shared/<Namespace>/Core.lua, which defines the global table <Namespace> and <Namespace>.MOD_ID, when the mod
 has none; an existing one must define <Namespace>.MOD_ID.
 
 In the text of the copied files, it replaces, in this order:
@@ -42,9 +47,23 @@ EXAMPLE_ID = "HelloSpiffBoy"
 EXAMPLE_TITLE = "Hello SpiffBoy"
 EXAMPLE_GAME = "SpiffBoySDKHelloGame"
 TEXT_SUFFIXES = {".lua", ".json", ".txt"}
+TEXTS_FOLDER = "Translate"
+REFERENCE_TEXTS = "EN.json"
+EXERCISE = re.compile(r"^\s*--.*[Ee]xercise")
+EXERCISE_SUFFIX = re.compile(r"[ \t]+--[ \t]*Exercise.*$")
+COMMENT = re.compile(r"^\s*--")
+ITEM_NAMES = Path("lua") / "shared" / "Translate" / "EN" / "ItemName.json"
 NAME = re.compile(r"^[A-Za-z][A-Za-z0-9]*$")
 MOD_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.\- ]*$")
 TITLE = re.compile(r"^[^\"\\\r\n\t]+$")
+DEFINITION = "Definition.lua"
+DEFINITION_CHANGES = [
+    ("-- Hello SpiffBoy: the smallest complete cartridge of the SpiffBoy SDK.",
+     "-- Hello SpiffBoy: a cartridge for the SpiffBoy handheld console."),
+    ("    -- A weight of 0 keeps this example out of the loot of the world.\n    loot = { weight = 0 },",
+     "    -- The weight of the cartridge in the loot of the world: 2, as the cartridges of\n"
+     "    -- SpiffBoy; a higher weight spawns it more often, 0 never.\n    loot = { weight = 2 },"),
+]
 CORE = '''-- {namespace} keeps everything it shares between its files in one global table, named after the mod.
 {namespace} = {namespace} or {{}}
 
@@ -71,6 +90,11 @@ def renames(args):
     ]
 
 
+def copied(path):
+    """Returns true for a file of the example the new cartridge receives: every file except the texts of the other languages than English."""
+    return path.parent.name != TEXTS_FOLDER or path.name == REFERENCE_TEXTS
+
+
 def copies(sdk, mod, args):
     """Returns the pairs of example file and new file to copy, one per file of the example."""
     pairs = []
@@ -79,7 +103,7 @@ def copies(sdk, mod, args):
         if not source.is_dir():
             raise ScaffoldError(f"no example folder {source}: --sdk must be the media folder of the SpiffBoy SDK")
         target = mod / side / args.namespace / folder / args.id
-        pairs += [(path, target / path.relative_to(source)) for path in sorted(source.rglob("*")) if path.is_file()]
+        pairs += [(path, target / path.relative_to(source)) for path in sorted(source.rglob("*")) if path.is_file() and copied(path)]
     script = sdk / "scripts" / EXAMPLE_NAMESPACE / f"{EXAMPLE_ID}.txt"
     if not script.is_file():
         raise ScaffoldError(f"no example item script {script}")
@@ -105,6 +129,47 @@ def check_example(sdk):
             raise ScaffoldError(f"the example definition no longer registers {field} = \"{value}\"; update the renames of this tool")
     if not re.search(rf"^\s*mod\s*=\s*{EXAMPLE_NAMESPACE}\.MOD_ID\s*,", definition, re.M):
         raise ScaffoldError(f"the example definition no longer registers mod = {EXAMPLE_NAMESPACE}.MOD_ID; update this tool")
+
+
+def without_exercises(text):
+    """Returns a Lua text without the comments that point to the exercises of Hello SpiffBoy: each comment line naming an exercise with the comment lines right after it, and the exercise note at the end of a line of code."""
+    lines = text.split("\n")
+    kept = []
+    dropping = False
+    for line in lines:
+        if EXERCISE.match(line):
+            dropping = True
+            continue
+        if dropping and COMMENT.match(line) and line.strip() != "--":
+            continue
+        dropping = False
+        kept.append(EXERCISE_SUFFIX.sub("", line))
+    cleaned = []
+    for index, line in enumerate(kept):
+        following = kept[index + 1] if index + 1 < len(kept) else ""
+        if line.strip() == "--" and following.strip() == "":
+            continue
+        cleaned.append(line)
+    return "\n".join(cleaned)
+
+
+def item_names(args):
+    """Returns the English item names file of the mod with the name of the new item, or None with the line to add printed when the mod already has that file."""
+    path = args.mod / ITEM_NAMES
+    entry = f'    "{args.module}.Cartridge_{args.id}": "{args.title} Cartridge"'
+    if path.exists():
+        print(f"{ITEM_NAMES.as_posix()} exists: add this line to it:\n{entry}")
+        return None
+    return path, "{\n" + entry + "\n}\n"
+
+
+def as_new_cartridge(text):
+    """Returns the definition of the example made the definition of a new cartridge: described as a cartridge of its own, with the loot weight of the cartridges of SpiffBoy; raises an error when the example no longer holds the lines to change."""
+    for old, new in DEFINITION_CHANGES:
+        if old not in text:
+            raise ScaffoldError(f"the example definition no longer holds {old.splitlines()[-1].strip()!r}; update this tool")
+        text = text.replace(old, new)
+    return text
 
 
 def leftovers(path, text, args):
@@ -148,6 +213,10 @@ def plan(args):
             writes.append((target, source.read_bytes()))
             continue
         text = source.read_text(encoding="utf-8")
+        if source.suffix == ".lua":
+            text = without_exercises(text)
+        if source.name == DEFINITION:
+            text = as_new_cartridge(text)
         for old, new in table:
             text = text.replace(old, new)
         problems += leftovers(target, text, args)
@@ -158,6 +227,9 @@ def plan(args):
             problems.append(f"{core} exists and does not define {args.namespace}.MOD_ID, which the new definition reads")
     else:
         writes.append((core, CORE.format(namespace=args.namespace, mod_id=args.mod_id)))
+    names = item_names(args)
+    if names:
+        writes.append(names)
     if problems:
         raise ScaffoldError("nothing written:\n    " + "\n    ".join(problems))
     return writes

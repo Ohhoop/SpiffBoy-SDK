@@ -8,6 +8,8 @@
         "Count": "HALLO'S %1",
         "Hello": "HALLO!",
         "HintButtons": "A HALLO  B MUZIEK",
-        "HintStart": "START MENU"
+        "HintStart": "START MENU",
+        "TimeUp": "TIJD OM!",
+        "NewBest": "NIEUW RECORD!"
     }
 }

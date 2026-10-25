@@ -1,7 +1,7 @@
 id=SpiffBoySDK
 name=SpiffBoy SDK
 description=The development kit of the SpiffBoy handheld console: two example cartridges, Hello SpiffBoy and Spiff-Pong, and a menu that gives the console and every cartridge.
-modversion=0.1.0
+modversion=0.1.1
 require=\SpiffBoy
 poster=poster.png
 icon=poster.png

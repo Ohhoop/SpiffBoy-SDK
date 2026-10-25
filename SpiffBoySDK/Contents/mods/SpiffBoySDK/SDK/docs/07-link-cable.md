@@ -11,7 +11,7 @@ The game reaches the port through `self.link`, which has four methods:
 | Call | Returns |
 |---|---|
 | `self.link:isConnected()` | True while the cable joins two consoles, both switched on, both running this same cartridge. |
-| `self.link:seat()` | 1 on the console that holds the cable, 2 on the other one, nil while the cable joins nothing. The seats tell the two games apart. |
+| `self.link:seat()` | 1 on the console that holds the cable, 2 on the other one, nil while the cable joins nothing. The seats tell the two games apart. A seat is given as soon as the cable joins the two consoles, even before the other one runs the same game: test `isConnected()` before playing. |
 | `self.link:send(message)` | Queues a message for the other console and returns true. Returns false when `isConnected()` is false, or when the port already took 4 messages this tick. |
 | `self.link:receive()` | The next message received, in the order they were sent, or nil when none waits. |
 
@@ -32,7 +32,7 @@ Start every message with one letter naming its kind (`"I"` for an input, `"S"` f
 
 ### How messages travel
 
-The port sends the queued messages in batches, every 100 ms, or sooner once 24 are queued. Between two players on the same computer a batch goes straight to the other console; in multiplayer it goes through the server, which adds the delay of the network. Messages arrive in order, but late.
+The port sends the queued messages in batches, every 100 ms, or sooner once 24 are queued. Between two players on the same computer a batch goes straight to the other console; in multiplayer it goes through the server, which adds the delay of the network. Messages arrive in order, but late. A batch that arrives after a newer one is left out with its messages, so a message can be lost.
 
 The port keeps at most 256 messages waiting and drops the oldest beyond that. Read it on every tick, even on screens that do not use it; Spiff-Pong reads it at the start of every `tick`.
 
@@ -40,7 +40,7 @@ The port keeps at most 256 messages waiting and drops the oldest beyond that. Re
 
 The connection ends when the cable comes out, or when the other console is switched off or changes cartridge. Two cases follow:
 
-- If your game sent or received a message in the last second, the console freezes on its last picture with a notice of its own, until it is switched off. Your game has nothing to do for this case.
+- If your game used the port in the last second, by a call to `send` (even one that returned false) or a message `receive` returned, the console freezes on its last picture with a notice of its own, until it is switched off. Your game has nothing to do for this case.
 - Otherwise `isConnected()` simply turns false. Your game must notice it and leave its two player screens, as Spiff-Pong does:
 
   ```lua

@@ -19,7 +19,7 @@ local LETTER_COUNT = string.len(Records.LETTERS)
 local LETTER_GAP = 20
 local LETTERS_Y = 62
 
---- Opens the result of the decided match with the jingle of the winner or the loser; against the console the match is counted and the save written at once.
+--- Opens the result of the decided match with the jingle of the winner or the loser; against the console the match is counted in the records, which reach the cartridge when the player confirms the result.
 function Game:openResult()
     local match = self.match
     self.mode = Game.MODE_RESULT
@@ -36,11 +36,10 @@ function Game:openResult()
         Records.count(self.records, self.won)
         self.rank = Records.rankOf(self.records, match.longestRally)
         Records.write(self.save, self.records)
-        self:persist()
     end
 end
 
---- Waits for A or Start once the lock is over, then asks for initials when the rally entered the best scores, or goes back to the title.
+--- Waits for A or Start once the lock is over, then asks for initials when the rally entered the best scores, or writes the counted match and goes back to the title.
 function Game:tickResult(input)
     if self.resultLock > 0 then
         self.resultLock = self.resultLock - 1
@@ -52,10 +51,17 @@ function Game:tickResult(input)
     end
     self:effect(Music.CONFIRM)
     if self.rank then
+        -- The initials end with one write that also holds the counted match.
         self:openInitials()
-    else
-        self:openTitle()
+        return
     end
+    -- A game saves on a press of the player, never on its own: the match
+    -- against the console reaches the cartridge now that the player confirms
+    -- its result.
+    if not self.twoPlayer then
+        self:persist()
+    end
+    self:openTitle()
 end
 
 --- Draws the result in a box over the final field: who won, the score, the longest rally and, once the lock is over, a blinking prompt.

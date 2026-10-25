@@ -8,6 +8,8 @@
         "Count": "HALO %1",
         "Hello": "HALO!",
         "HintButtons": "A HALO  B MUSIK",
-        "HintStart": "START MENU"
+        "HintStart": "START MENU",
+        "TimeUp": "WAKTU HABIS!",
+        "NewBest": "REKOR BARU!"
     }
 }

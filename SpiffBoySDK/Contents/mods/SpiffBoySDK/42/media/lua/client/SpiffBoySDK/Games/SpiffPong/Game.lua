@@ -88,9 +88,6 @@ local SCREENS = {
     [Game.MODE_INITIALS] = { tick = "tickInitials", draw = "drawInitials" },
 }
 
--- What a tick without any input state reads, so no screen has to test for nil.
-local NO_INPUT = { held = {}, pressed = {} }
-
 --- Switches the console on: loads the art, the save, the options and the port of the cable, then opens the title screen.
 function Game:init()
     -- context.art(name) loads name.png from the art folder of the definition.
@@ -131,7 +128,7 @@ end
 function Game:tick(inputs, tick)
     self.clock = self.clock + 1
     self:pollLink()
-    self[SCREENS[self.mode].tick](self, inputs[1] or NO_INPUT)
+    self[SCREENS[self.mode].tick](self, inputs[1])
 end
 
 --- Draws the current screen.

@@ -8,6 +8,8 @@
         "Count": "SZIÁK %1",
         "Hello": "SZIA!",
         "HintButtons": "A SZIA  B ZENE",
-        "HintStart": "START MENÜ"
+        "HintStart": "START MENÜ",
+        "TimeUp": "LEJÁRT AZ IDŐ!",
+        "NewBest": "ÚJ REKORD!"
     }
 }

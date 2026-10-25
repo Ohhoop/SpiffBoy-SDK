@@ -5,10 +5,17 @@ For every game folder lua/shared/<Namespace>/Games/<Id>/ holding a Definition.lu
     with no key repeated, EN.json holds an "UI" section, the section SpiffBoy.GameTexts reads,
     every other language holds exactly the sections and keys of EN.json, and reports the missing and the extra ones,
     every key the Lua files of the game ask for in a literal, gameText("Key"), exists in the "UI" section of EN.json,
-    and every literal prefix, gameText("Item_" .. id), starts at least one key of it.
+    and every literal prefix, gameText("Item_" .. id), starts at least one key of it,
+    the files call SpiffBoy.GameTexts.of with the id of the game and no other id,
+    no text with letters is drawn straight from a literal, screen:text("GAME OVER"), instead of a language file,
+    and lua/shared/Translate/EN/ItemName.json gives a name to the item of the definition.
 The Lua scan is static and best effort: it follows the names given to SpiffBoy.GameTexts.of("<Id>") in the files under
 lua/client, lua/shared and lua/server <Namespace>/Games/<Id>/, and the locals copied from them, and counts the calls whose
 key is computed, which it cannot check.
+
+The line printed for each game counts its Lua files, the different literal keys its code asks for and the calls asking for
+them (a key asked in three places is one key and three calls), the calls with a literal prefix, the calls with a computed
+key, and the keys of the "UI" section of EN.json, which may hold more keys than the code asks for literally.
 
 Usage:
     python check_texts.py <mod media folder> [--games A,B]
@@ -31,6 +38,10 @@ KEY = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 TEXTS_OF = re.compile(r"""^[ \t]*(local[ \t]+)?([A-Za-z_][\w.]*)[ \t]*=[ \t]*(?:SpiffBoy\.)?GameTexts\.of\([ \t]*(?:"([^"]*)"|'([^']*)'|([A-Za-z_]\w*))[ \t]*\)""", re.M)
 CONSTANT = re.compile(r"""^[ \t]*(?:local[ \t]+)?([A-Za-z_]\w*)[ \t]*=[ \t]*(?:"([^"]*)"|'([^']*)')[ \t]*$""", re.M)
 COPY = re.compile(r"^[ \t]*(local[ \t]+)?([A-Za-z_][\w.]*)[ \t]*=[ \t]*([A-Za-z_][\w.]*)[ \t]*$", re.M)
+WRITTEN_TEXT = re.compile(r""":(?:text|textCentre|textRight|wrapText)[ \t]*\([ \t]*(?:"([^"\\\n]*)"|'([^'\\\n]*)')""")
+LETTER = re.compile(r"[^\W\d_]")
+ITEM_FIELD = re.compile(r"""^[ \t]*item[ \t]*=[ \t]*["']([^"']+)["']""", re.M)
+ITEM_NAMES = Path("lua") / "shared" / "Translate" / "EN" / "ItemName.json"
 SIDES = ("client", "shared", "server")
 
 
@@ -112,8 +123,8 @@ def lua_files(media, namespace, game):
 
 
 def text_names(files, game):
-    """Returns the names given to the text function of the game: shared by every file of the game, and local to each file."""
-    shared, local = set(), {}
+    """Returns the names given to the text function of the game, shared by every file of the game and local to each file, and the calls of SpiffBoy.GameTexts.of that name another id, with their place."""
+    shared, local, others = set(), {}, []
     for path in files:
         text = path.read_text(encoding="utf-8", errors="replace")
         constants = {m.group(1): m.group(2) if m.group(2) is not None else m.group(3) for m in CONSTANT.finditer(text)}
@@ -123,6 +134,7 @@ def text_names(files, game):
             if target is None:
                 target = constants.get(match.group(5))
             if target != game:
+                others.append((target, f"{path.name}:{text.count(chr(10), 0, match.start()) + 1}"))
                 continue
             if match.group(1) and "." not in match.group(2):
                 names.add(match.group(2))
@@ -141,7 +153,37 @@ def text_names(files, game):
                 if match.group(2) not in into:
                     into.add(match.group(2))
                     grown = True
-    return shared, local
+    return shared, local, others
+
+
+def written_texts(files):
+    """Returns the texts with letters that the files draw straight from a literal, without a language file, with the place of each."""
+    found = []
+    for path in files:
+        text = path.read_text(encoding="utf-8", errors="replace")
+        for match in WRITTEN_TEXT.finditer(text):
+            literal = match.group(1) if match.group(1) is not None else match.group(2)
+            if LETTER.search(literal):
+                found.append((literal, f"{path.name}:{text.count(chr(10), 0, match.start()) + 1}"))
+    return found
+
+
+def item_name_problems(media, namespace, game):
+    """Returns the problems of the inventory name of the item of a game: no English item names file, or no name in it for the item of its definition."""
+    definition = media / "lua" / "shared" / namespace / "Games" / game / "Definition.lua"
+    item = ITEM_FIELD.search(definition.read_text(encoding="utf-8", errors="replace"))
+    if not item:
+        return ["Definition.lua: no item = \"Module.Name\" field to check the inventory name of"]
+    names = media / ITEM_NAMES
+    if not names.is_file():
+        return [f"no {ITEM_NAMES.as_posix()}: the item {item.group(1)} has no name in the inventory"]
+    try:
+        entries = json.loads(names.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        return [f"{ITEM_NAMES.as_posix()}: cannot be read, {error}"]
+    if not isinstance(entries, dict) or item.group(1) not in entries:
+        return [f"{ITEM_NAMES.as_posix()}: no name for the item {item.group(1)}"]
+    return []
 
 
 def asked_keys(files, shared, local):
@@ -167,9 +209,16 @@ def asked_keys(files, shared, local):
 def check_game(media, namespace, game):
     """Returns the problems of the texts of one game and a line summing up what was checked."""
     problems, english = check_languages(media / "lua" / "shared" / namespace / "Games" / game / "Translate")
+    problems += item_name_problems(media, namespace, game)
     files = lua_files(media, namespace, game)
-    shared, local = text_names(files, game)
+    shared, local, others = text_names(files, game)
+    for target, place in others:
+        problems.append(f"{place}: SpiffBoy.GameTexts.of(\"{target}\") reads the texts of {target}, not of this game, {game}")
+    for literal, place in written_texts(files):
+        problems.append(f"{place}: the text \"{literal}\" is written in the code: put it in {REFERENCE}.json and draw gameText(\"<Key>\")")
     if not shared and not any(local.values()):
+        if english:
+            problems.append(f"{REFERENCE}.json holds {len(english)} keys, but no Lua file of the game calls SpiffBoy.GameTexts.of(\"{game}\"), so none is drawn")
         return problems, f"{len(files)} Lua files, none calls SpiffBoy.GameTexts.of(\"{game}\")"
     keys, prefixes, computed = asked_keys(files, shared, local)
     if english is not None:
@@ -179,7 +228,10 @@ def check_game(media, namespace, game):
         for prefix, place in prefixes:
             if not any(key.startswith(prefix) for key in english):
                 problems.append(f"{place}: no key of {REFERENCE}.json starts with {prefix}")
-    return problems, f"{len(files)} Lua files, {len(keys)} literal keys, {len(prefixes)} prefixes, {computed} computed keys not checked"
+    held = "no" if english is None else len(english)
+    asked = len({key for key, _ in keys})
+    return problems, (f"{len(files)} Lua files, {asked} literal keys asked in {len(keys)} calls, {len(prefixes)} prefix calls,"
+                      f" {computed} computed calls not checked, {held} keys in {REFERENCE}.json")
 
 
 def main():
@@ -188,6 +240,7 @@ def main():
     parser.add_argument("mod", type=Path, help="media folder of the mod")
     parser.add_argument("--games", default="", help="comma separated ids of the games to check")
     args = parser.parse_args()
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     shared = args.mod / "lua" / "shared"
     games = sorted((p.parent.parent.parent.name, p.parent.name) for p in shared.glob("*/Games/*/Definition.lua"))
     if args.games:

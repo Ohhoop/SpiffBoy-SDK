@@ -8,6 +8,8 @@
         "Count": "問候 %1",
         "Hello": "你好！",
         "HintButtons": "A 你好  B 音樂",
-        "HintStart": "START 選單"
+        "HintStart": "START 選單",
+        "TimeUp": "時間到！",
+        "NewBest": "新紀錄！"
     }
 }

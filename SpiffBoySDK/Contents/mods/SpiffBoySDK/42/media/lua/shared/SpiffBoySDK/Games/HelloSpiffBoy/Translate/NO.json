@@ -8,6 +8,8 @@
         "Count": "HEI %1",
         "Hello": "HEI!",
         "HintButtons": "A HEI  B MUSIKK",
-        "HintStart": "START MENY"
+        "HintStart": "START MENY",
+        "TimeUp": "TIDEN ER UTE!",
+        "NewBest": "NY REKORD!"
     }
 }

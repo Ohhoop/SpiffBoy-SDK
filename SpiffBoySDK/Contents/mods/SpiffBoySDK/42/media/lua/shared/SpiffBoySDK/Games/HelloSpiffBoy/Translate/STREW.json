@@ -8,6 +8,8 @@
         "Count": "Strewberrie %1",
         "Hello": "Strewberrie!",
         "HintButtons": "A Strewberrie  B Strewberrie",
-        "HintStart": "START Strewberrie"
+        "HintStart": "START Strewberrie",
+        "TimeUp": "Strewberrie!",
+        "NewBest": "Berrie Strewberrie!"
     }
 }

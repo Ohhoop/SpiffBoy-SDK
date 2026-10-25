@@ -47,7 +47,7 @@ SpiffBoy.Cartridges.register({
 | `texts` | yes | The folder of the text files, from the version folder of the mod, ending with `/`. |
 | `loot` | no | `{ weight = n }`, optionally with `lists = { ... }`. Without it the weight is 2. See [The cartridge item](08-the-cartridge-item.md#loot). |
 
-A missing or malformed required field stops the file with an error that names the cartridge, such as `SpiffBoy: cartridge MyGame needs a title`.
+A missing or malformed required field stops the file with an error that names the cartridge, such as `SpiffBoy: [SB-REG-CARTRIDGE] cartridge MyGame needs a title`.
 
 Each cartridge of every loaded mod must be unique. The registration stops with an error naming the cartridges and the mods involved when:
 
@@ -59,7 +59,7 @@ Prefixing the item module and the class name with your namespace, and choosing a
 
 ### Versions of the framework
 
-`SpiffBoy.API_VERSION` is the version of the framework the installed SpiffBoy provides; it is 1 today. A definition whose `api` is above it is refused with `SpiffBoy: cartridge MyGame needs a newer SpiffBoy`, followed by both numbers, so a player with an old SpiffBoy reads why your cartridge does not load.
+`SpiffBoy.API_VERSION` is the version of the framework the installed SpiffBoy provides; it is 1 today. A definition whose `api` is above it is refused with `SpiffBoy: [SB-REG-API] cartridge MyGame needs a newer SpiffBoy`, followed by both numbers, so a player with an old SpiffBoy reads why your cartridge does not load.
 
 A new version of the framework never removes or reduces what an older version offers. A change that would break existing games creates a new version, and SpiffBoy keeps accepting every older one: a cartridge written for `api = 1` keeps working.
 
@@ -77,7 +77,7 @@ require "SpiffBoySDK/Games/HelloSpiffBoy/Music"
 SpiffBoySDKHelloGame = SpiffBoyGameBase:derive("SpiffBoySDKHelloGame")
 ```
 
-`require` paths start under `lua/shared`, `lua/client` or `lua/server`, without the `.lua`. The global name, the name given to `derive` and the `game` field of the definition must be the same. Other mods define globals too: prefix the name with your namespace.
+`require` paths start under `lua/shared`, `lua/client` or `lua/server`, without the `.lua`. The global name and the `game` field of the definition must be the same: the console finds the class by that name. Give `derive` the same name too: it is the class name the crash report prints, and the [robot](09-testing.md#the-robot) warns when it differs. Other mods define globals too: prefix the name with your namespace.
 
 The class overrides three methods. The base class gives empty ones, so a game writes only what it needs.
 
@@ -107,25 +107,27 @@ The base class sets these fields before it calls `init`:
 | Field | Content |
 |---|---|
 | `self.screen` | The screen, the same object `draw` receives, so `tick` can read `self.screen.width` (180) and `self.screen.height` (120). See [Screen and art](03-screen-and-art.md). |
-| `self.context` | What the console created the game with (below). |
+| `self.context` | The art of the cartridge (below). |
 | `self.random` | A random generator seeded by the console. |
 | `self.save` | The save of the cartridge, a table. See [Saving](05-saving.md). |
 | `self.chip` | The sound chip. See [Sound and music](04-sound-and-music.md). |
 | `self.sequencer` | The music player of the chip. |
 | `self.link` | The link cable port. See [The link cable](07-link-cable.md). |
 
-`self:persist()` writes `self.save` on the cartridge, or raises an error when the save breaks one of its limits ([Saving](05-saving.md#what-a-save-can-hold)).
+`self:persist()` writes `self.save` on the cartridge. It works only in the tick in which the player pressed a button: anywhere else it raises an error, as it does when the save breaks one of its limits ([Saving](05-saving.md)).
 
-`self.context` holds `seed` (the number `self.random` was seeded with), `definition` (your definition table), `chip`, `sequencer` and `link` (the same objects as above), and `art(name)`, which loads `name.png` from the `art` folder of the definition and returns the texture, or nil when the file does not exist.
+`self.context.art(name)` loads `name.png` from the `art` folder of the definition and returns the texture, or nil when the file does not exist.
 
 ## The inputs
 
-`tick` receives `inputs`, a list. `inputs[1]` is the input state of the player holding the console; a second player plays on another console, through the link cable.
+`tick` receives `inputs`, a list. `inputs[1]` is the input state of the player holding the console; a second player plays on another console, through the link cable. The console always passes this one entry, so `inputs[1]` is never nil.
 
 `inputs[1]` has two tables of booleans with the keys `up`, `down`, `left`, `right`, `a`, `b` and `start`:
 
 - `held` is true as long as the button is down. It suits movement: walking, steering, a paddle.
-- `pressed` is true only on the tick the button went down. It suits actions and menus: one press, one effect. A press that starts and ends between two ticks still counts once.
+- `pressed` is true only on the tick the button went down. It suits actions and menus: one press, one effect. A press that starts and ends between two ticks still counts once, on the keyboard as on a controller.
+
+Such a short press shows in `pressed` only: `held` stays false, because the button was already up when the console read it. A game that moves while a button is held, a bat that climbs while A is down, also reads `pressed` so that a quick tap still moves it: `if held.a or pressed.a then`.
 
 `inputs[1]:axes()` returns the horizontal and the vertical direction held, each -1, 0 or 1. Left and right held together give 0.
 
@@ -135,7 +137,12 @@ From Hello SpiffBoy:
 function SpiffBoySDKHelloGame:tickPlay(input)
     local pressed = input.pressed
     if pressed.start then
-        self:leavePlay()
+        self:enterTitle()
+        return
+    end
+    self.timeLeft = self.timeLeft - 1
+    if self.timeLeft <= 0 then
+        self:enterOver()
         return
     end
     local dx, dy = input:axes()
@@ -160,7 +167,7 @@ Spiffo moves while a direction is held; the hello happens once per press of A.
 | `self.random:chance(p)` | True with the probability `p`, from 0 to 1. |
 | `self.random:reseed(n)` | Starts the sequence again from the number `n`. |
 
-Use only this generator in a game, never `math.random`, `ZombRand` or the clock. The [robot](09-testing.md#the-robot) gives your game a fixed seed, so two runs of the same code play the same game and a change of code can be compared with the run before it. Two consoles on a link cable rely on the same property to compute the same match. For a second independent sequence, create one with `SpiffBoyRandom.new(seed)` (require `SpiffBoy/Core/Random`), as Spiff-Pong does for each match.
+Use only this generator in a game, never `math.random`, `ZombRand` or the clock (`os.time`, `os.clock`, `os.date`, `getTimestampMs`); count time in ticks. The robot stops a game that calls one of them with `SB-REPEAT`, naming the line. The [robot](09-testing.md#the-robot) gives your game a fixed seed, so two runs of the same code play the same game and a change of code can be compared with the run before it. Two consoles on a link cable rely on the same property to compute the same match. For a second independent sequence, create one with `SpiffBoyRandom.new(seed)` (require `SpiffBoy/Core/Random`), as Spiff-Pong does for each match.
 
 ## Crashes
 
@@ -168,15 +175,16 @@ Every call the console makes to your game is protected. When your code raises an
 
 1. The game stops for good: it is not called again.
 2. The console freezes: the screen goes blank under interference and the chip holds its last note.
-3. The error is written once in the log, `console.txt`, with the class name, the stage and the message:
+3. The error is written once in the log, `console.txt`, in two lines: the cartridge, the class, the stage and the tick, then the [code](10-kahlua-and-pitfalls.md#error-codes) of the error, the error, its fix and the page of the SDK to read:
 
    ```
-   SpiffBoy: the game SpiffBoySDKHelloGame crashed in tick: <message>
+   SpiffBoy: the cartridge HelloSpiffBoy (class SpiffBoySDKHelloGame) crashed in tick at tick 812
+   SpiffBoy: [SB-LUA] <message>. Fix: read the message for the name or the value that was nil or wrong. See: SDK docs/10-kahlua-and-pitfalls.md, Common mistakes.
    ```
 
 The rest of Project Zomboid keeps running. Switching the console off and on starts your game from nothing; the save keeps its last written state.
 
-When the console cannot find the class (a misspelled `game` field, or a client file that failed to load), it shows that the game is missing and the log says `SpiffBoy: no game class named <name>`. [Testing](09-testing.md#the-log-consoletxt) lists every message of the console.
+When the console cannot find the class (a misspelled `game` field, or a client file that failed to load), it shows that the game is missing and the log says `SpiffBoy: [SB-GAME-CLASS] no game class named <name>`. [Testing](09-testing.md#the-log-consoletxt) lists every message of the console.
 
 ## Hello SpiffBoy, step by step
 
@@ -193,12 +201,14 @@ local CELL = 16
 local SPEED = 1
 local PLAY_TOP = 18
 local PLAY_BOTTOM = 101
+local ROUND_TICKS = 30 * 60
 local HELLO_TICKS = 40
 local MODE_TITLE = "title"
 local MODE_PLAY = "play"
+local MODE_OVER = "over"
 ```
 
-Sizes in pixels, durations in ticks (60 ticks make a second), and the names of the two screens, so each number is tuned in one place.
+Sizes in pixels, durations in ticks (60 ticks make a second), and the names of the three screens, so each number is tuned in one place.
 
 ### init
 
@@ -237,8 +247,10 @@ function SpiffBoySDKHelloGame:tick(inputs, tick)
     self:tickBlink()
     if self.mode == MODE_TITLE then
         self:tickTitle(input)
-    else
+    elseif self.mode == MODE_PLAY then
         self:tickPlay(input)
+    else
+        self:tickOver(input)
     end
 end
 ```
@@ -263,13 +275,13 @@ function SpiffBoySDKHelloGame:tickTitle(input)
 
 The cursor reads `pressed`, so one press moves it once. Up from the first entry wraps to the last; the size is added before `%` because `%` of a negative number stays negative in the game ([Kahlua and pitfalls](10-kahlua-and-pitfalls.md#modulo-keeps-the-sign-of-the-left-side)). Each move plays a short sound effect.
 
-### The play screen
+### The round
 
-`tickPlay`, shown in [The inputs](#the-inputs), moves Spiffo with `axes()`, says hello on A, switches the music on B and leaves on Start. `moveSpiffo` keeps him inside the playfield with `clamp`. `sayHello` counts, opens the mouth for `HELLO_TICKS`, plays the effect and raises the best count.
+`enterPlay` starts a round of 30 seconds. `tickPlay`, shown in [The inputs](#the-inputs), counts the round down, moves Spiffo with `axes()`, says hello on A, switches the music on B and gives the round up on Start. `moveSpiffo` keeps him inside the playfield with `clamp`. `sayHello` counts, opens the mouth for `HELLO_TICKS` and plays the effect. When the clock reaches zero, `enterOver` opens the end screen and takes a count above the best as the new best.
 
 ### Saving
 
-The best count shows on screen at once but reaches the save only in `leavePlay`, when the player leaves the play screen, and only when it changed. [Saving](05-saving.md#when-to-persist) shows the code and explains why.
+Nothing is saved during a round, nor when the player gives it up. The end screen waits for A or Start, and that press runs `saveRound`, which writes the best count and the music option on the cartridge in one `persist`, and only when one of them changed. [Saving](05-saving.md#when-to-save) shows the code and explains the rule.
 
 ### Drawing
 

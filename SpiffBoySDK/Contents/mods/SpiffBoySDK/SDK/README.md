@@ -22,13 +22,15 @@ The whole kit comes with the SpiffBoy SDK mod. Once you subscribe to it on the S
 
 `<Steam>` is the folder where Steam is installed, `108600` is the number of Project Zomboid on Steam, and `<SDK id>` is the number at the end of the address of the Workshop page of the SpiffBoy SDK. The SpiffBoy mod sits beside it under its own number; the [Tools reference](docs/13-tools-reference.md#folders) gives its media folder.
 
-Every command of these pages runs from the `SDK` folder. From there, the SDK media folder is `../42/media`.
+Every command of these pages runs from the `SDK` folder. From there, the SDK media folder is `../42/media`. The tools and the tests also run from any other folder when you give their full paths.
+
+The tests play your cartridges on top of the real code of SpiffBoy: they need the `42/media` folder of the SpiffBoy mod, which you get by subscribing to it. The [Tools reference](docs/13-tools-reference.md#folders) says where it is.
 
 ## What the kit holds
 
 | Part | Where, in the mod folder | Content |
 |---|---|---|
-| Hello SpiffBoy | the `HelloSpiffBoy` folders under `42/media` | The smallest complete cartridge: a title menu, Spiffo walking around, a sound effect, music and a saved best count, commented line by line. |
+| Hello SpiffBoy | the `HelloSpiffBoy` folders under `42/media` | The smallest complete cartridge: a title menu, a round of 30 seconds with Spiffo walking around, a sound effect, music, and a best count saved when the end of a round is confirmed, commented line by line. |
 | Spiff-Pong | the `SpiffPong` folders under `42/media` | A complete game: menus, a match against the console or against a second player on the link cable, best scores with initials, options, music. |
 | The developer menu | the `DevMenu` folders under `42/media` | A window that gives a console, the devices of the console and every registered cartridge of every mod. |
 | The documentation | `SDK/docs/` | The pages below, and exercises with solutions. |
@@ -67,7 +69,8 @@ Every command of these pages runs from the `SDK` folder. From there, the SDK med
 | 12 | [Spiff-Pong walkthrough](docs/12-spiff-pong-walkthrough.md) | A tour of a complete cartridge. |
 | Reference | [Tools reference](docs/13-tools-reference.md) | Every tool and test with its options. |
 | Reference | [Sound chip reference](docs/14-sound-chip-reference.md) | The voices, registers, wave tables and noise settings of the chip, the limits of the notation, example scores. |
+| Reference | [API reference](docs/15-api-reference.md) | Every object a game uses, each method with its arguments, what it returns and what it does at the edges. |
 
 ## License
 
-License: to be decided by the author.
+You may copy, change and publish the code, the pictures, the texts and the tunes of this kit and of its example cartridges, in whole or in part, inside mods that add cartridges to SpiffBoy. Any other use needs the written permission of the author.

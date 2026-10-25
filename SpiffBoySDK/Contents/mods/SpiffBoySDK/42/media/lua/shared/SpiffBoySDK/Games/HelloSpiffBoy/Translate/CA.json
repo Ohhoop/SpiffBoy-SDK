@@ -8,6 +8,8 @@
         "Count": "HOLES %1",
         "Hello": "HOLA!",
         "HintButtons": "A HOLA  B MÚSICA",
-        "HintStart": "START MENÚ"
+        "HintStart": "START MENÚ",
+        "TimeUp": "TEMPS!",
+        "NewBest": "NOU RÈCORD!"
     }
 }

@@ -27,7 +27,9 @@ The English file of Hello SpiffBoy:
         "Count": "HELLOS %1",
         "Hello": "HELLO!",
         "HintButtons": "A HELLO  B MUSIC",
-        "HintStart": "START MENU"
+        "HintStart": "START MENU",
+        "TimeUp": "TIME UP!",
+        "NewBest": "NEW BEST!"
     }
 }
 ```
@@ -80,7 +82,7 @@ Each language can put the value where its grammar wants it. Give the translator 
 When the language of the player has no file for your game, or its file lacks a key, the English text is used. When `EN.json` lacks the key too, the key itself is drawn and the log says once:
 
 ```
-SpiffBoy: the game HelloSpiffBoy has no text Hi
+SpiffBoy: [SB-TEXT-MISSING] the game HelloSpiffBoy has no text Hi. Fix: add the key to EN.json and run check_texts.py. See: SDK docs/06-texts-and-translations.md, Checking your texts.
 ```
 
 A game with only `EN.json` therefore runs in every language, in English.
@@ -91,7 +93,7 @@ The file name is the language code: `EN`, `AR`, `CA`, `CH`, `CN`, `CS`, `DA`, `D
 
 ## Fitting the screen
 
-A translation is often longer than the English text, and the screen is 180 pixels wide. Measure texts with `screen:textWidth`, cut long ones with `screen:wrapText` ([Screen and art](03-screen-and-art.md#textwidth-lineheight-and-wraptext)), and tell your translators the room they have, such as "12 letters at most" for a menu entry. A longer text also costs more draw calls.
+A translation is often longer than the English text, and the screen is 180 pixels wide: about 30 Latin capitals or 15 Chinese characters ([the widths of the letters](03-screen-and-art.md#the-pixel-font)). Measure texts with `screen:textWidth`, cut long ones with `screen:wrapText` ([Screen and art](03-screen-and-art.md#textwidth-lineheight-and-wraptext)), and tell your translators the room they have, such as "12 letters at most" for a menu entry. A longer text also costs more draw calls.
 
 ## Item names
 
@@ -119,11 +121,19 @@ python tools/check_texts.py "C:/Users/<you>/Zomboid/Workshop/MyMod/Contents/mods
 ```
 
 ```
-MyMod/SpaceRace: ok  3 Lua files, 8 literal keys, 0 prefixes, 2 computed keys not checked
+MyMod/SpaceRace: ok  3 Lua files, 10 literal keys asked in 12 calls, 0 prefix calls, 2 computed calls not checked, 11 keys in EN.json
 1 games checked, 0 with problems
 ```
 
-It reports a file that is not valid JSON in UTF-8, a key written twice, an `EN.json` without its `"UI"` section, the keys each language lacks or has in excess compared with `EN.json`, and every `gameText("Key")` of your code whose key is absent from `EN.json`. A key computed at run time, such as `gameText(hint)`, cannot be checked and is counted as computed: make sure every value it can take exists in `EN.json`.
+The line of each game counts:
+
+- the Lua files of the game;
+- the different keys its code asks for by name, such as `gameText("Title")`, and the calls doing so: a key asked in two places is one key and two calls;
+- the calls with a literal prefix, such as `gameText("Item_" .. id)`;
+- the calls whose key is computed at run time, such as `gameText(hint)`;
+- the keys of the `"UI"` section of `EN.json`. It can hold more keys than the code asks for by name: the keys reached through a prefix or a computed key are among them.
+
+It reports a file that is not valid JSON in UTF-8, a key written twice, an `EN.json` without its `"UI"` section, the keys each language lacks or has in excess compared with `EN.json`, every `gameText("Key")` of your code whose key is absent from `EN.json`, a `SpiffBoy.GameTexts.of` given another id than the one of the game, a game whose `EN.json` holds keys that its code never reads, a text with letters drawn straight from the code, such as `screen:textCentre("GAME OVER", ...)`, and an item with no name in `lua/shared/Translate/EN/ItemName.json`. A key computed at run time, such as `gameText(hint)`, cannot be checked and is counted as computed: make sure every value it can take exists in `EN.json`.
 
 The tool is stricter than the console on purpose: the console falls back to English for a missing key, the tool lists it, so you see what each language still lacks. [Tools reference](13-tools-reference.md#check_textspy) has the details.
 

@@ -8,6 +8,8 @@
         "Count": "CIAO %1",
         "Hello": "CIAO!",
         "HintButtons": "A CIAO  B MUSICA",
-        "HintStart": "START MENU"
+        "HintStart": "START MENU",
+        "TimeUp": "TEMPO SCADUTO!",
+        "NewBest": "NUOVO RECORD!"
     }
 }

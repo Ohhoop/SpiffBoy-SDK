@@ -8,6 +8,8 @@
         "Count": "ハロー %1",
         "Hello": "ハロー！",
         "HintButtons": "A ハロー  B 音楽",
-        "HintStart": "START メニュー"
+        "HintStart": "START メニュー",
+        "TimeUp": "タイムアップ！",
+        "NewBest": "ベスト更新！"
     }
 }

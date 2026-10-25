@@ -4,5 +4,5 @@ SpiffBoySDK = SpiffBoySDK or {}
 
 -- The id of this mod, as written in its mod.info. A cartridge definition gives
 -- it in its `mod` field so the console finds the art and the texts of the game
--- in this mod. The Production build of the SDK replaces it with "SpiffBoySDK".
+-- in this mod.
 SpiffBoySDK.MOD_ID = "SpiffBoySDK"

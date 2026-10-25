@@ -8,6 +8,8 @@
         "Count": "SALUTS %1",
         "Hello": "SALUT !",
         "HintButtons": "A SALUT  B MUSIQUE",
-        "HintStart": "START MENU"
+        "HintStart": "START MENU",
+        "TimeUp": "TEMPS ÉCOULÉ !",
+        "NewBest": "NOUVEAU RECORD !"
     }
 }

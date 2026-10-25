@@ -1,8 +1,8 @@
 -- The tunes of Hello SpiffBoy.
 --
 -- A cartridge ships no audio file. It ships notes, written in the music
--- notation of the console (see docs/CHIP.md of SpiffBoy), and the sound chip
--- of the console plays them. This is why the other players around the
+-- notation of the console (see SDK/docs/14-sound-chip-reference.md), and the
+-- sound chip of the console plays them. This is why the other players around the
 -- character hear the game: their own computer replays the same notes on a
 -- copy of the chip, so only "play the tune theme" travels on the network.
 --

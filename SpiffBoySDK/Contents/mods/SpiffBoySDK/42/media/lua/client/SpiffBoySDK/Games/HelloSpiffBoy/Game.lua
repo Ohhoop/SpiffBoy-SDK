@@ -3,10 +3,11 @@
 -- Read this file first if you want to make a cartridge. It shows every piece
 -- a game of the SpiffBoy console needs, and nothing more:
 --   * a title screen with a small menu (PLAY, MUSIC ON/OFF),
---   * a play screen where Spiffo moves with the arrows,
+--   * a round of 30 seconds where Spiffo moves with the arrows,
 --   * A says hello: a sound effect, a speech bubble and a counter,
---   * B switches the music on and off, START goes back to the menu,
---   * the best count and the music option are kept in the save of the cartridge,
+--   * B switches the music on and off, START gives the round up,
+--   * an end screen that shows the count and saves the best count and the
+--     music option on the cartridge when the player confirms it,
 --   * every text comes from the translation files of the game.
 --
 -- How the console runs a game
@@ -30,7 +31,7 @@
 -- green-grey, numbered 1 (darkest) to 4 (lightest). Pictures are white masks
 -- that the console paints in a shade. A picture in several shades is a
 -- "layered sheet": the same cell drawn once per shade (see spiffo.png and
--- docs/FRAMEWORK.md). Each picture, rectangle, layer or letter drawn costs one
+-- SDK/docs/03-screen-and-art.md). Each picture, rectangle, layer or letter drawn costs one
 -- "draw call" (a space costs none). A frame may make at most 300: the 301st is
 -- an error that stops the game. This game makes about 40 at most.
 --
@@ -78,6 +79,8 @@ local PLAY_TOP = 18
 local PLAY_BOTTOM = 101
 
 -- How long things last, in ticks (60 ticks = 1 second).
+local ROUND_TICKS = 30 * 60
+local NEW_BEST_BLINK_TICKS = 20
 local HELLO_TICKS = 40
 local BLINK_TICKS = 8
 local BLINK_GAP_MIN = 90
@@ -88,9 +91,10 @@ local BOB_TICKS = 30
 -- The counter stops at 9999 so its text always fits in the top line.
 local MAX_COUNT = 9999
 
--- The two screens of the game.
+-- The three screens of the game.
 local MODE_TITLE = "title"
 local MODE_PLAY = "play"
+local MODE_OVER = "over"
 
 -- The entries of the title menu, top to bottom.
 local MENU_PLAY = 1
@@ -128,10 +132,12 @@ local function readBest(save)
     return math.min(math.floor(best), MAX_COUNT)
 end
 
---- Returns true when the save asks for the music, which a new cartridge does.
+--- Returns true when the options of the save ask for the music, which a new cartridge does.
 local function readMusic(save)
-    -- A new cartridge has no `music` entry yet: only an explicit false turns it off.
-    return save.music ~= false
+    -- The options live in their own entry of the save, save.options. A new
+    -- cartridge has none yet: only an explicit false turns the music off.
+    local options = save.options
+    return type(options) ~= "table" or options.music ~= false
 end
 
 --- Prepares the game at power on: loads the art, reads the save and shows the title screen.
@@ -160,9 +166,10 @@ function SpiffBoySDKHelloGame:enterTitle()
     self.selection = MENU_PLAY
 end
 
---- Starts a visit of the play screen: the counter at zero and Spiffo in the middle of the playfield.
+--- Starts a round: the clock at 30 seconds, the counter at zero and Spiffo in the middle of the playfield.
 function SpiffBoySDKHelloGame:enterPlay()
     self.mode = MODE_PLAY
+    self.timeLeft = ROUND_TICKS
     self.count = 0
     self.x = math.floor((self.screen.width - CELL) / 2)
     self.y = math.floor((PLAY_TOP + PLAY_BOTTOM - CELL) / 2)
@@ -180,14 +187,9 @@ function SpiffBoySDKHelloGame:applyMusic()
     end
 end
 
---- Switches the music on or off and keeps the choice in the save.
+--- Switches the music on or off. The choice reaches the cartridge with the next save, at the end of a round.
 function SpiffBoySDKHelloGame:toggleMusic()
     self.musicOn = not self.musicOn
-    self.save.music = self.musicOn
-    -- persist() writes self.save on the cartridge. It costs a write of the
-    -- item (and a message to the server in multiplayer), so call it when
-    -- something worth keeping changed, never every tick.
-    self:persist()
     self:applyMusic()
     self.sequencer:effect(Music.TOGGLE)
 end
@@ -200,8 +202,10 @@ function SpiffBoySDKHelloGame:tick(inputs, tick)
     self:tickBlink()
     if self.mode == MODE_TITLE then
         self:tickTitle(input)
-    else
+    elseif self.mode == MODE_PLAY then
         self:tickPlay(input)
+    else
+        self:tickOver(input)
     end
 end
 
@@ -244,12 +248,19 @@ function SpiffBoySDKHelloGame:tickTitle(input)
     end
 end
 
---- Moves Spiffo with the arrows held, says hello on A, switches the music on B and goes back to the title on START.
+--- Counts the round down, moves Spiffo with the arrows held, says hello on A, switches the music on B and gives the round up on START.
 function SpiffBoySDKHelloGame:tickPlay(input)
     local pressed = input.pressed
     -- Exercise 7: START opens a pause screen instead of leaving.
     if pressed.start then
-        self:leavePlay()
+        -- Giving the round up saves nothing: the count of an unfinished
+        -- round is lost, as on the consoles of the time.
+        self:enterTitle()
+        return
+    end
+    self.timeLeft = self.timeLeft - 1
+    if self.timeLeft <= 0 then
+        self:enterOver()
         return
     end
     -- axes() turns the held arrows into a direction: -1, 0 or 1 on each axis.
@@ -281,21 +292,49 @@ function SpiffBoySDKHelloGame:sayHello()
     -- Exercise 3: pick the text of the bubble here.
     -- Exercise 4: play a different effect every tenth hello.
     self.sequencer:effect(Music.HELLO)
-    -- The best count shows at once, but reaches the save in leavePlay.
-    if self.count > self.best then
+end
+
+--- Ends the round: shows the end screen and takes a count above the best as the new best.
+function SpiffBoySDKHelloGame:enterOver()
+    self.mode = MODE_OVER
+    self.overTicks = 0
+    self.newBest = self.count > self.best
+    if self.newBest then
         self.best = self.count
     end
 end
 
---- Writes a new best count in the save and goes back to the title screen.
-function SpiffBoySDKHelloGame:leavePlay()
-    -- One write per visit, and only when the best changed.
+--- Saves the round and goes back to the title when the player presses A or START on the end screen.
+function SpiffBoySDKHelloGame:tickOver(input)
+    self.overTicks = self.overTicks + 1
+    local pressed = input.pressed
+    if pressed.a or pressed.start then
+        self.sequencer:effect(Music.SELECT)
+        self:saveRound()
+        self:enterTitle()
+    end
+end
+
+--- Writes the best count and the music option on the cartridge, once, when either changed.
+function SpiffBoySDKHelloGame:saveRound()
+    -- A cartridge saves like the games of its time: at a moment the player
+    -- sees, here the end of a round confirmed with a button, never on its
+    -- own. persist() writes self.save on the cartridge; the console refuses
+    -- it outside the tick of a button press.
+    local changed = false
     if self.best ~= self.save.best then
         self.save.best = self.best
+        changed = true
+    end
+    if self.musicOn ~= readMusic(self.save) then
+        -- The options have their own entry, apart from the scores.
+        self.save.options = { music = self.musicOn }
+        changed = true
+    end
+    -- Exercise 5: add this round to a saved total here.
+    if changed then
         self:persist()
     end
-    -- Exercise 5: add this visit to a saved total here.
-    self:enterTitle()
 end
 
 --- Returns the cell of Spiffo to draw: mouth open while the bubble shows, eyes shut while blinking, idle otherwise.
@@ -323,8 +362,10 @@ function SpiffBoySDKHelloGame:draw(screen)
     screen:clear(ink(4))
     if self.mode == MODE_TITLE then
         self:drawTitle(screen)
-    else
+    elseif self.mode == MODE_PLAY then
         self:drawPlay(screen)
+    else
+        self:drawOver(screen)
     end
 end
 
@@ -351,10 +392,13 @@ function SpiffBoySDKHelloGame:drawTitle(screen)
     screen:textCentre(gameText("Best", self.best), centre, 100, ink(2))
 end
 
---- Draws the counters, the playfield with Spiffo and its bubble, and the hint line.
+--- Draws the counters and the clock, the playfield with Spiffo and its bubble, and the hint line.
 function SpiffBoySDKHelloGame:drawPlay(screen)
     local width = screen.width
     screen:text(gameText("Count", self.count), 2, 1, ink(1))
+    -- The seconds left, rounded up: 30 at the start, 1 during the last
+    -- second. A number needs no translation.
+    screen:textCentre(tostring(math.ceil(self.timeLeft / 60)), math.floor(width / 2), 1, ink(1))
     screen:textRight(gameText("Best", self.best), width - 2, 1, ink(1))
     -- Two thin lines frame the playfield.
     screen:rect(0, PLAY_TOP - 1, width, 1, ink(2))
@@ -370,6 +414,17 @@ function SpiffBoySDKHelloGame:drawPlay(screen)
         hint = "HintStart"
     end
     screen:textCentre(gameText(hint), math.floor(width / 2), PLAY_BOTTOM + 2, ink(2))
+end
+
+--- Draws the end of the round: the count, a blinking NEW BEST when the best was beaten, and how to go on.
+function SpiffBoySDKHelloGame:drawOver(screen)
+    local centre = math.floor(screen.width / 2)
+    screen:textCentre(gameText("TimeUp"), centre, 20, ink(1))
+    screen:textCentre(gameText("Count", self.count), centre, 46, ink(1))
+    if self.newBest and math.floor(self.overTicks / NEW_BEST_BLINK_TICKS) % 2 == 0 then
+        screen:textCentre(gameText("NewBest"), centre, 66, ink(2))
+    end
+    screen:textCentre(gameText("HintStart"), centre, 100, ink(2))
 end
 
 --- Draws the speech bubble above Spiffo, or below it when Spiffo stands at the top of the playfield.

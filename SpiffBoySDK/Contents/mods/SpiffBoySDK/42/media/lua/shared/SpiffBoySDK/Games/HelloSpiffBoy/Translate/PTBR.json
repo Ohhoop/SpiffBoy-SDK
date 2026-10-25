@@ -8,6 +8,8 @@
         "Count": "OLÁS %1",
         "Hello": "OLÁ!",
         "HintButtons": "A OLÁ  B MÚSICA",
-        "HintStart": "START MENU"
+        "HintStart": "START MENU",
+        "TimeUp": "TEMPO ESGOTADO!",
+        "NewBest": "NOVO RECORDE!"
     }
 }

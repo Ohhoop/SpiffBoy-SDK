@@ -8,6 +8,8 @@
         "Count": "สวัสดี %1",
         "Hello": "สวัสดี!",
         "HintButtons": "A สวัสดี  B เพลง",
-        "HintStart": "START เมนู"
+        "HintStart": "START เมนู",
+        "TimeUp": "หมดเวลา!",
+        "NewBest": "สถิติใหม่!"
     }
 }

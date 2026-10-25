@@ -29,9 +29,8 @@ The sequencer, `self.sequencer`, plays a tune in one of two ways:
 | `self.sequencer:effect(name)` | Plays a tune once as a sound effect. |
 | `self.sequencer:isPlaying()` | True while a tune plays as the music; false once a tune without loop has ended. |
 | `self.sequencer:setMix(music, effects)` | Sets the level of the music and of the effects, each from 0 (silent) to 1 (as written). Applies from the next note. |
-| `self.sequencer:mix()` | Returns the two levels. |
 
-Playing a name the game did not register is an error, and the game crashes with `SpiffBoy: <Id> has no tune named <name>`. Keep the names in constants, as both examples do, so a typing mistake shows at once.
+Playing a name the game did not register is an error, and the game crashes with `SpiffBoy: [SB-TUNE] <Id> has no tune named <name>`, or `SpiffBoy: [SB-TUNE] no game has no tune named <name>` when the game registered no tune at all. Keep the names in constants, as both examples do, so a typing mistake shows at once.
 
 ## Registering tunes
 
@@ -72,7 +71,7 @@ SpiffBoy.Tunes.register("HelloSpiffBoy", {
 - The id must be the one of a cartridge already registered, and a game registers its tunes once, in one call. Another id, or a second call with the same id, stops the file with an error. The definition, a shared file, always loads before the client file that registers the tunes.
 - Each tune gives one string per voice it uses, and `loop = true` to repeat.
 - Long strings are split with `..` for reading. `|` marks the bars for the reader; the chip ignores it.
-- The strings are compiled when the file loads. A mistake stops the file with an error naming the tune, the voice and the position of the faulty character, such as `SpiffBoy: tune HelloSpiffBoy.theme, voice pulse1, character 31: ...`.
+- The strings are compiled when the file loads. A mistake stops the file with an error naming the tune, the voice and the position of the faulty character, such as `SpiffBoy: [SB-REG-TUNE] tune HelloSpiffBoy.theme, voice pulse1, character 31: ...`.
 
 The game then plays them:
 
@@ -168,7 +167,7 @@ The effects are one short string each, fast (`t200` to `t240`), short (`l16`, `l
 - Give each voice one job: melody on pulse 1, accompaniment on pulse 2, bass on the wave voice, drums on the noise.
 - Registers that work: bass in octave 2 or 3, chords in 3 or 4, melody in 4 or 5, octave 6 for an effect or a single peak.
 - Levels that work: melody `v10` to `v12`, accompaniment `v5` to `v8`, wave bass `v2` or `v3`, hats `v2` to `v4`, kick around `v9`.
-- Write tunes for your own cartridge; do not reuse the tunes or the effects of another cartridge.
+- Write tunes for your own cartridge; do not reuse the tunes or the effects of another cartridge. The example scores, the drum kit and the effect recipes of the [Sound chip reference](14-sound-chip-reference.md) belong to no cartridge: copy them into yours as they are or as a starting point.
 - An option to switch the music off can keep the effects through the mix, as in Spiff-Pong:
 
   ```lua

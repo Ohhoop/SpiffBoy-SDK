@@ -57,7 +57,7 @@ Where Hello SpiffBoy chooses its screen with an `if`, Spiff-Pong uses a table: e
 function Game:tick(inputs, tick)
     self.clock = self.clock + 1
     self:pollLink()
-    self[SCREENS[self.mode].tick](self, inputs[1] or NO_INPUT)
+    self[SCREENS[self.mode].tick](self, inputs[1])
 end
 
 function Game:draw(screen)

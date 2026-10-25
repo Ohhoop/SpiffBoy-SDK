@@ -81,7 +81,7 @@ A cartridge also stays out of the world of Project Zomboid: no `getPlayer()`, no
 
 A game is deterministic when the same seed and the same buttons always give the same game. The robot relies on it to compare two runs with `--compare`, and two consoles on the link cable rely on it to compute the same match. The rules:
 
-- Chance comes only from `self.random`, or from a `SpiffBoyRandom` you seed yourself. Never `math.random`, `ZombRand`, `getTimestampMs` or `os.time`.
+- Chance comes only from `self.random`, or from a `SpiffBoyRandom` you seed yourself. Never `math.random`, `ZombRand`, `getTimestampMs`, `os.time`, `os.clock` or `os.date`; the robot stops a game that calls them (`SB-REPEAT`).
 - Time is counted in ticks, never in milliseconds.
 - `draw` never changes the state. It can run any number of times between two ticks.
 - No `pairs` where the order matters. The order of `pairs` is not fixed; loop over lists with `ipairs` or an index.
@@ -98,6 +98,49 @@ A cartridge runs its `tick` 60 times a second, inside the game.
 - Keep the draw calls low: every one is a drawing order for the game, and the console stops at 300 ([Screen and art](03-screen-and-art.md#the-draw-call-limit)).
 - Avoid `table.remove(list, 1)` on long lists every tick: it moves every element. Keep the index of the first element instead.
 
+## Error codes
+
+Each rule of the console has a code. When your cartridge breaks one, the line in `console.txt` gives the code, what the console refused, how to fix it and the page of the SDK to read. A crash comes with a first line that names the cartridge, its class, the stage (`init`, `tick` or `draw`) and the tick:
+
+```
+SpiffBoy: the cartridge SpaceRace (class MyModSpaceRaceGame) crashed in tick at tick 1234
+SpiffBoy: [SB-SAVE-PRESS] the game SpaceRace tried to save without a button press, and nothing was written. Fix: save on the press that answers it: the end screen confirmed, a SAVE entry, the options left. See: SDK docs/05-saving.md, When to save.
+```
+
+An error of your own code, such as indexing a nil value, or an `error` your game raises, comes under the code `SB-LUA` with the message of Lua. A line with a code and no crash line above it is a warning: the game keeps running.
+
+| Code | Raised when | Effect |
+|---|---|---|
+| `SB-LUA` | The Lua of the game fails, or the game calls `error`. | The game crashes. |
+| `SB-SAVE-PRESS` | `self:persist()` runs outside the tick of a press: in `init`, in `draw`, on a timer. | The game crashes; nothing is written. |
+| `SB-SAVE-LIMIT` | The save breaks a limit: a string or a key too long, too many entries, too deep. | The game crashes; nothing is written. |
+| `SB-SAVE-TABLE` | `SpiffBoy.SaveData.measure` gets something that is not a table. | The game crashes. |
+| `SB-DRAW-LIMIT` | A frame goes past 300 draw calls. | The game crashes. |
+| `SB-SHADE` | A drawing method gets a shade outside 1 to 4. | The game crashes. |
+| `SB-TUNE` | `play` or `effect` names a tune the cartridge did not register. | The game crashes. |
+| `SB-CHIP-REGISTER` | `chip:write` gets a number that is no sound register. | The game crashes. |
+| `SB-CHIP-VALUE` | `chip:write` gets a value that is not a whole number from 0 to 255. | The game crashes. |
+| `SB-CHIP-WAVE` | `chip:loadWave` gets a name no wave table has. | The game crashes. |
+| `SB-LINK-MESSAGE` | `link:send` gets an empty text, a text over 16 bytes, or no text. | The game crashes. |
+| `SB-REPEAT` | In the robot and in `tests/run_test.py` only: the game calls `math.random`, `math.randomseed`, `ZombRand`, `os.time`, `os.clock`, `os.date` or `getTimestampMs`. | The game crashes in the test; in Project Zomboid the call works but the game cannot be repeated. |
+| `SB-SEED` | `SpiffBoyRandom.new` or `reseed` gets something that is not a number. | The game crashes. |
+| `SB-HIDDEN` | The game reads a member that the screen, the context, an input, its `held` or `pressed`, the sequencer, the chip or the link port does not give: a misspelling, or a member the console keeps for itself. | The game crashes. |
+| `SB-READONLY` | The game writes a field on one of these objects. | The game crashes. |
+| `SB-ART-MOD` | `art` runs for a definition whose `mod` is not loaded. | The game crashes. |
+| `SB-TEXTS` | A language file is not valid JSON, holds no object or has no `UI` section. | The game crashes. |
+| `SB-TEXTS-ID` | A text function made for an id no cartridge registered is called. | The game crashes. |
+| `SB-REG-CARTRIDGE` | A field of the definition is missing or malformed. | The cartridge is not registered. |
+| `SB-REG-API` | The `api` of the definition is missing, or above the version of the installed SpiffBoy. | The cartridge is not registered. |
+| `SB-REG-DUPLICATE` | Another cartridge already uses the id, the item or the game class. | The cartridge is not registered. |
+| `SB-REG-TUNES` | `SpiffBoy.Tunes.register` gets an id no cartridge has, runs twice for one id, or gets a tune name too long. | No tune of the call is registered. |
+| `SB-REG-TUNE` | A tune does not compile: a fault in its notation, an echo, its voices or its loop. | No tune of the call is registered. |
+| `SB-REG-ITEM` | No item script defines the `item` of the definition. | Warning. |
+| `SB-REG-TAG` | The item lacks the tag `spiffboy:cartridge`. | Warning: the dismantling recipe does not take it. |
+| `SB-GAME-CLASS` | No global class has the name of the `game` field. | Warning: the console shows that the game is missing. |
+| `SB-TEXT-MISSING` | A text key is missing from `EN.json`. | Warning: the key is shown. |
+| `SB-ART-MISSING` | `art` finds no file of that name. | Warning: `art` returns nil. |
+| `SB-GLYPH` | A text holds a character the pixel font lacks. | Warning: the character is left out. |
+
 ## Common mistakes
 
 | Symptom | Cause | Fix |
@@ -110,14 +153,8 @@ A cartridge runs its `tick` 60 times a second, inside the game.
 | A text shows its key, such as `Play` | The key is missing from `EN.json`. | Run `check_texts.py`. |
 | Wrong art or texts: the ones of Hello SpiffBoy | The definition still points at the SDK (`mod`, `art`, `texts`). | Use your own `MyMod.MOD_ID` and folders. `new_cartridge.py` does it for you. |
 | The game breaks when a menu cursor goes up from the top | `%` of a negative number. | [Add the count first](#modulo-keeps-the-sign-of-the-left-side). |
-| The best score is lost when the console is switched off | `self:persist()` never called. | Call it when the value changes, at a natural moment. |
-| The robot shows thousands of saves | `persist` called in every tick. | Persist only when leaving a screen or when something worth keeping changed. |
+| The best score is lost when the console is switched off | `self:persist()` never called. | Call it at the end of the game, on the press that confirms the end screen ([When to save](05-saving.md#when-to-save)). |
 | An old cartridge breaks the new version | The save holds a value of an older shape. | Check the type of every value read from the save; use defaults. |
-| `cannot save, the save ...` | The save broke a limit: a string too long, a key too long, too many entries. | Keep the save small, measure it with `SpiffBoy.SaveData.measure` ([Saving](05-saving.md#watching-the-size)). |
-| `uses an id already registered by the mod` | Another mod registered a cartridge with the same id. | Choose an id of your own; prefix the item module and the class with your namespace. |
-| `needs a newer SpiffBoy` | The `api` of the definition is above the version of the installed SpiffBoy. | Write `api = 1`, or update SpiffBoy. |
-| `a frame went past 300 draw calls` | Too many shapes or letters in one frame. | Count with `screen.calls`, see [the limit](03-screen-and-art.md#the-draw-call-limit). |
-| `has no tune named` | A tune played but never registered, or registered under another id. | Keep tune names in constants; register under the id of the cartridge. |
 | The game runs faster on a fast computer | Something moves in `draw`, or by elapsed time. | Move it into `tick` and count in ticks. |
 | Two consoles on the cable drift apart | `math.random`, `ZombRand` or the clock in the match. | Use a generator seeded with the seed of the match. |
 | The mod works in solo, a server refuses the connection | The mod folder is reached through a junction or a symbolic link. | Keep the real files in `Zomboid/Workshop/MyMod`. |

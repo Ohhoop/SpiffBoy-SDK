@@ -5,7 +5,7 @@
 The screen is **180 pixels wide and 120 pixels high**. Every position and size you give is in these pixels; the console scales them up to the window.
 
 - `x` goes from 0 at the left edge to 179 at the right edge, `y` from 0 at the top to 119 at the bottom.
-- Positions and sizes are taken down to the whole pixel: drawing at `x = 10.7` draws at 10.
+- Positions and sizes are taken down to the whole pixel: drawing at `x = 10.7` draws at 10. The source rectangle of `sheet` and `layers` and the size of `rotated` are used as given: give them whole numbers.
 - Anything drawn outside the 180x120 area is cut off.
 - Your game fills the whole area itself, on every screen, usually with a `clear` at the start of `draw`.
 
@@ -177,9 +177,24 @@ end
 
 ## The pixel font
 
-The font of the screen covers the 29 languages of Project Zomboid: Latin, Cyrillic, Greek, Thai, Chinese, Japanese and Korean. Its letters have their own widths, and a translation is often longer than the English text: measure with `textWidth` and leave room.
+The font of the screen covers the 29 languages of Project Zomboid: Latin, Cyrillic, Greek, Thai, Chinese, Japanese and Korean. Its letters have their own widths. The widths below are in pixels and include the gap before the next letter, so the width of a line is the sum of the widths of its characters:
 
-A character the font lacks is left out and named once in the log: `SpiffBoy: pixel font has no glyph for code point 8364`. `docs/FONT-COVERAGE.md` of SpiffBoy lists the characters left out.
+| Characters | Width |
+|---|---|
+| Latin capitals | 6, except I (4), J and L (5), M and W (8) |
+| Latin small letters | 5, except i, j, l and r (4), m, v, w, x and y (6) |
+| Accented Latin letters | 4 to 8, mostly 5 or 6 |
+| Digits and the space | 5 |
+| `.` `,` `:` `!` `'` | 4 |
+| `?` `-` `(` `)` | 6 |
+| Cyrillic and Greek | 4 to 9, mostly 5 or 6 |
+| Thai | 6 to 10 |
+| Chinese and Japanese | 12 |
+| Korean | 10 |
+
+The 180 pixels of the screen hold about 30 Latin capitals or 15 Chinese characters. A translation is often longer than the English text: measure with `textWidth` and leave room.
+
+A character the font lacks is left out and named once in the log: `SpiffBoy: [SB-GLYPH] pixel font has no glyph for code point 8364`.
 
 The font is loaded a page of 256 characters at a time, the first time a text needs it. Until a page is loaded its letters are left out, so a text can be missing on its very first frame.
 
@@ -188,7 +203,8 @@ The font is loaded a page of 256 characters at a time, the first time a text nee
 Every `clear`, `rect`, `sprite`, `tinted`, `sheet` and `rotated`, each row of `layers`, each digit of `number` and each letter of a text is one **draw call**. The console allows **300 draw calls per frame**. The 301st raises an error and the game crashes:
 
 ```
-SpiffBoy: the game MyModSpaceRaceGame crashed in draw: ...a frame went past 300 draw calls
+SpiffBoy: the cartridge SpaceRace (class MyModSpaceRaceGame) crashed in draw at tick 1520
+SpiffBoy: [SB-DRAW-LIMIT] a frame went past 300 draw calls. Fix: draw less in one frame and count the calls with screen.calls. See: SDK docs/03-screen-and-art.md, The draw call limit.
 ```
 
 Your game must stay under the limit in its worst frame, not only in a usual one: the busiest menu, the screen with the most enemies, the longest translation.
@@ -225,7 +241,8 @@ function Game:init()
 
 - Load once, in `init`, never in `draw`.
 - Write the sizes of your art as constants, as Spiff-Pong does with `LOGO_W = 119`. A texture can still be loading during the first frames; the screen skips a texture until it is ready, so a size read from it in `init` cannot be trusted.
-- A missing file gives nil and is named once in the log, `SpiffBoy: missing texture <path>`. Drawing nil draws nothing, so a misspelled name shows as an empty spot, not as a crash.
+- A missing file gives nil and is named once in the log, `SpiffBoy: [SB-ART-MISSING] missing texture <path>`. Drawing nil draws nothing, so a misspelled name shows as an empty spot, not as a crash.
+- Give the name with the letter case of the file: `art("basket")` for `basket.png`. Windows finds `art("Basket")` too, but Linux and the Steam Deck do not, so the picture is missing for those players. The [robot](09-testing.md#the-robot) treats a name whose case differs from the file as a missing picture.
 - Never load your art with `getTexture` or `Texture.getSharedTexture` and a relative path. The game looks such names up by their short file name in its own pictures first, so your `logo.png` could show a picture of the game. `context.art` loads your file by its full path.
 
 ## label.png: the picture on the cartridge

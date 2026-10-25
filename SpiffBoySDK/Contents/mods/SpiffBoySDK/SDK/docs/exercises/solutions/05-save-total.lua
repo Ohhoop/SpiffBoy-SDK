@@ -27,27 +27,15 @@ end
 -- Part 3, Game.lua: in init, under the line that reads the best count, add:
     self.total = readTotal(self.save)
 
--- Part 4, Game.lua: replace the whole function leavePlay.
-
---- Writes a new best count and the new total in the save, then goes back to the title screen.
-function SpiffBoySDKHelloGame:leavePlay()
-    local changed = false
-    if self.best ~= self.save.best then
-        self.save.best = self.best
-        changed = true
-    end
+-- Part 4, Game.lua: in saveRound, replace the comment
+--     -- Exercise 5: add this round to a saved total here.
+-- with these lines. They run on the press that confirms the end of a round,
+-- so the total goes to the cartridge in the same persist as the best count.
     if self.count > 0 then
         self.total = self.total + self.count
         self.save.total = self.total
         changed = true
     end
-    -- One persist for both values: each call writes the cartridge item and,
-    -- in multiplayer, sends it to the server.
-    if changed then
-        self:persist()
-    end
-    self:enterTitle()
-end
 
 -- Part 5, Game.lua: in drawTitle, replace the last line, the one drawing
 -- gameText("Best", self.best), with these lines.

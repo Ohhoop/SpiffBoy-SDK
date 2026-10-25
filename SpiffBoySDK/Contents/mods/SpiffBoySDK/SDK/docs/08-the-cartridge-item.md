@@ -56,7 +56,7 @@ The `loot` field of the definition decides where the cartridge spawns in the wor
 
 | Value | Effect |
 |---|---|
-| `{ weight = 0 }` | Never spawns. The examples of the SDK use it: they come from the developer menu only. |
+| `{ weight = 0 }` | Never spawns. The examples of the SDK use it: they come from the developer menu only. `new_cartridge.py` gives your cartridge 2 instead. |
 | `{ weight = n }` | Added with weight `n` to the loot lists where the console spawns: the dressers and wardrobes of children's rooms, toy and electronics crates, school lockers, comic stores, among others. |
 | `{ weight = n, lists = { "CrateToys", "GigamartToys" } }` | Added with weight `n` to your own choice of `ProceduralDistributions` lists instead. |
 | no `loot` field | Weight 2. |
@@ -83,10 +83,10 @@ SpiffBoy has a recipe that dismantles a cartridge into electronics scrap with a 
 When a game starts, SpiffBoy checks the item of every registered cartridge and writes a line in the log for each one whose item lacks the tag:
 
 ```
-SpiffBoy: cartridge SpaceRace of the mod MyMod has the item MyMod.Cartridge_SpaceRace without the tag spiffboy:cartridge: the dismantling recipe does not take it
+SpiffBoy: [SB-REG-TAG] cartridge SpaceRace of the mod MyMod has the item MyMod.Cartridge_SpaceRace without the tag spiffboy:cartridge: the dismantling recipe does not take it. Fix: give the item the tag spiffboy:cartridge in its item script. See: SDK docs/08-the-cartridge-item.md, Dismantling.
 ```
 
-The same check writes a line when no item script defines the `item` of a definition, which happens when the item name of the script and the `item` field differ.
+The same check writes a line when no item script defines the `item` of a definition, which happens when the item name of the script and the `item` field differ. The [robot](09-testing.md#the-robot) makes both checks offline and marks the game `WARN`, and `tools/check_texts.py` fails when `ItemName.json` gives no name to the item.
 
 A console dismantled with your cartridge inside gives the cartridge back with its save, as long as a loaded mod defines its item.
 

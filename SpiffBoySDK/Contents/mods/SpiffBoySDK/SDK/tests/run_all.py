@@ -1,7 +1,8 @@
 """Runs every offline test suite of the SpiffBoy SDK on a mod and prints one ok, FAIL or skip line per suite.
 
-The suites are the robots of tests/robots/run_robots.py, played once per seed of SEEDS, the text checker tools/check_texts.py,
-and the runners of SDK_SUITES, which take <SpiffBoy media folder> <mod media folder> and test a part of the SDK itself: each one
+The suites are the robots of tests/robots/run_robots.py, played once per seed of SEEDS in English, then once more with the first
+seed in each other language a game of the mod has a text file for, the text checker tools/check_texts.py, and the runners of
+SDK_SUITES, which take <SpiffBoy media folder> <mod media folder> and test a part of the SDK itself: each one
 runs only on a mod holding the folder it tests, and is skipped on any other mod. Each suite runs in its own process; a suite fails
 when it exits with an error.
 
@@ -25,15 +26,27 @@ HERE = Path(__file__).resolve().parent
 ROBOTS = HERE / "robots" / "run_robots.py"
 CHECK_TEXTS = HERE.parent / "tools" / "check_texts.py"
 SEEDS = (12345, 2718, 31337)
+ENGLISH = "EN"
+FRAMEWORK = Path("lua") / "shared" / "SpiffBoy" / "Framework" / "Cartridges.lua"
 SDK_SUITES = {
+    "docs/run_error_codes": "../../SDK/docs",
     "dev_menu/run_dev_menu": "lua/client/SpiffBoySDK/DevMenu",
+    "hello/run_round_test": "lua/client/SpiffBoySDK/Games/HelloSpiffBoy",
     "spiff_pong/run_link_test": "lua/client/SpiffBoySDK/Games/SpiffPong",
 }
 
 
+def languages(mod):
+    """Returns the languages other than English that a game of the mod has a text file for, sorted."""
+    files = (mod / "lua" / "shared").glob("*/Games/*/Translate/*.json")
+    return sorted({path.stem for path in files} - {ENGLISH})
+
+
 def suites(spiffboy, mod, ticks):
-    """Returns the name and command line of every suite, with None as the command line of a suite the mod does not hold: the robots once per seed, the text checker, then the SDK suites."""
-    found = [(f"robots seed {seed}", [sys.executable, str(ROBOTS), str(spiffboy), str(mod), "--ticks", str(ticks), "--seed", str(seed)]) for seed in SEEDS]
+    """Returns the name and command line of every suite, with None as the command line of a suite the mod does not hold: the robots once per seed, then once per other language, the text checker, then the SDK suites."""
+    robot = [sys.executable, str(ROBOTS), str(spiffboy), str(mod), "--ticks", str(ticks)]
+    found = [(f"robots seed {seed}", robot + ["--seed", str(seed)]) for seed in SEEDS]
+    found += [(f"robots {language}", robot + ["--seed", str(SEEDS[0]), "--lang", language]) for language in languages(mod)]
     found.append(("check_texts", [sys.executable, str(CHECK_TEXTS), str(mod)]))
     for name, tested in SDK_SUITES.items():
         command = None
@@ -55,6 +68,10 @@ def main():
         if not (folder.parent / "mod.info").is_file():
             print(f"run_all: {folder} is not the media folder of a mod, no mod.info next to it", file=sys.stderr)
             return 1
+    if not (args.spiffboy / FRAMEWORK).is_file():
+        print(f"run_all: {args.spiffboy} is not the media folder of the SpiffBoy mod: it has no {FRAMEWORK.as_posix()}. "
+              "Give the 42/media folder of SpiffBoy, the mod the SDK requires.", file=sys.stderr)
+        return 1
     failed = []
     for name, command in suites(args.spiffboy, args.mod, args.ticks):
         if command is None:

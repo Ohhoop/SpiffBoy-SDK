@@ -14,7 +14,9 @@
 
 -- Part 3, Game.lua: in tickPlay, replace the block
 --     if pressed.start then
---         self:leavePlay()
+--         -- Giving the round up saves nothing: the count of an unfinished
+--         -- round is lost, as on the consoles of the time.
+--         self:enterTitle()
 --         return
 --     end
 -- with this one.
@@ -42,7 +44,7 @@ function SpiffBoySDKHelloGame:tickPause(pressed)
         self.paused = false
         -- The title screen plays the theme too.
         self:applyMusic()
-        self:leavePlay()
+        self:enterTitle()
     end
 end
 

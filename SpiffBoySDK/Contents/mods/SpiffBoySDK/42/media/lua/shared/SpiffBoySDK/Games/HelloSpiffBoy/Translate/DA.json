@@ -8,6 +8,8 @@
         "Count": "HEJ %1",
         "Hello": "HEJ!",
         "HintButtons": "A HEJ  B MUSIK",
-        "HintStart": "START MENU"
+        "HintStart": "START MENU",
+        "TimeUp": "TIDEN ER GÅET!",
+        "NewBest": "NY REKORD!"
     }
 }

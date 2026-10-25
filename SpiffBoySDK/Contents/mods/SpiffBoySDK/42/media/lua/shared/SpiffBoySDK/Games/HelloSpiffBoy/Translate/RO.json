@@ -8,6 +8,8 @@
         "Count": "SALUTURI %1",
         "Hello": "SALUT!",
         "HintButtons": "A SALUT  B MUZICĂ",
-        "HintStart": "START MENIU"
+        "HintStart": "START MENIU",
+        "TimeUp": "TIMPUL A EXPIRAT!",
+        "NewBest": "RECORD NOU!"
     }
 }

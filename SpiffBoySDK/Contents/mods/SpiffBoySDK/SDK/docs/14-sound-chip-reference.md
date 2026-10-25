@@ -47,7 +47,7 @@ The lowest note of a pulse is C of octave 2, the lowest note of the wave voice C
 
 ## Registers
 
-`self.chip:write(register, value)` takes one of the constants below and a whole number from 0 to 255. Any other register or value raises an error (`SpiffBoy: no sound register ...`, `SpiffBoy: sound register value out of range: ...`). Bits are numbered from 7 (highest) to 0.
+`self.chip:write(register, value)` takes one of the constants below and a whole number from 0 to 255. Any other register or value raises an error (`SpiffBoy: [SB-CHIP-REGISTER] chip:write got ..., which is no sound register`, `SpiffBoy: [SB-CHIP-VALUE] chip:write got the value ... for a sound register, out of range`). Bits are numbered from 7 (highest) to 0.
 
 | Constant | Address | Voice | Bits |
 |---|---|---|---|
@@ -167,7 +167,7 @@ In multiplayer, every `write` and `loadWave` travels to the players nearby as on
 
 ## Wave tables
 
-The wave voice plays one of 32 built in tables of 32 steps. `self.chip:loadWave(name)` loads a table by its name; an unknown name raises `SpiffBoy: no wave table named ...`. In the notation, `@<n>` on the wave voice picks a table by its number. A wave voice that writes no `@` plays table 0.
+The wave voice plays one of 32 built in tables of 32 steps. `self.chip:loadWave(name)` loads a table by its name; an unknown name raises `SpiffBoy: [SB-CHIP-WAVE] chip:loadWave got ..., and no wave table has that name`. In the notation, `@<n>` on the wave voice picks a table by its number. A wave voice that writes no `@` plays table 0.
 
 | Number | Name | Number | Name | Number | Name | Number | Name |
 |---|---|---|---|---|---|---|---|

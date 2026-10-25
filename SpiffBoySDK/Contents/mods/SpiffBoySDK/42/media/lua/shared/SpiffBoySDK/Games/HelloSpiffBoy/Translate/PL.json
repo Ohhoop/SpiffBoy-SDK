@@ -8,6 +8,8 @@
         "Count": "POWITANIA %1",
         "Hello": "CZEŚĆ!",
         "HintButtons": "A CZEŚĆ  B MUZYKA",
-        "HintStart": "START MENU"
+        "HintStart": "START MENU",
+        "TimeUp": "KONIEC CZASU!",
+        "NewBest": "NOWY REKORD!"
     }
 }

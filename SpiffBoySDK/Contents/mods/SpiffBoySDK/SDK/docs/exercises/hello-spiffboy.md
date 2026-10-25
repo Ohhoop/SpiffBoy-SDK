@@ -68,11 +68,11 @@ To go further, play a short jingle as the music when the player beats the best c
 
 ## Exercise 5: save a new value
 
-Keep the total number of hellos ever said on this cartridge, and show it on the title screen. Look at `readBest` as a model, then at `init`, `leavePlay` and `drawTitle`, and at `EN.json`.
+Keep the total number of hellos ever said on this cartridge, and show it on the title screen. Look at `readBest` as a model, then at `init`, `saveRound` and `drawTitle`, and at `EN.json`.
 
-Put a number in the save (`self.save.total`) and call `self:persist()` to write it. Read it the way `readBest` does: the save of an older cartridge has no `total`, so check its type and start from 0. Persist when the visit ends, as `leavePlay` does for the best count, never every tick ([When to persist](../05-saving.md#when-to-persist)). The title has no free line left: alternate the best count and the total every two seconds, as `drawPlay` does with its hint line.
+Put a number in the save (`self.save.total`). Read it the way `readBest` does: the save of an older cartridge has no `total`, so check its type and start from 0. Add the count of the round to it in `saveRound`, the moment the player confirms the end of a round, so it goes to the cartridge in the same `persist` as the best count ([When to save](../05-saving.md#when-to-save)). A round given up with Start adds nothing. The title has no free line left: alternate the best count and the total every two seconds, as `drawPlay` does with its hint line.
 
-In the game, say hello a few times, go back to the title, then switch the console off and on: the total is still there.
+In the game, play a round to its end and confirm it, then switch the console off and on: the total is still there.
 
 To go further, add a menu entry that erases the best count and the total after a yes or no question.
 
@@ -88,9 +88,9 @@ To go further, make a chain of five buddies, each following the one before it, a
 
 ## Exercise 7: a pause screen
 
-Start pauses the game instead of leaving it. On the pause screen, Start resumes and B goes back to the title. You will touch `tickPlay`, `drawPlay` and `EN.json`.
+Start pauses the round instead of giving it up. On the pause screen, Start resumes and B gives the round up and goes back to the title. You will touch `tickPlay`, `drawPlay` and `EN.json`.
 
-Add a flag `self.paused`, false in `enterPlay`. At the top of `tickPlay`, when paused, read only Start and B, then `return` so nothing else moves. Stop the music on pause with `self.sequencer:stop()`, and start it again on resume with `self:applyMusic()`, which respects the music option. Add a key `"Paused": "PAUSED"` to `EN.json` and draw it in a box in the middle of the screen while the flag is set, the way `drawBubble` draws its box. `tickBlink` runs in `tick` on every screen: decide whether Spiffo may blink during the pause.
+Add a flag `self.paused`, false in `enterPlay`. At the top of `tickPlay`, when paused, read only Start and B, then `return` so nothing else moves, the clock of the round included. Stop the music on pause with `self.sequencer:stop()`, and start it again on resume with `self:applyMusic()`, which respects the music option. Add a key `"Paused": "PAUSED"` to `EN.json` and draw it in a box in the middle of the screen while the flag is set, the way `drawBubble` draws its box. `tickBlink` runs in `tick` on every screen: decide whether Spiffo may blink during the pause.
 
 In the game, press Start during play: everything freezes and the music stops, and Start again resumes where you were. The robot still says `ok` and prints no `has no text` line.
 

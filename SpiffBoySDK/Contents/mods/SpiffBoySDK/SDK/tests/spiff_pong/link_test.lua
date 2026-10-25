@@ -72,7 +72,7 @@ local function newConsole(port, seed)
     local sequencer = SpiffBoySequencer.new(chip, SpiffBoy.Tunes.set("SpiffPong"))
     local console = { screen = screen, runtime = runtime, input = SpiffBoyInputState.new(), saves = 0, most = 0, ticks = 0 }
     local context = {
-        seed = seed, definition = definition, art = function(name) return ROBOT.texture("SpiffPong/" .. name) end,
+        seed = seed, definition = definition, art = SpiffBoy.Textures.folder(definition.mod, definition.art, true),
         chip = chip, sequencer = sequencer, link = port, save = {},
         persist = function() console.saves = console.saves + 1 end,
     }
@@ -92,7 +92,10 @@ local function step(console, buttons)
     input:latch()
     console.ticks = console.ticks + 1
     local runtime = console.runtime
-    if not runtime:guard("tick", runtime.game.tick, { input }, console.ticks) then
+    runtime.acting = input:anyPressed()
+    local ticked = runtime:guard("tick", runtime.game.tick, { input }, console.ticks)
+    runtime.acting = false
+    if not ticked then
         return false
     end
     for _, device in ipairs(runtime.devices) do

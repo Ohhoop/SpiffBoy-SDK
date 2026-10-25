@@ -2,7 +2,7 @@
 
 ## Before you publish
 
-- [ ] The robot says `ok` for every game on several seeds, with `most calls` well under 300 (`run_all.py` runs three seeds).
+- [ ] The robot says `ok` for every game on several seeds and in every language, with `most calls` well under 300 (`run_all.py` runs three seeds, then each language of your games).
 - [ ] `check_texts.py` reports no problem.
 - [ ] Every text the player reads comes from `Translate/<LANG>.json`, and `EN.json` is complete.
 - [ ] The item has a name in `Translate/EN/ItemName.json`, an icon and a 3D model wearing your label (`cartridge_label.py`).

@@ -8,6 +8,8 @@
         "Count": "안녕 %1",
         "Hello": "안녕!",
         "HintButtons": "A 안녕  B 음악",
-        "HintStart": "START 메뉴"
+        "HintStart": "START 메뉴",
+        "TimeUp": "시간 종료!",
+        "NewBest": "최고 기록!"
     }
 }
