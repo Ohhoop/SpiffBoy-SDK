@@ -10,7 +10,8 @@ It copies, from the media folder of the SDK to the media folder of the mod:
 The other languages of the example are left out: the console shows the English texts of a game in every language it has no
 file for. The comments of the Lua files that point to the exercises of Hello SpiffBoy are left out too. The definition of the
 new cartridge describes it as a cartridge of its own and gives it the loot weight 2 of the cartridges of SpiffBoy, where the
-example has 0. It also writes
+example has 0, and the header of the game file says it starts as a copy of Hello SpiffBoy instead of listing what
+Hello SpiffBoy does. It also writes
 lua/shared/Translate/EN/ItemName.json, the English name of the item, when the mod has no such file, and otherwise prints the
 line to add to it. It also writes lua/shared/<Namespace>/Core.lua, which defines the global table <Namespace> and <Namespace>.MOD_ID, when the mod
 has none; an existing one must define <Namespace>.MOD_ID.
@@ -64,6 +65,10 @@ DEFINITION_CHANGES = [
      "    -- The weight of the cartridge in the loot of the world: 2, as the cartridges of\n"
      "    -- SpiffBoy; a higher weight spawns it more often, 0 never.\n    loot = { weight = 2 },"),
 ]
+GAME = "Game.lua"
+GAME_FEATURES = re.compile(r"^-- Read this file first.*?^--   \* every text comes from the translation files of the game\.\n", re.M | re.S)
+GAME_START = ("-- It starts as a copy of the smallest example cartridge of the SpiffBoy SDK:\n"
+              "-- replace its screens with the ones of your game.\n")
 CORE = '''-- {namespace} keeps everything it shares between its files in one global table, named after the mod.
 {namespace} = {namespace} or {{}}
 
@@ -172,6 +177,14 @@ def as_new_cartridge(text):
     return text
 
 
+def as_new_game(text):
+    """Returns the game file of the example with the list of what Hello SpiffBoy does replaced by a line saying the file starts as its copy; raises an error when the example no longer holds that list."""
+    text, replaced = GAME_FEATURES.subn(GAME_START, text)
+    if replaced != 1:
+        raise ScaffoldError("the example Game.lua no longer starts with the list of what Hello SpiffBoy does; update this tool")
+    return text
+
+
 def leftovers(path, text, args):
     """Returns the lines of a renamed text still holding a name of the example that the new names do not explain."""
     found = []
@@ -191,6 +204,8 @@ def validate(args):
     for value, label in ((args.namespace, "--namespace"), (args.module, "--module"), (args.id, "--id")):
         if not NAME.match(value):
             raise ScaffoldError(f"{label} must be letters and digits starting with a letter, not {value}")
+    if args.namespace == args.id:
+        raise ScaffoldError(f"--namespace and --id are both {args.id}: give the game an id of its own, such as SpaceRace in the namespace MyMod, so its names do not double up ({args.id}{args.id}Game)")
     if not MOD_ID.match(args.mod_id):
         raise ScaffoldError(f"--mod-id must be the id of the mod.info of the mod, letters, digits, spaces, dots, dashes and underscores, not {args.mod_id}")
     if not TITLE.match(args.title):
@@ -217,6 +232,8 @@ def plan(args):
             text = without_exercises(text)
         if source.name == DEFINITION:
             text = as_new_cartridge(text)
+        if source.name == GAME:
+            text = as_new_game(text)
         for old, new in table:
             text = text.replace(old, new)
         problems += leftovers(target, text, args)

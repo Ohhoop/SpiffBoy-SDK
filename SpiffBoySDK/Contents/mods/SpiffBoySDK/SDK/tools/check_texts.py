@@ -7,7 +7,9 @@ For every game folder lua/shared/<Namespace>/Games/<Id>/ holding a Definition.lu
     every key the Lua files of the game ask for in a literal, gameText("Key"), exists in the "UI" section of EN.json,
     and every literal prefix, gameText("Item_" .. id), starts at least one key of it,
     the files call SpiffBoy.GameTexts.of with the id of the game and no other id,
-    no text with letters is drawn straight from a literal, screen:text("GAME OVER"), instead of a language file,
+    no text with letters is drawn straight from a literal, screen:text("GAME OVER"), or from a constant holding one,
+    local OVER = "GAME OVER" then screen:text(OVER), or local LABELS = { over = "GAME OVER" } then screen:text(LABELS.over),
+    instead of a language file,
     and lua/shared/Translate/EN/ItemName.json gives a name to the item of the definition.
 The Lua scan is static and best effort: it follows the names given to SpiffBoy.GameTexts.of("<Id>") in the files under
 lua/client, lua/shared and lua/server <Namespace>/Games/<Id>/, and the locals copied from them, and counts the calls whose
@@ -39,6 +41,9 @@ TEXTS_OF = re.compile(r"""^[ \t]*(local[ \t]+)?([A-Za-z_][\w.]*)[ \t]*=[ \t]*(?:
 CONSTANT = re.compile(r"""^[ \t]*(?:local[ \t]+)?([A-Za-z_]\w*)[ \t]*=[ \t]*(?:"([^"]*)"|'([^']*)')[ \t]*$""", re.M)
 COPY = re.compile(r"^[ \t]*(local[ \t]+)?([A-Za-z_][\w.]*)[ \t]*=[ \t]*([A-Za-z_][\w.]*)[ \t]*$", re.M)
 WRITTEN_TEXT = re.compile(r""":(?:text|textCentre|textRight|wrapText)[ \t]*\([ \t]*(?:"([^"\\\n]*)"|'([^'\\\n]*)')""")
+WRITTEN_NAME = re.compile(r""":(?:text|textCentre|textRight|wrapText)[ \t]*\([ \t]*([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)?)[ \t]*[,)]""")
+TABLE_CONSTANT = re.compile(r"""^[ \t]*(?:local[ \t]+)?([A-Za-z_]\w*)[ \t]*=[ \t]*\{([^{}]*)\}""", re.M)
+TABLE_FIELD = re.compile(r"""([A-Za-z_]\w*)[ \t]*=[ \t]*(?:"([^"\\\n]*)"|'([^'\\\n]*)')""")
 LETTER = re.compile(r"[^\W\d_]")
 ITEM_FIELD = re.compile(r"""^[ \t]*item[ \t]*=[ \t]*["']([^"']+)["']""", re.M)
 ITEM_NAMES = Path("lua") / "shared" / "Translate" / "EN" / "ItemName.json"
@@ -157,13 +162,21 @@ def text_names(files, game):
 
 
 def written_texts(files):
-    """Returns the texts with letters that the files draw straight from a literal, without a language file, with the place of each."""
+    """Returns the texts with letters that the files draw straight from a literal, or from a constant of the same file holding one, a plain one or a field of a table of constants, without a language file, with the place of each."""
     found = []
     for path in files:
         text = path.read_text(encoding="utf-8", errors="replace")
+        constants = {m.group(1): m.group(2) if m.group(2) is not None else m.group(3) for m in CONSTANT.finditer(text)}
+        for table in TABLE_CONSTANT.finditer(text):
+            for field in TABLE_FIELD.finditer(table.group(2)):
+                constants[f"{table.group(1)}.{field.group(1)}"] = field.group(2) if field.group(2) is not None else field.group(3)
         for match in WRITTEN_TEXT.finditer(text):
             literal = match.group(1) if match.group(1) is not None else match.group(2)
             if LETTER.search(literal):
+                found.append((literal, f"{path.name}:{text.count(chr(10), 0, match.start()) + 1}"))
+        for match in WRITTEN_NAME.finditer(text):
+            literal = constants.get(match.group(1))
+            if literal is not None and LETTER.search(literal):
                 found.append((literal, f"{path.name}:{text.count(chr(10), 0, match.start()) + 1}"))
     return found
 

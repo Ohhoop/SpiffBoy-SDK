@@ -16,7 +16,7 @@ The offline tests are Python scripts of the kit. Run them from the `SDK` folder 
 python tests/robots/run_robots.py <SpiffBoy media folder> <mod media folder> [--games A,B] [--ticks N] [--seed N] [--lang LANG] [--json file] [--compare file]
 ```
 
-The SpiffBoy media folder is the `42/media` folder of the SpiffBoy mod, the mod media folder the one of your mod, `.../mods/MyMod/42/media`. To play the examples of the SDK, give `../42/media` as the mod media folder. The robot plays every game that has a `lua/shared/<Ns>/Games/<Id>/Definition.lua`, and loads its `lua/client/<Ns>/Games/<Id>/Game.lua`: keep these names. Its options are listed in the [Tools reference](13-tools-reference.md#testsrobotsrun_robotspy); by default it plays 20000 ticks per game, about five and a half minutes of play.
+The SpiffBoy media folder is the `42/media` folder of the SpiffBoy mod, the mod media folder the one of your mod, `.../mods/MyMod/42/media`. To play the examples of the SDK, give `../42/media` as the mod media folder. The robot plays every game that has a `lua/shared/<Ns>/Games/<Id>/Definition.lua`, and loads its `lua/client/<Ns>/Games/<Id>/Game.lua`: keep these names. Given a folder that holds no such game, such as the `42` folder instead of `42/media`, it stops with a message. Its options are listed in the [Tools reference](13-tools-reference.md#testsrobotsrun_robotspy); by default it plays 20000 ticks per game, about five and a half minutes of play.
 
 ### Reading the output
 
@@ -33,7 +33,7 @@ console texts missing: 0
 | `ok` | No crash and no warning. `CRASH` means the game stopped: the line ends with the stage (`load <file>`, `init`, `tick` or `draw`) and the message of the error, such as `SB-DRAW-LIMIT` for a frame over 300 draw calls. `WARN` means the game played but asked for a picture or a text that does not exist, or drew a text off screen: the warnings follow under the line. |
 | `frames` | Ticks played: fewer than `--ticks` when the game crashed. |
 | `most calls` | The busiest frame seen, in draw calls. It must stay well under 300. |
-| `saves` | How many times the game called `persist`. A game that saves on its own never gets here: its `persist` outside a press is a crash ([When to save](05-saving.md#when-to-save)). Hello SpiffBoy shows 0, because the robot presses Start often and gives every round up before its 30 seconds; `tests/hello/run_round_test.py` plays whole rounds instead. |
+| `saves` | How many times the game called `persist`. A game that saves on its own never gets here: its `persist` outside a press is a crash ([When to save](05-saving.md#when-to-save)). Hello SpiffBoy shows 0, because the robot presses Start often and gives every round up before its 30 seconds; `tests/hello/run_round_test.py` plays whole rounds instead. A game that ends at 0 saves gets a `note:` line under it: the robot never ran its saving, check it in a test of your own. |
 | digest | A fingerprint of every draw call of every frame and of every write the game made to the chip registers, in order. |
 
 Lines starting with `SpiffBoy:` can appear around them: they are the log of the console. `console texts missing` counts texts of the console itself and stays 0.
@@ -52,6 +52,12 @@ SpaceRace      WARN   frames  20000  most calls  32  saves    6  ab3d28bf403a
 - `[SB-REG-ITEM]` and `[SB-REG-TAG]` are the checks the console makes on your item script when a game starts: no item script with the `item` of the definition, or an item without the tag `spiffboy:cartridge` ([The cartridge item](08-the-cartridge-item.md)).
 - `class name` is a game class whose `derive` name differs from its global name ([The game class](02-how-a-cartridge-works.md#the-game-class)).
 - `require("<path>") finds no file` is a `require` of a path under a folder of your mod that no file has; `finds <file> only in another letter case` is a file the game will not find on Linux and the Steam Deck.
+- `[SB-GLYPH]` is a character of a text that the pixel font lacks: it is left out on the screen.
+- `[SB-REG-TUNE] ... voice <voice> lasts <n> ticks` is a looping tune whose voices do not all have its length ([The notation](04-sound-and-music.md#the-notation)).
+- `saves: <n> writes within ten seconds that change nothing in the save` counts the saves that write exactly what the save before held: more than 5 within ten seconds is a game that saves on its own presses, during play. Saves that change something, such as the options left after a change, never count ([When to save](05-saving.md#when-to-save)).
+- `art("<name>") is called in draw` is a picture loaded while the game draws: load every picture once, in `init`.
+- `getTexture called at <file>:<line>` (or `Texture.getSharedTexture`, `Texture.new`) is a picture loaded around `self.context.art`: the game may show a picture of Project Zomboid with the same name ([The art folder](03-screen-and-art.md#the-art-folder)).
+- `draw changed self.<field>` is a field of your game, a number, a text or a boolean, that `draw` changed: the state of a game changes in `tick` only, or it runs faster on a faster computer. without the namespace of your mod at the start of its name ([The game class](02-how-a-cartridge-works.md#the-game-class)).
 
 ### Playing in another language: --lang
 
@@ -82,11 +88,12 @@ This works only because the game takes its chance from `self.random`, which the 
 
 ### What the robot does not see
 
-- It runs standard Lua 5.1, not Kahlua. It removes `next`, which the game lacks, and turns a `string.char` code above 255 into `?`, so a link message built from such a code shows up; but `%` on a negative number gives the standard result, unlike the game ([Kahlua and pitfalls](10-kahlua-and-pitfalls.md)).
-- It does not look at your art. It checks that every picture your game asks for exists with exactly that name, letter case included, and, like the console, writes `SpiffBoy: [SB-ART-MISSING] missing texture <file>`, gives your game nil for a missing one and marks the game `WARN`; but every picture it finds is 40x6 pixels to it, and nothing is drawn. It counts calls.
+- It runs standard Lua 5.1, not Kahlua. It removes `next`, which the game lacks, and turns a `string.char` code above 255 into `?`, so a link message built from such a code shows up; but `%` on a negative number gives the standard result, unlike the game ([Kahlua and pitfalls](10-kahlua-and-pitfalls.md)). Its strings hold bytes, so the position of an error in a language file, `at character <n>`, counts an accented letter as two or three: `check_texts.py` and the game count it as one.
+- It does not look at your art. It checks that every picture your game asks for exists with exactly that name, letter case included, and, like the console, writes `SpiffBoy: [SB-ART-MISSING] missing texture <file>`, gives your game nil for a missing one and marks the game `WARN`. A picture it finds has its real size, but the robot draws nothing: it counts calls. To see a screen, take a picture of it in a test of your own with `console:screenshot` ([Writing a test of your own](#writing-a-test-of-your-own)).
 - It starts every game with an empty save. Reading a save written by an older version of your game is not tested: start the game in Project Zomboid with a cartridge that holds such a save.
 - Its `require` looks for files only in the Lua folders of SpiffBoy and of your mod. A path under a folder of your mod that no file has is a `WARN`; any other path it does not find, such as a file of the game itself, is skipped without a word. A file that it finds but that does not compile, or that raises an error while it loads, such as a tune written wrong, stops the game with `CRASH` and `load <file>`, naming the file.
 - It plays alone: the link cable is always unplugged.
+- It knows the edges of the screen, not the boxes your game draws: a text that overflows a frame or a speech bubble while staying on screen passes. Check your longest language in the game, or in a test of your own that opens that screen.
 - It presses buttons at random. A screen that needs a precise sequence may never be reached: raise `--ticks`, try other seeds, or open that screen at the end of `init` while you test it, then remove the line:
 
   ```lua
@@ -117,10 +124,12 @@ It tests Spiff-Pong only, but `tests/spiff_pong/link_test.lua` is a model for a 
 `tests/lib/test_console.lua` gives a test a console of its own: it starts one cartridge offline on top of SpiffBoy and plays it with the buttons the test chooses, through the same runtime as the game, so every rule applies: the read-only views, the save only on a press, the draw call limit, the coded errors. `tests/run_test.py` runs a test written with it:
 
 ```
-python tests/run_test.py <SpiffBoy media folder> <mod media folder> <your test>.lua
+python tests/run_test.py <SpiffBoy media folder> <mod media folder> <your test>.lua [--lang LANG]
 ```
 
-Keep your test outside the `42` folder of your mod, such as `MyMod/tests/race_test.lua`, so it does not ship to the players.
+`--lang FR` plays the test with the texts of another language, so a translation too long for a screen the robot never reaches shows up. The warnings of the console count as failures, as in the robot: a text off screen, missing art, a text missing in English, a letter the font lacks.
+
+Put your tests in a `tests` folder of the Workshop folder of your mod, next to `Contents`, and end their names with `_test.lua`: `Zomboid/Workshop/MyMod/tests/race_test.lua`. They do not ship to the players, and `run_all.py` runs every one of them.
 
 | Call | Effect |
 |---|---|
@@ -133,9 +142,10 @@ Keep your test outside the `42` folder of your mod, such as `MyMod/tests/race_te
 | `console.saves` | A copy of every save the game wrote, in order. |
 | `console.crash` | `nil`, or the stage and the message of the error that stopped the game. Once it crashed, the calls above play nothing and return false. |
 | `console.most` | The busiest frame so far, in draw calls. |
+| `console:screenshot(path)` | Writes the last frame the console drew as a PNG picture, four times the size of the screen, at the given path, a relative path being taken from the folder of the test file, such as `shots/title.png` next to `race_test.lua`, and returns it. Take one after the calls that open the screen you want to see. |
 | `TestConsole.check(condition, label)` | Counts a check, and prints `FAIL <label>` when the condition is false. |
 
-The runner prints every failed check, then `<test>: <n> checks, <f> failures`, and exits with an error when a check failed or the test stopped on an error. `tests/hello/round_test.lua` is a complete example: it plays rounds of Hello SpiffBoy and checks when the save is written.
+The runner prints every failed check and every warning, then `<test> (<language>): <n> checks, <f> failures`, and exits with an error when a check failed, a warning came up or the test stopped on an error. A test that waits for something its game never does loops forever: count the ticks in your loops, as the example below does, and `run_all.py` stops a suite after 900 seconds (`--timeout`). `tests/hello/round_test.lua` is a complete example: it plays rounds of Hello SpiffBoy and checks when the save is written.
 
 A game of skill needs a test that plays like a player. This one flies the bat of a cave game through its gaps by reading where the next gap is, until it scores ten points, then checks that the end screen writes the best score once:
 
@@ -161,7 +171,7 @@ Your test reads the fields and calls the methods of your own game, here `score`,
 
 ## Every test at once: run_all.py
 
-`tests/run_all.py` runs the robot with three seeds, then once in each other language your games have a file for, the text checker, then the tests of the SDK itself, and prints one line per suite:
+`tests/run_all.py` runs the robot with three seeds, then once in each other language your games have a file for, the text checker, your own tests (`test <name>`, from the `tests` folder of the Workshop folder of your mod) in English and then in each other language (`test <name> FR`), then the tests of the SDK itself, and prints one line per suite. A suite still running after 900 seconds is stopped and fails (`--timeout` changes it):
 
 ```
 python tests/run_all.py <SpiffBoy media folder> <mod media folder>

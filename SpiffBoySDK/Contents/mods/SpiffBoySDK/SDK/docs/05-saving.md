@@ -18,13 +18,13 @@ A cartridge saves like the games of its time: there is no saving on its own, no 
 
 Never when the player leaves a screen in the middle of a game, never when the console is switched off, never in every tick. Some games of the time saved nothing at all, or gave the player a code to write down; those are choices too.
 
-The console holds you to it: `persist` works only during the tick in which the player pressed a button of the console, A, B, Start or any of the four directions, whichever your game reads. Called anywhere else, in `init`, on a timer, when a match is decided by the clock or by the other console, it raises an error and the game stops:
+The console holds you to it: `persist` works only during the tick in which the player pressed one of the seven buttons of the console, A, B, Start or a direction, even one your game does not read: a press of any of them lets that tick save. Called anywhere else, in `init`, on a timer, when a match is decided by the clock or by the other console, it raises an error and the game stops:
 
 ```
 SpiffBoy: [SB-SAVE-PRESS] the game SpaceRace tried to save without a button press, and nothing was written. Fix: save on the press that answers it: the end screen confirmed, a SAVE entry, the options left. See: SDK docs/05-saving.md, When to save.
 ```
 
-A save on a timer can pass while the player happens to press a direction at that tick, and fail on the next game. The robot catches it: it presses buttons at random and also pauses one to five seconds without any button, so a game that saves on its own meets ticks without a press. The robot adds where the call came from, `persist called at lua/client/<Ns>/Games/<Id>/Game.lua:<line>`, before `. Fix:`.
+A save on every press during play is no error for the console, since each one follows a press, but it rewrites the same save again and again: the robot marks the game `WARN` past 5 saves within ten seconds that change nothing in the save. Saves that change something, such as the options left after a change, never count. A save on a timer can pass while the player happens to press a direction at that tick, and fail on the next game. The robot catches it: it presses buttons at random and also pauses one to five seconds without any button, so a game that saves on its own meets ticks without a press. The robot adds where the call came from, `persist called at lua/client/<Ns>/Games/<Id>/Game.lua:<line>`, before `. Fix:`.
 
 `persist` rewrites the item; in multiplayer it sends the save to the server, which writes it. Write everything that changed in one `persist`.
 
@@ -77,7 +77,7 @@ Nothing else is allowed: no function, no texture, no other kind of value.
 `persist` checks the save before writing it. A save that breaks a limit is not written at all: `persist` raises an error that names the game, the first limit broken and its place in the save, and the game stops as on any other error ([Crashes](02-how-a-cartridge-works.md#crashes)). The log then reads, for example:
 
 ```
-SpiffBoy: [SB-SAVE-LIMIT] the game SpaceRace cannot save, the save at records.names.1 holds a string of 140 characters, at most 128 are kept, and nothing was written. Fix: keep the save within the limits and measure it with SpiffBoy.SaveData.measure. See: SDK docs/05-saving.md, Watching the size.
+SpiffBoy: [SB-SAVE-LIMIT] the game SpaceRace cannot save, the save at records.names.1 holds a string of 140 characters, at most 128 are kept, and nothing was written. Fix: keep the save within the limits and measure it with SpiffBoy.SaveData.measure. See: SDK docs/05-saving.md, What a save can hold.
 ```
 
 The server checks every save it receives the same way and refuses a save that breaks a limit as a whole. The [robot](09-testing.md#the-robot) runs the same check in `persist`, so a save that breaks a limit shows there as a crash, as soon as the robot plays far enough to write it.

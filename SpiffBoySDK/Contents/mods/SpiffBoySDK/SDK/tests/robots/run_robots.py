@@ -24,6 +24,9 @@ from pathlib import Path
 from lupa.lua51 import LuaRuntime
 
 HERE = Path(__file__).resolve().parent
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(HERE))
+import screen_image  # noqa: E402
 COMMENT = re.compile(r"/\*.*?\*/", re.S)
 BLOCK = re.compile(r"\b(module|item)\s+(\w+)\s*\{")
 TAGS = re.compile(r"\bTags\s*=\s*([^,\n]+)")
@@ -118,6 +121,11 @@ def namespaces(media):
     return sorted({p.name for side in ("shared", "client", "server") if (lua / side).is_dir() for p in (lua / side).iterdir() if p.is_dir()})
 
 
+def lua_calls(calls):
+    """Returns the draw calls of a frame recorded in Lua as Python lists, in order."""
+    return [[call[j] for j in range(1, len(call) + 1)] for call in (calls[i] for i in range(1, len(calls) + 1))]
+
+
 def load_preamble(lua, spiffboy, mod, language):
     """Loads the preamble of the robots in the given Lua runtime, the given mod and SpiffBoy giving its code, its files, its item scripts and the English texts of the console, and returns the loader of further Lua files."""
     roots = lua.table_from([str(mod / "lua").replace("\\", "/"), str(spiffboy / "lua").replace("\\", "/")])
@@ -125,6 +133,8 @@ def load_preamble(lua, spiffboy, mod, language):
     load = lua.eval("function(path, ...) local f = assert(loadfile(path)); return f(...) end")
     load(str(HERE / "preamble.lua"), roots, folders, language, lua.table_from(mod_files(spiffboy, mod)))
     robot = lua.globals().ROBOT
+    robot.imageSize = screen_image.image_size
+    robot.renderFrame = lambda calls, out: screen_image.render(lua_calls(calls), out)
     robot.texts = lua.table_from(english_texts(spiffboy, mod))
     robot.itemScripts = lua.table_from({name: lua.table_from(tags) for name, tags in item_scripts(mod).items()})
     robot.namespaces = lua.table_from({name: True for name in namespaces(mod)})
@@ -176,9 +186,14 @@ def main():
     require_spiffboy(spiffboy)
     require_mod(mod)
     games = games_of(mod)
+    if not games:
+        sys.exit(f"{mod} holds no cartridge: no lua/shared/<Namespace>/Games/<Id>/Definition.lua under it. "
+                 "Give the 42/media folder of your mod, the one that holds lua, ui and scripts.")
     if args.games:
         wanted = set(args.games.split(","))
         games = [g for g in games if g.rsplit("/", 1)[1] in wanted]
+        if not games:
+            sys.exit(f"no game {args.games} among the cartridges of {mod}")
     results, missing = play(spiffboy, mod, games, args.ticks, args.seed, args.lang)
     reference = {}
     if args.compare:
@@ -206,6 +221,8 @@ def main():
         if row["warnings"]:
             for warning in row["warnings"].split(" | "):
                 print(f"    {warning}")
+        if row["saves"] == 0 and not row["crash"]:
+            print("    note: the robot never reached a save of this game; check the saves with a test of your own (docs/09-testing.md, Writing a test of your own)")
     print(f"console texts missing: {missing}")
     if args.json:
         Path(args.json).write_text(json.dumps({"ticks": args.ticks, "seed": args.seed, "games": results}, indent=1), encoding="utf-8")

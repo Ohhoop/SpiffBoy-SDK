@@ -10,6 +10,7 @@
 --   console:hold(30, "up")        -- 30 ticks with up held
 --   console:wait(60)              -- 60 ticks without any button
 --   TestConsole.check(console.game.score > 0, "the race scores")
+--   console:screenshot("shots/race.png")  -- a picture of the last frame
 --
 -- console.game is your game object: a test may read its fields, such as the
 -- score or the screen it shows, to decide what to press next.
@@ -17,14 +18,32 @@
 TestConsole = { checks = 0, failures = 0 }
 TestConsole.__index = TestConsole
 
-local OWNER = {
-    drawRect = function() end,
-    drawSubTexture = function() end,
-    drawTextureScaled = function() end,
-    drawTextureAllPoint = function() end,
-    setStencilRect = function() end,
-    clearStencilRect = function() end,
-}
+--- Returns the drawing surface of a console: it keeps the draw calls of the frame being drawn in console.frame, the pictures by the path of their file.
+local function surfaceOf(console)
+    local function keep(call)
+        console.frame[#console.frame + 1] = call
+    end
+    return {
+        drawRect = function(_, x, y, w, h, a, r, g, b) keep({ "R", x, y, w, h, a, r, g, b }) end,
+        drawSubTexture = function(_, t, sx, sy, sw, sh, x, y, w, h, a, r, g, b) keep({ "S", t.file, sx, sy, sw, sh, x, y, w, h, a, r, g, b }) end,
+        drawTextureScaled = function(_, t, x, y, w, h, a, r, g, b) keep({ "T", t.file, x, y, w, h, a, r, g, b }) end,
+        drawTextureAllPoint = function(_, t, x1, y1, x2, y2, x3, y3, x4, y4, r, g, b, a) keep({ "P", t.file, x1, y1, x2, y2, x3, y3, x4, y4, r, g, b, a }) end,
+        setStencilRect = function() end,
+        clearStencilRect = function() end,
+    }
+end
+
+--- Makes the screen warn once for each text drawn past one of its edges, as the robot does.
+local function watchEdges(screen)
+    local drawText = screen.text
+    screen.text = function(self, str, x, ...)
+        local width = SpiffBoy.PixelFont.measure(str)
+        if x < 0 or x + width > self.width then
+            ROBOT.warnOnce("off screen " .. tostring(str), string.format("text off screen: %q from x %d to %d", str, x, x + width))
+        end
+        return drawText(self, str, x, ...)
+    end
+end
 
 local UNPLUGGED = {
     isConnected = function() return false end,
@@ -72,11 +91,12 @@ function TestConsole.start(folder, seed, save)
     if not gameClass then
         error("TestConsole: no game class named " .. tostring(definition.game), 2)
     end
-    local console = setmetatable({ saves = {}, crash = nil, most = 0, ticks = 0 }, TestConsole)
-    local screen = SpiffBoyScreen.new(OWNER, 180, 120)
+    local console = setmetatable({ saves = {}, crash = nil, most = 0, ticks = 0, frame = {} }, TestConsole)
+    local screen = SpiffBoyScreen.new(surfaceOf(console), 180, 120)
     screen:setPalette(SpiffBoy.Cartridges.SHADES)
     screen:setWholePixels(true)
     screen:setPlacement(0, 0, 1)
+    watchEdges(screen)
     local chip = SpiffBoyChip.new()
     chip:boot()
     local sequencer = SpiffBoySequencer.new(chip, SpiffBoy.Tunes.set(id))
@@ -114,6 +134,7 @@ function TestConsole:step(held, pressed)
         input:tap(key)
     end
     self.runtime:advance({ input }, false, 1)
+    self.frame = {}
     self.runtime:draw()
     self.ticks = self.ticks + 1
     if self.screen.calls > self.most then
@@ -144,6 +165,11 @@ end
 --- Plays the given number of ticks without any button; returns false once the game has crashed.
 function TestConsole:wait(ticks)
     return self:hold(ticks)
+end
+
+--- Writes the last frame the console drew as a PNG picture at the given path, four times the size of the screen, and returns the path.
+function TestConsole:screenshot(path)
+    return ROBOT.renderFrame(self.frame, path)
 end
 
 --- Counts one check of the test, and prints its label when the condition is false.

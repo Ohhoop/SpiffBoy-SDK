@@ -56,6 +56,9 @@ def main():
         print(__doc__, file=sys.stderr)
         return 1
     label_path, texture_path, icon_path = (Path(arg) for arg in sys.argv[1:4])
+    if not label_path.is_file():
+        print(f"cartridge_label: no label file {label_path}: give the path of the label picture of the game, such as .../ui/MyMod/Games/SpaceRace/label.png. Nothing written.", file=sys.stderr)
+        return 1
     picture = Image.open(label_path)
     expected = LABEL_SIZE[0] / LABEL_SIZE[1]
     if abs(picture.width / picture.height - expected) > expected * PROPORTION_TOLERANCE:

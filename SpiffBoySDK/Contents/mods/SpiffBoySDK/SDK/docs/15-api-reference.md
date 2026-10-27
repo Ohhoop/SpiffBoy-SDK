@@ -31,6 +31,14 @@ The base class sets them before it calls `init`.
 | `self.sequencer` | The [sequencer](#the-sequencer). The console creates a new one each time it starts the game. |
 | `self.link` | The [link port](#the-link-port). |
 
+### Read-only views
+
+The screen, the context, the input states, the sound chip, the sequencer and the link port reach a game as read-only views of objects the console keeps for itself:
+
+- Reading a member a view does not give raises `SpiffBoy: [SB-HIDDEN] the <object> of the console has no <member>; a game reaches only <members>`. The message lists every member the view gives: a misspelled name, such as `pressed.A` for `pressed.a`, shows there with the right spelling next to it.
+- Writing any field raises `SpiffBoy: [SB-READONLY] a game cannot write <field> on the <object> of the console`. Keep the values of the game in its own fields, such as `self.speed`, never on `self.screen` or `self.context`.
+- The views hide their metatables, and the members they give are the ones each section of this page lists.
+
 ### The context
 
 `self.context` gives the art of the cartridge. Only `art` exists on it. Reading any other member raises `SpiffBoy: [SB-HIDDEN] the context of the console has no <member>; a game reaches only art`, and writing any field raises `SpiffBoy: [SB-READONLY] a game cannot write <field> on the context of the console`.

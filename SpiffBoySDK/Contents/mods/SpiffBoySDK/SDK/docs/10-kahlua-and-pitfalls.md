@@ -133,7 +133,7 @@ An error of your own code, such as indexing a nil value, or an `error` your game
 | `SB-REG-API` | The `api` of the definition is missing, or above the version of the installed SpiffBoy. | The cartridge is not registered. |
 | `SB-REG-DUPLICATE` | Another cartridge already uses the id, the item or the game class. | The cartridge is not registered. |
 | `SB-REG-TUNES` | `SpiffBoy.Tunes.register` gets an id no cartridge has, runs twice for one id, or gets a tune name too long. | No tune of the call is registered. |
-| `SB-REG-TUNE` | A tune does not compile: a fault in its notation, an echo, its voices or its loop. | No tune of the call is registered. |
+| `SB-REG-TUNE` | A tune does not compile: a fault in its notation, an echo, its voices or its loop. Also a looping tune whose voices do not all last as long as the tune. | No tune of the call is registered; for the voice lengths, a warning only: the voices fall out of step at each loop. |
 | `SB-REG-ITEM` | No item script defines the `item` of the definition. | Warning. |
 | `SB-REG-TAG` | The item lacks the tag `spiffboy:cartridge`. | Warning: the dismantling recipe does not take it. |
 | `SB-GAME-CLASS` | No global class has the name of the `game` field. | Warning: the console shows that the game is missing. |
@@ -148,6 +148,8 @@ An error of your own code, such as indexing a nil value, or an `error` your game
 | The console shows that the game is missing; log: `no game class named` | The `game` field and the global class name differ, or `Game.lua` failed to load. | Use the same name in `derive`, in the global and in the definition. Look for an error above in the log. |
 | An error about indexing a nil value in `tick` | A field used before it was set: set on another screen, or misspelled. | Set every field in `init` or in the `open`/`enter` method of the screen. |
 | An error about calling a nil value | A misspelled method name, or `self.method()` instead of `self:method()`. | Call the methods of the game with `:`. |
+| `attempt to call global 'next' (a nil value)` | `next` does not exist in the game. | Use `pairs` ([There is no next()](#there-is-no-next)). |
+| `attempt to call global 'getPlayer' (a nil value)`, or any other function of Project Zomboid | A cartridge stays out of the world of Project Zomboid: the console gives a game no character, inventory or map. | Keep everything the game needs in its own fields and its save ([Kahlua differences](#kahlua-differences)). |
 | A variable seems shared by everything | A missing `local`: the variable became a global, shared with every mod. | Always write `local`. Put what must be shared in your namespace table, `MyMod.SpaceRace = {}`. |
 | A picture does not show | A wrong file name or `art` folder, or a picture that is not a white mask. | Look for `missing texture` in the log. Draw masks in white. |
 | A text shows its key, such as `Play` | The key is missing from `EN.json`. | Run `check_texts.py`. |
@@ -155,7 +157,7 @@ An error of your own code, such as indexing a nil value, or an `error` your game
 | The game breaks when a menu cursor goes up from the top | `%` of a negative number. | [Add the count first](#modulo-keeps-the-sign-of-the-left-side). |
 | The best score is lost when the console is switched off | `self:persist()` never called. | Call it at the end of the game, on the press that confirms the end screen ([When to save](05-saving.md#when-to-save)). |
 | An old cartridge breaks the new version | The save holds a value of an older shape. | Check the type of every value read from the save; use defaults. |
-| The game runs faster on a fast computer | Something moves in `draw`, or by elapsed time. | Move it into `tick` and count in ticks. |
+| The game runs faster on a fast computer | Something moves in `draw`, or by elapsed time. | Move it into `tick` and count in ticks. The robot warns when `draw` changes a field of the game that holds a number, a text or a boolean. |
 | Two consoles on the cable drift apart | `math.random`, `ZombRand` or the clock in the match. | Use a generator seeded with the seed of the match. |
 | The mod works in solo, a server refuses the connection | The mod folder is reached through a junction or a symbolic link. | Keep the real files in `Zomboid/Workshop/MyMod`. |
 

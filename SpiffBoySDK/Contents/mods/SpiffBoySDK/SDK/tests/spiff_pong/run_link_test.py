@@ -17,6 +17,7 @@ from lupa.lua51 import LuaRuntime
 
 HERE = Path(__file__).resolve().parent
 ROBOTS = HERE.parent / "robots"
+sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROBOTS))
 import run_robots  # noqa: E402
 

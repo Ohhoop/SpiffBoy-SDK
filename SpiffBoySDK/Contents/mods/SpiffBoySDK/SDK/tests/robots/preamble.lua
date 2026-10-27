@@ -1,6 +1,14 @@
 local LUA_ROOTS, MOD_FOLDERS, LANGUAGE, MOD_FILES = ...
 
-ROBOT = { nowMs = 1000, warnings = {}, loadFailure = nil }
+ROBOT = { nowMs = 1000, warnings = {}, warned = {}, loadFailure = nil }
+
+--- Adds a warning to ROBOT.warnings the first time its key is met for the game played.
+function ROBOT.warnOnce(key, text)
+    if not ROBOT.warned[key] then
+        ROBOT.warned[key] = true
+        ROBOT.warnings[#ROBOT.warnings + 1] = text
+    end
+end
 
 luautils = {
     stringEnds = function(s, suffix) return string.sub(s, -string.len(suffix)) == suffix end,
@@ -60,8 +68,20 @@ function getModInfoByID(modId)
     end
     return { getVersionDir = function() return folder end }
 end
-function ROBOT.texture(path)
-    return { path = path, isReady = function() return true end, getWidth = function() return 40 end, getHeight = function() return 6 end, reloadFromFile = function() end }
+--- Returns the texture of the robot for a file of a mod: its path from the mod folder, the full path of its file, and the width and height of the picture, read once when first asked.
+function ROBOT.texture(path, file)
+    local width, height = nil, nil
+    local function size()
+        if not width then
+            width, height = ROBOT.imageSize(file)
+        end
+        return width, height
+    end
+    return {
+        path = path, file = file, isReady = function() return true end, reloadFromFile = function() end,
+        getWidth = function() return (size()) end,
+        getHeight = function() return select(2, size()) end,
+    }
 end
 local function shortPath(path)
     for _, folder in pairs(MOD_FOLDERS) do
@@ -93,7 +113,7 @@ local function fileTexture(path)
         end
         return nil
     end
-    return ROBOT.texture(shortPath(path))
+    return ROBOT.texture(shortPath(path), path)
 end
 Texture = { getSharedTexture = fileTexture, new = fileTexture }
 getTexture = fileTexture
@@ -237,10 +257,10 @@ require "SpiffBoy/Core/GameBase"
 require "SpiffBoy/Core/GameErrors"
 require "SpiffBoy/Framework/CartridgeTags"
 
-local FAILING_WARNINGS = { "[SB-ART-MISSING]", "[SB-TEXT-MISSING]", "[SB-REG-ITEM]", "[SB-REG-TAG]" }
+local FAILING_WARNINGS = { "[SB-ART-MISSING]", "[SB-TEXT-MISSING]", "[SB-REG-ITEM]", "[SB-REG-TAG]", "[SB-GLYPH]", "[SB-REG-TUNE]" }
 local log = SpiffBoy.log
 
---- Writes a line of SpiffBoy in the output and keeps it in ROBOT.warnings when it reports missing art or a missing text.
+--- Writes a line of SpiffBoy in the output and keeps it in ROBOT.warnings when it reports missing art, a missing text, an item script, a missing letter of the font or a tune.
 SpiffBoy.log = function(message)
     local text = tostring(message)
     for _, prefix in ipairs(FAILING_WARNINGS) do
@@ -300,3 +320,28 @@ os.time = refusedToGames("os.time", os.time)
 os.clock = refusedToGames("os.clock", os.clock)
 os.date = refusedToGames("os.date", os.date)
 getTimestampMs = refusedToGames("getTimestampMs", getTimestampMs)
+
+--- Returns the given texture loader made to warn once, naming the line, when the code of the mod calls it instead of self.context.art; SpiffBoy itself loads its art through it.
+local function watchedArtLoader(name, original)
+    return function(...)
+        local caller = fileCallerAt(3)
+        if caller and string.sub(caller.source, 1, string.len(MOD_SOURCE)) == MOD_SOURCE then
+            ROBOT.warnOnce(name, name .. " called at " .. placeOf(caller) .. ": the game may show a picture of Project Zomboid with the same name; load the pictures of the game with self.context.art (docs/03-screen-and-art.md, The art folder)")
+        end
+        return original(...)
+    end
+end
+getTexture = watchedArtLoader("getTexture", getTexture)
+Texture = {
+    getSharedTexture = watchedArtLoader("Texture.getSharedTexture", Texture.getSharedTexture),
+    new = watchedArtLoader("Texture.new", Texture.new),
+}
+
+--- Returns the names of the global variables, as a set.
+function ROBOT.globalNames()
+    local names = {}
+    for name, _ in pairs(_G) do
+        names[name] = true
+    end
+    return names
+end

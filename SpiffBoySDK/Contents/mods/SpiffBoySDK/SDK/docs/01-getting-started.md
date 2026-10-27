@@ -67,7 +67,7 @@ python tools/new_cartridge.py --sdk "../42/media" --mod "C:/Users/<you>/Zomboid/
 
 - `--namespace` is the folder name of your mod under `lua`, `ui`, `scripts` and `textures`, and the name of its global Lua table.
 - `--module` is the script module of the cartridge item. Giving it the namespace is the simplest choice.
-- `--id` is the id of the game. It names its folders and its texts, and the console finds its tunes by it. Choose it different from the namespace: the tool joins the two in the names it writes, and `--namespace SpaceRace --id SpaceRace` would give the class `SpaceRaceSpaceRaceGame` and the table `SpaceRace.SpaceRace`.
+- `--id` is the id of the game. It names its folders and its texts, and the console finds its tunes by it. Choose it different from the namespace: the tool joins the two in the names it writes, and `--namespace SpaceRace --id SpaceRace` would give the class `SpaceRaceSpaceRaceGame` and the table `SpaceRace.SpaceRace`, so the tool refuses it.
 - `--title` is the title of the game.
 - `--mod-id` is the `id=` of your `mod.info`.
 

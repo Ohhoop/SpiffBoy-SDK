@@ -194,7 +194,7 @@ The font of the screen covers the 29 languages of Project Zomboid: Latin, Cyrill
 
 The 180 pixels of the screen hold about 30 Latin capitals or 15 Chinese characters. A translation is often longer than the English text: measure with `textWidth` and leave room.
 
-A character the font lacks is left out and named once in the log: `SpiffBoy: [SB-GLYPH] pixel font has no glyph for code point 8364`.
+A character the font lacks is left out and named once in the log: `SpiffBoy: [SB-GLYPH] pixel font has no glyph for code point 128512`, here for the emoji 😀. The font holds the letters of every language of the game and many symbols, such as `€`, `★` or `↑`; emojis are not among them.
 
 The font is loaded a page of 256 characters at a time, the first time a text needs it. Until a page is loaded its letters are left out, so a text can be missing on its very first frame.
 
@@ -239,11 +239,11 @@ function Game:init()
     ...
 ```
 
-- Load once, in `init`, never in `draw`.
+- Load once, in `init`, never in `draw`: the robot warns when `art` is called while the game draws.
 - Write the sizes of your art as constants, as Spiff-Pong does with `LOGO_W = 119`. A texture can still be loading during the first frames; the screen skips a texture until it is ready, so a size read from it in `init` cannot be trusted.
 - A missing file gives nil and is named once in the log, `SpiffBoy: [SB-ART-MISSING] missing texture <path>`. Drawing nil draws nothing, so a misspelled name shows as an empty spot, not as a crash.
 - Give the name with the letter case of the file: `art("basket")` for `basket.png`. Windows finds `art("Basket")` too, but Linux and the Steam Deck do not, so the picture is missing for those players. The [robot](09-testing.md#the-robot) treats a name whose case differs from the file as a missing picture.
-- Never load your art with `getTexture` or `Texture.getSharedTexture` and a relative path. The game looks such names up by their short file name in its own pictures first, so your `logo.png` could show a picture of the game. `context.art` loads your file by its full path.
+- Never load your art with `getTexture` or `Texture.getSharedTexture` and a relative path. The game looks such names up by their short file name in its own pictures first, so your `logo.png` could show a picture of the game. `context.art` loads your file by its full path. The robot warns when your game calls `getTexture`, `Texture.getSharedTexture` or `Texture.new`.
 
 ## label.png: the picture on the cartridge
 

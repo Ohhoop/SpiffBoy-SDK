@@ -77,7 +77,7 @@ require "SpiffBoySDK/Games/HelloSpiffBoy/Music"
 SpiffBoySDKHelloGame = SpiffBoyGameBase:derive("SpiffBoySDKHelloGame")
 ```
 
-`require` paths start under `lua/shared`, `lua/client` or `lua/server`, without the `.lua`. The global name and the `game` field of the definition must be the same: the console finds the class by that name. Give `derive` the same name too: it is the class name the crash report prints, and the [robot](09-testing.md#the-robot) warns when it differs. Other mods define globals too: prefix the name with your namespace.
+`require` paths start under `lua/shared`, `lua/client` or `lua/server`, without the `.lua`. The global name and the `game` field of the definition must be the same: the console finds the class by that name. Give `derive` the same name too: it is the class name the crash report prints, and the [robot](09-testing.md#the-robot) warns when it differs. Other mods define globals too: prefix the name with your namespace. The robot warns about every global your game creates whose name does not start with your namespace, such as a `local` forgotten in front of a variable.
 
 The class overrides three methods. The base class gives empty ones, so a game writes only what it needs.
 

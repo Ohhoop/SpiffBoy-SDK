@@ -30,7 +30,7 @@ The sequencer, `self.sequencer`, plays a tune in one of two ways:
 | `self.sequencer:isPlaying()` | True while a tune plays as the music; false once a tune without loop has ended. |
 | `self.sequencer:setMix(music, effects)` | Sets the level of the music and of the effects, each from 0 (silent) to 1 (as written). Applies from the next note. |
 
-Playing a name the game did not register is an error, and the game crashes with `SpiffBoy: [SB-TUNE] <Id> has no tune named <name>`, or `SpiffBoy: [SB-TUNE] no game has no tune named <name>` when the game registered no tune at all. Keep the names in constants, as both examples do, so a typing mistake shows at once.
+Playing a name the game did not register is an error, and the game crashes with `SpiffBoy: [SB-TUNE] <Id> has no tune named <name>`, or `SpiffBoy: [SB-TUNE] the game registered no tune, so it has no tune named <name>` when the game registered no tune at all. Keep the names in constants, as both examples do, so a typing mistake shows at once.
 
 ## Registering tunes
 
@@ -136,7 +136,7 @@ The higher four bits of a setting choose how low the noise sounds. Some settings
 | `[ ... ]<n>` | Repeats the group `n` times, 1 to 64: `[c e g e]4`. |
 | `L` | The loop point: a looping tune repeats from here instead of its start, after an intro for example. Every voice that has an `L` must reach it at the same time. |
 
-Each voice keeps its own tempo and position. A looping tune loops at the end of its longest voice, every voice restarting together, so write every voice to the same length.
+Each voice keeps its own tempo and position. A looping tune loops at the end of its longest voice, every voice restarting together, so write every voice to the same length. A voice of another length writes `SpiffBoy: [SB-REG-TUNE] tune <Id>.<name>, voice <voice> lasts <n> ticks of the <m> of the tune ...` in the log, and the robot marks the game `WARN`.
 
 ### Echo and wave tables
 
