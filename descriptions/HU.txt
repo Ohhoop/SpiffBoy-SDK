@@ -17,6 +17,9 @@ A teljes készlet magában a modban található, az SDK mappájában: mods/Spiff
 - Tesztrobotok: a játékon kívül futtatják a kazettádat, több ezer képkockát néhány másodperc alatt, hogy kiszűrjék az összeomlásokat, a hiányzó szövegeket és a túl nehezen kirajzolható képkockákat.
 
 [h2]Kérdések és válaszok[/h2]
+Q: Működik a 42.22-es builddel?
+A: Igen. A 42.21-es és a 42.22-es verzióval is működik.
+
 Q: Kell ez a mod ahhoz, hogy SpiffBoyjal játsszak?
 A: Nem. A SpiffBoy önállóan is működik. Az SDK azoknak a játékosoknak szól, akik saját játékokat akarnak készíteni, vagy ki akarják próbálni a példakazettákat.
 

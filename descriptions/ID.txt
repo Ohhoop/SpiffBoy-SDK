@@ -17,6 +17,9 @@ Kit lengkapnya sudah ada di dalam mod itu sendiri, di folder SDK: mods/SpiffBoyS
 - Robot penguji: menjalankan kartridmu di luar game, ribuan frame dalam beberapa detik, untuk menemukan crash, teks yang hilang, dan frame yang terlalu berat untuk digambar.
 
 [h2]Tanya Jawab[/h2]
+Q: Apakah berfungsi di build 42.22?
+A: Ya. Berfungsi di 42.21 dan 42.22.
+
 Q: Apakah saya butuh mod ini untuk memainkan SpiffBoy?
 A: Tidak. SpiffBoy bisa berjalan sendiri. SDK ditujukan untuk pemain yang ingin membuat game sendiri, atau mencoba kartrid contoh.
 

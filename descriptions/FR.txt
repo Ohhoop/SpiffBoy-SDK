@@ -17,6 +17,9 @@ Le kit complet est livré avec le mod lui-même, dans son dossier SDK : mods/Spi
 - Robots de test : faites tourner votre cassette hors du jeu, des milliers d'images en quelques secondes, pour repérer les plantages, les textes manquants et les images trop lourdes à dessiner.
 
 [h2]Questions et réponses[/h2]
+Q : Est-ce que ça fonctionne avec la build 42.22 ?
+A : Oui. Ça fonctionne avec la 42.21 et la 42.22.
+
 Q : Ai-je besoin de ce mod pour jouer à SpiffBoy ?
 A : Non. SpiffBoy fonctionne seul. Le SDK s'adresse aux joueurs qui veulent créer leurs propres jeux, ou essayer les cassettes d'exemple.
 

@@ -17,6 +17,9 @@ Kitin tamamı modun kendisiyle birlikte gelir, SDK klasöründe: mods/SpiffBoySD
 - Test robotları: kartuşunu oyunun dışında çalıştırır, birkaç saniyede binlerce kare, böylece çökmeleri, eksik metinleri ve çizilmesi fazla ağır kareleri yakalar.
 
 [h2]Soru ve Cevap[/h2]
+Q: 42.22 sürümüyle çalışıyor mu?
+A: Evet. 42.21 ve 42.22 ile çalışıyor.
+
 Q: SpiffBoy oynamak için bu moda ihtiyacım var mı?
 A: Hayır. SpiffBoy tek başına çalışır. SDK, kendi oyunlarını yapmak ya da örnek kartuşları denemek isteyen oyuncular içindir.
 

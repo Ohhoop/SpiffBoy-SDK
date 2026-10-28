@@ -17,6 +17,9 @@ Bộ công cụ đầy đủ nằm ngay trong mod, trong thư mục SDK: mods/Sp
 - Robot kiểm thử: chạy băng game của bạn bên ngoài game, hàng nghìn khung hình trong vài giây, để bắt lỗi crash, văn bản bị thiếu và khung hình quá nặng để vẽ.
 
 [h2]Hỏi & Đáp[/h2]
+Q: Có chạy được với bản build 42.22 không?
+A: Có. Chạy được với cả 42.21 và 42.22.
+
 Q: Tôi có cần mod này để chơi SpiffBoy không?
 A: Không. SpiffBoy tự hoạt động được. SDK dành cho người chơi muốn tự làm game, hoặc muốn thử các băng mẫu.
 

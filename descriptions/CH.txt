@@ -17,6 +17,9 @@ SpiffBoy SDK 是 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=382
 - 測試機器人：在遊戲外執行你的卡帶，幾秒內跑完數千幀，找出當機、缺少的文字以及繪製負擔過重的幀。
 
 [h2]問與答[/h2]
+Q: 能在 42.22 版本上運行嗎？
+A: 可以。42.21 和 42.22 都能運行。
+
 Q: 玩 SpiffBoy 需要這個模組嗎？
 A: 不需要。SpiffBoy 可以獨立運作。SDK 是給想製作自己的遊戲或試玩範例卡帶的玩家。
 

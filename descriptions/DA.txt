@@ -17,6 +17,9 @@ Hele kittet følger med selve modden, i dens SDK-mappe: mods/SpiffBoySDK/SDK
 - Testrobotter: kør din kassette uden for spillet, tusindvis af frames på få sekunder, for at fange nedbrud, manglende tekster og frames, der er for tunge at tegne.
 
 [h2]Spørgsmål og svar[/h2]
+Q: Virker det med build 42.22?
+A: Ja. Det virker med 42.21 og 42.22.
+
 Q: Skal jeg have dette mod for at spille SpiffBoy?
 A: Nej. SpiffBoy virker helt af sig selv. SDK'et er til spillere, der vil lave deres egne spil eller prøve eksempelkassetterne.
 

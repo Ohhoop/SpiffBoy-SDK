@@ -17,6 +17,9 @@ Il kit completo è incluso nella mod stessa, nella sua cartella SDK: mods/SpiffB
 - Robot di test: fanno girare la tua cartuccia fuori dal gioco, migliaia di fotogrammi in pochi secondi, per scovare crash, testi mancanti e fotogrammi troppo pesanti da disegnare.
 
 [h2]Domande e risposte[/h2]
+Q: Funziona con la build 42.22?
+A: Sì. Funziona con la 42.21 e la 42.22.
+
 Q: Mi serve questa mod per giocare a SpiffBoy?
 A: No. SpiffBoy funziona da solo. L'SDK è per chi vuole creare i propri giochi o provare le cartucce di esempio.
 

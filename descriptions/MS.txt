@@ -17,6 +17,9 @@ Kit penuh disertakan dalam mod itu sendiri, dalam folder SDK: mods/SpiffBoySDK/S
 - Robot ujian: menjalankan kartrij anda di luar permainan, beribu-ribu bingkai dalam beberapa saat, untuk mengesan ranap, teks yang hilang dan bingkai yang terlalu berat untuk dilukis.
 
 [h2]Soal Jawab[/h2]
+Q: Adakah ia berfungsi dengan build 42.22?
+A: Ya. Ia berfungsi dengan 42.21 dan 42.22.
+
 Q: Adakah saya memerlukan mod ini untuk bermain SpiffBoy?
 A: Tidak. SpiffBoy berfungsi dengan sendirinya. SDK adalah untuk pemain yang mahu membuat permainan sendiri, atau mencuba kartrij contoh.
 

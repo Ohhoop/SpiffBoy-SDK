@@ -17,6 +17,9 @@ The full kit comes inside the mod itself, in its SDK folder: mods/SpiffBoySDK/SD
 - Test robots: play your cartridge outside the game, thousands of frames in a few seconds, to catch crashes, missing texts and frames too heavy to draw.
 
 [h2]Q&A[/h2]
+Q: Does it work with build 42.22?
+A: Yes. It works with 42.21 and 42.22.
+
 Q: Do I need this mod to play SpiffBoy?
 A: No. SpiffBoy works on its own. The SDK is for players who want to make their own games, or to try the example cartridges.
 

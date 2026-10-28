@@ -17,6 +17,9 @@ Kitul complet vine în modul însuși, în folderul său SDK: mods/SpiffBoySDK/S
 - Roboți de test: rulează cartușul tău în afara jocului, mii de cadre în câteva secunde, ca să prindă crash-urile, textele lipsă și cadrele prea grele de desenat.
 
 [h2]Întrebări și răspunsuri[/h2]
+Q: Funcționează cu build-ul 42.22?
+A: Da. Funcționează cu 42.21 și 42.22.
+
 Q: Am nevoie de acest mod ca să joc SpiffBoy?
 A: Nu. SpiffBoy funcționează singur. SDK-ul este pentru jucătorii care vor să își facă propriile jocuri sau să încerce cartușele exemplu.
 

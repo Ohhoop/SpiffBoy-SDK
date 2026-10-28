@@ -17,6 +17,9 @@ Celá sada je přímo součástí modu, v jeho složce SDK: mods/SpiffBoySDK/SDK
 - Testovací roboti: spouštějí vaši kazetu mimo hru, tisíce snímků za pár sekund, aby odhalili pády, chybějící texty a snímky příliš náročné na vykreslení.
 
 [h2]Otázky a odpovědi[/h2]
+Q: Funguje to s buildem 42.22?
+A: Ano. Funguje s verzemi 42.21 i 42.22.
+
 Q: Potřebuji tento mod, abych mohl hrát SpiffBoy?
 A: Ne. SpiffBoy funguje sám o sobě. SDK je pro hráče, kteří chtějí tvořit vlastní hry nebo si vyzkoušet ukázkové kazety.
 

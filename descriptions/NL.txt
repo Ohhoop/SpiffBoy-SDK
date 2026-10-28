@@ -17,6 +17,9 @@ De volledige kit zit in de mod zelf, in de map SDK: mods/SpiffBoySDK/SDK
 - Testrobots: spelen je cassette buiten het spel, duizenden frames in een paar seconden, om crashes, ontbrekende teksten en frames die te zwaar zijn om te tekenen op te sporen.
 
 [h2]Vragen en antwoorden[/h2]
+Q: Werkt het met build 42.22?
+A: Ja. Het werkt met 42.21 en 42.22.
+
 Q: Heb ik deze mod nodig om SpiffBoy te spelen?
 A: Nee. SpiffBoy werkt op zichzelf. De SDK is voor spelers die hun eigen spellen willen maken of de voorbeeldcassettes willen uitproberen.
 

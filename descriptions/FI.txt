@@ -17,6 +17,9 @@ Koko paketti tulee itse modin mukana, sen SDK-kansiossa: mods/SpiffBoySDK/SDK
 - Testirobotit: pyörittävät kasettiasi pelin ulkopuolella, tuhansia ruutuja muutamassa sekunnissa, ja paljastavat kaatumiset, puuttuvat tekstit ja liian raskaat ruudut.
 
 [h2]Kysymyksiä ja vastauksia[/h2]
+Q: Toimiiko se buildissa 42.22?
+A: Kyllä. Se toimii versioissa 42.21 ja 42.22.
+
 Q: Tarvitsenko tämän modin pelatakseni SpiffBoyta?
 A: Et. SpiffBoy toimii itsenäisesti. SDK on pelaajille, jotka haluavat tehdä omia pelejään tai kokeilla esimerkkikasetteja.
 

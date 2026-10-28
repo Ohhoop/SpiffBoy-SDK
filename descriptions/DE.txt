@@ -17,6 +17,9 @@ Das komplette Kit steckt im Mod selbst, in seinem SDK-Ordner: mods/SpiffBoySDK/S
 - Testroboter: Lass dein Modul außerhalb des Spiels laufen, Tausende Frames in wenigen Sekunden, um Abstürze, fehlende Texte und zu aufwendige Frames aufzuspüren.
 
 [h2]Fragen und Antworten[/h2]
+Q: Funktioniert es mit Build 42.22?
+A: Ja. Es funktioniert mit 42.21 und 42.22.
+
 Q: Brauche ich diesen Mod, um SpiffBoy zu spielen?
 A: Nein. SpiffBoy funktioniert eigenständig. Das SDK richtet sich an Spieler, die eigene Spiele machen oder die Beispielmodule ausprobieren wollen.
 

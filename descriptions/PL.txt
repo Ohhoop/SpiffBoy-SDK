@@ -17,6 +17,9 @@ Cały zestaw jest dołączony do samego moda, w jego folderze SDK: mods/SpiffBoy
 - Roboty testowe: uruchamiają twój kartridż poza grą, tysiące klatek w kilka sekund, żeby wyłapać crashe, brakujące teksty i klatki zbyt ciężkie do narysowania.
 
 [h2]Pytania i odpowiedzi[/h2]
+Q: Czy działa z buildem 42.22?
+A: Tak. Działa z wersjami 42.21 i 42.22.
+
 Q: Czy potrzebuję tego moda, żeby grać w SpiffBoy?
 A: Nie. SpiffBoy działa samodzielnie. SDK jest dla graczy, którzy chcą tworzyć własne gry albo wypróbować przykładowe kartridże.
 

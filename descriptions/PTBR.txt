@@ -17,6 +17,9 @@ O kit completo vem dentro do próprio mod, na pasta SDK: mods/SpiffBoySDK/SDK
 - Robôs de teste: rodam seu cartucho fora do jogo, milhares de quadros em poucos segundos, para pegar crashes, textos faltando e quadros pesados demais para desenhar.
 
 [h2]Perguntas e respostas[/h2]
+Q: Funciona na build 42.22?
+A: Sim. Funciona na 42.21 e na 42.22.
+
 Q: Preciso deste mod para jogar SpiffBoy?
 A: Não. O SpiffBoy funciona sozinho. O SDK é para quem quer criar seus próprios jogos ou testar os cartuchos de exemplo.
 
