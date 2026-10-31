@@ -194,7 +194,7 @@ The font of the screen covers the 29 languages of Project Zomboid: Latin, Cyrill
 
 The 180 pixels of the screen hold about 30 Latin capitals or 15 Chinese characters. A translation is often longer than the English text: measure with `textWidth` and leave room.
 
-A character the font lacks is left out and named once in the log: `SpiffBoy: [SB-GLYPH] pixel font has no glyph for code point 128512`, here for the emoji 😀. The font holds the letters of every language of the game and many symbols, such as `€`, `★` or `↑`; emojis are not among them.
+A character the font lacks is left out and named once in the log: `SpiffBoy: [SB-GLYPH] the text "Well done 😀" holds a character the pixel font lacks, code point 128512, left out on the screen`, here for the emoji 😀. The font holds the letters of every language of the game and many symbols, such as `€`, `★` or `↑`; emojis are not among them.
 
 The font is loaded a page of 256 characters at a time, the first time a text needs it. Until a page is loaded its letters are left out, so a text can be missing on its very first frame.
 

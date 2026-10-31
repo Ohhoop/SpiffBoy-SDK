@@ -1,17 +1,22 @@
 """Plays every cartridge of a mod offline on top of SpiffBoy with a robot pressing seeded random buttons, and reports for each game its crash, its busiest frame in draw calls and a digest of everything it drew and played.
 
 Usage:
-    python run_robots.py <SpiffBoy media folder> <mod media folder> [--ticks N] [--seed N] [--games A,B] [--lang LANG] [--json out.json] [--compare reference.json]
+    python run_robots.py <SpiffBoy media folder> <mod media folder> [--ticks N] [--seed N] [--games A,B] [--lang LANG] [--json out.json] [--compare reference.json] [--state]
 
 A media folder is the media folder of a mod, such as .../mods/SpiffBoy/42/media. Every game folder of the mod holding a
 Definition.lua (lua/shared/<Namespace>/Games/<Id>/Definition.lua) is played. The robot holds or taps a seeded random button on
-each tick, and now and then pauses one to five seconds without any button. Two runs with the same ticks and seed give the same
+each tick, START only about once a minute, and now and then pauses one to five seconds without any button. Two runs with the same ticks and seed give the same
 digests when the games behave the same; --compare fails on any digest that differs from the reference. --lang plays in another
 language of the game, such as FR or JP (EN unless given), with the texts of that language, so the draw calls count them.
 
 A game fails with CRASH when a file of it fails to load, when its game class is missing, or when it raises an error; it fails
 with WARN when it asks for a picture no file has with exactly that name, letter case included, asks for a text missing in
-English, or draws a text past an edge of the screen. math.random stops the game: only self.random repeats a game.
+English, draws a text past an edge of the screen or over another text, or has a text in the language played holding a character
+the pixel font lacks. math.random stops the game: only self.random repeats a game.
+
+--state then freezes each game that did not crash at ticks 600, 2400 and 6000 of a run of its own, as the console does when
+another player takes it, restores it in a second Lua, and fails when the restored game does not play on exactly as the first
+one (DIFF) or when the console cannot freeze it (FREEZE).
 """
 
 import argparse
@@ -19,11 +24,16 @@ import hashlib
 import json
 import re
 import sys
+import time
 from pathlib import Path
 
+import lupa.lua51 as lupa
 from lupa.lua51 import LuaRuntime
 
 HERE = Path(__file__).resolve().parent
+STATE_TICKS = (600, 2400, 6000)
+VERIFY_TICKS = 60
+CONTINUE_TICKS = 1200
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(HERE))
 import screen_image  # noqa: E402
@@ -134,6 +144,7 @@ def load_preamble(lua, spiffboy, mod, language):
     load(str(HERE / "preamble.lua"), roots, folders, language, lua.table_from(mod_files(spiffboy, mod)))
     robot = lua.globals().ROBOT
     robot.imageSize = screen_image.image_size
+    robot.cellInk = screen_image.cell_ink
     robot.renderFrame = lambda calls, out: screen_image.render(lua_calls(calls), out)
     robot.texts = lua.table_from(english_texts(spiffboy, mod))
     robot.itemScripts = lua.table_from({name: lua.table_from(tags) for name, tags in item_scripts(mod).items()})
@@ -165,12 +176,91 @@ def play(spiffboy, mod, games, ticks, seed, language):
     out = []
     for i in range(1, len(results) + 1):
         row = results[i]
-        out.append({key: row[key] for key in ("id", "most", "frames", "saves", "crash", "offScreen", "warnings", "expected", "digest")})
+        out.append({key: row[key] for key in ("id", "most", "frames", "saves", "crash", "offScreen", "warnings", "expected", "digest", "unplayed", "unasked", "noted")})
     return out, robot.missingTexts
 
 
+def state_lua(spiffboy, mod, language):
+    """Returns a fresh Lua with the robot preamble, the given mod and SpiffBoy loaded, and the save state driver: the driver, the digest it feeds and the Lua itself."""
+    lua = LuaRuntime(unpack_returned_tuples=True)
+    holder = {"hash": hashlib.sha1()}
+
+    def digest(chunk):
+        holder["hash"].update(chunk.encode("utf-8"))
+        holder["hash"].update(b"|")
+
+    load = load_preamble(lua, spiffboy, mod, language)
+    lua.globals().ROBOT.digest = digest
+    return load(str(HERE / "state.lua")), holder, lua
+
+
+def from_lua(value):
+    """Returns a Lua value as Python data: tables as dicts keyed by their Lua keys."""
+    if lupa.lua_type(value) == "table":
+        return {from_lua(key): from_lua(item) for key, item in value.items()}
+    return value
+
+
+def to_lua(lua, value):
+    """Returns Python data made by from_lua as Lua values of the given Lua."""
+    if isinstance(value, dict):
+        table = lua.table()
+        for key, item in value.items():
+            table[to_lua(lua, key)] = to_lua(lua, item)
+        return table
+    return value
+
+
+def check_states(spiffboy, mod, games, ticks, seed, language):
+    """Freezes every given game at each tick of STATE_TICKS the run reaches, restores it in a second Lua, compares the fingerprints after VERIFY_TICKS ticks without buttons and the digests of the next CONTINUE_TICKS ticks, prints one line per check and returns true when every check holds; a game that crashes before a check fails it."""
+    passed = True
+    for folder in games:
+        game_id = folder.rsplit("/", 1)[1]
+        for at in STATE_TICKS:
+            if at > ticks:
+                continue
+            first, first_digest, _ = state_lua(spiffboy, mod, language)
+            console = first.start(folder, seed)
+            crash = "init" if console is None else None
+            if console is not None:
+                rng, crash = first.play(console, at, seed)
+            if crash:
+                print(f"{game_id:<14} CRASH  state at tick {at:>5}  {crash}")
+                passed = False
+                break
+            try:
+                started = time.perf_counter()
+                data = first.capture(console)
+                spent = (time.perf_counter() - started) * 1000
+                size = first.size(data)
+                first_print = first.fingerprintAhead(console, VERIFY_TICKS)
+                second, second_digest, second_lua = state_lua(spiffboy, mod, language)
+                restored = second.restore(folder, seed, to_lua(second_lua, from_lua(data)))
+                second_print = second.fingerprintAhead(restored, VERIFY_TICKS)
+            except Exception as error:
+                print(f"{game_id:<14} FREEZE state at tick {at:>5}")
+                print(f"    {str(error).splitlines()[0]}")
+                passed = False
+                continue
+            first_digest["hash"] = hashlib.sha1()
+            second_digest["hash"] = hashlib.sha1()
+            first.play(console, CONTINUE_TICKS, rng)
+            second.play(restored, CONTINUE_TICKS, rng)
+            problem = None
+            if first_print != second_print:
+                problem = f"the restored game reached another state after {VERIFY_TICKS} ticks without buttons"
+            elif first_digest["hash"].hexdigest() != second_digest["hash"].hexdigest():
+                problem = f"the restored game drew or played differently in the {CONTINUE_TICKS} ticks after"
+            verdict = "DIFF" if problem else "ok"
+            print(f"{game_id:<14} {verdict:<6} state at tick {at:>5}  tables {size:>6}  capture {spent:>6.1f} ms")
+            if problem:
+                print(f"    [SB-STATE-DIFF] {problem} (docs/09-testing.md, The save state check)")
+                passed = False
+    return passed
+
+
 def main():
-    """Runs the robots, prints one line per game and exits with an error when a game crashed, warned or, with --compare, behaved differently from the reference."""
+    """Runs the robots, prints one line per game and exits with an error when a game crashed, warned, with --compare behaved differently from the reference, or with --state did not play on the same from its save state."""
     parser = argparse.ArgumentParser()
     parser.add_argument("spiffboy")
     parser.add_argument("mod")
@@ -180,6 +270,7 @@ def main():
     parser.add_argument("--lang", default="EN")
     parser.add_argument("--json", default="")
     parser.add_argument("--compare", default="")
+    parser.add_argument("--state", action="store_true")
     args = parser.parse_args()
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     spiffboy, mod = Path(args.spiffboy), Path(args.mod)
@@ -221,9 +312,20 @@ def main():
         if row["warnings"]:
             for warning in row["warnings"].split(" | "):
                 print(f"    {warning}")
-        if row["saves"] == 0 and not row["crash"]:
-            print("    note: the robot never reached a save of this game; check the saves with a test of your own (docs/09-testing.md, Writing a test of your own)")
+        if not row["crash"]:
+            if row["saves"] == 0:
+                print("    note: the robot never reached a save of this game; check the saves with a test of your own (docs/09-testing.md, Writing a test of your own)")
+            if row["unplayed"]:
+                print(f"    note: the robot never played the tunes {row['unplayed']}; check them in a test of your own (docs/09-testing.md, Writing a test of your own)")
+            if row["noted"]:
+                print(f"    note: the console warned {row['noted']}; the robot plays faster than a player, so check that the game saves only at the moments the player sees (docs/05-saving.md, When to save)")
+            if row["unasked"]:
+                print(f"    note: the robot never asked for the texts {row['unasked']}; check them in a test of your own (docs/09-testing.md, Writing a test of your own)")
     print(f"console texts missing: {missing}")
+    if args.state:
+        played = [folder for folder, row in zip(games, results) if not row["crash"]]
+        if not check_states(spiffboy, mod, played, args.ticks, args.seed, args.lang):
+            failed = True
     if args.json:
         Path(args.json).write_text(json.dumps({"ticks": args.ticks, "seed": args.seed, "games": results}, indent=1), encoding="utf-8")
     sys.exit(1 if failed else 0)

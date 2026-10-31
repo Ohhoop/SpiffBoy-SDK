@@ -369,6 +369,17 @@ function SpiffBoySDKHelloGame:draw(screen)
     end
 end
 
+--- Returns the text of the given entry of the title menu: Play, then the music option as it stands.
+function SpiffBoySDKHelloGame:menuLabel(index)
+    if index == 1 then
+        return gameText("Play")
+    end
+    if self.musicOn then
+        return gameText("MusicOn")
+    end
+    return gameText("MusicOff")
+end
+
 --- Draws the title, a bobbing Spiffo, the menu with its cursor bar and the best count.
 function SpiffBoySDKHelloGame:drawTitle(screen)
     local centre = math.floor(screen.width / 2)
@@ -377,15 +388,15 @@ function SpiffBoySDKHelloGame:drawTitle(screen)
     -- The head goes up and down one pixel every half second.
     local bob = math.floor(self.ticks / BOB_TICKS) % 2
     self:drawSpiffo(screen, self:frame(), centre - CELL / 2, 28 + bob)
-    local labels = { gameText("Play"), self.musicOn and gameText("MusicOn") or gameText("MusicOff") }
     for i = 1, MENU_SIZE do
         local y = MENU_Y + (i - 1) * MENU_STEP
+        local label = self:menuLabel(i)
         if i == self.selection then
             -- The chosen entry: light letters on a dark bar.
             screen:rect(centre - MENU_BAR_WIDTH / 2, y, MENU_BAR_WIDTH, screen:lineHeight(), ink(1))
-            screen:textCentre(labels[i], centre, y, ink(4))
+            screen:textCentre(label, centre, y, ink(4))
         else
-            screen:textCentre(labels[i], centre, y, ink(2))
+            screen:textCentre(label, centre, y, ink(2))
         end
     end
     -- Exercise 5: show your saved total under the best count.

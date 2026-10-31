@@ -7,8 +7,8 @@ The test file starts its cartridge with TestConsole.start, plays it with press, 
 TestConsole.check. --lang plays it in another language of the game, such as FR (EN unless given). The warnings of the console
 count as failures, as in the robot: a text drawn off screen, missing art, a text missing in English, a letter the font lacks.
 A screenshot path given relative is taken from the folder of the test file.
-The runner prints every failed check and warning, then one line with the number of checks and failures, and exits with 1 when
-a check failed, a warning came up or the test itself stopped on an error.
+The runner prints every failed check, warning and crash of a game, then one line with the number of checks and failures, and
+exits with 1 when a check failed, a warning came up, a game crashed or the test itself stopped on an error.
 
 Example:
     python run_test.py ".../mods/SpiffBoy/42/media" ".../mods/MyMod/42/media" ".../MyMod/tests/race_test.lua" --lang FR
@@ -30,7 +30,7 @@ LIBRARY = HERE / "lib" / "test_console.lua"
 
 
 def run(spiffboy, mod, test, language):
-    """Loads the preamble of the robots in the given language, the test console and the test, runs the test and returns its number of checks and failures, a warning of the console counting as a failure; stops with the error that interrupted the test."""
+    """Loads the preamble of the robots in the given language, the test console and the test, runs the test and returns its number of checks and failures, a warning of the console and a crash of a game counting as failures; stops with the error that interrupted the test."""
     run_robots.require_spiffboy(spiffboy)
     run_robots.require_mod(mod)
     lua = LuaRuntime(unpack_returned_tuples=True)
@@ -46,11 +46,14 @@ def run(spiffboy, mod, test, language):
     warnings = lua.globals().ROBOT.warnings
     for i in range(1, len(warnings) + 1):
         print(f"WARN {warnings[i]}")
-    return console.checks, console.failures + len(warnings)
+    crashes = console.crashes
+    for i in range(1, len(crashes) + 1):
+        print(f"CRASH {crashes[i]}")
+    return console.checks, console.failures + len(warnings) + len(crashes)
 
 
 def main():
-    """Runs the test given on the command line and exits with 1 when a check failed or a warning came up."""
+    """Runs the test given on the command line and exits with 1 when a check failed, a warning came up or a game crashed."""
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description="Runs a test of your own on a cartridge of a mod.")
     parser.add_argument("spiffboy", type=Path, help="media folder of the SpiffBoy mod")

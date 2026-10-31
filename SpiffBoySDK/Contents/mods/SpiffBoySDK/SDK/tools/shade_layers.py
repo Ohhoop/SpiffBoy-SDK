@@ -93,13 +93,18 @@ def layered_sheet(cells):
     return Image.fromarray(sheet, "RGBA")
 
 
+def plural(count, word):
+    """Returns a count followed by a word, with an s when the count is not one."""
+    return f"{count} {word}" if count == 1 else f"{count} {word}s"
+
+
 def report(cells):
     """Prints, for every cell, its left edge in the sheet, the shades it uses and the draw calls it costs."""
     left = 0
     for number, cell in enumerate(cells):
         used = [shade for shade in range(1, len(SHADES) + 1) if (cell == shade).any()]
         listed = "{ " + ", ".join(str(shade) for shade in used) + " }" if used else "none"
-        print(f"cell {number:>3}  sx {left:>5}  {cell.shape[1]}x{cell.shape[0]}  shades {listed:<16} {len(used)} calls with that list, {len(SHADES)} without")
+        print(f"cell {number:>3}  sx {left:>5}  {cell.shape[1]}x{cell.shape[0]}  shades {listed:<16} {plural(len(used), 'call')} with that list, {len(SHADES)} without")
         left += cell.shape[1]
 
 
@@ -124,7 +129,7 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(args.output, optimize=True)
     report(cells)
-    print(f"{args.output}: {sheet.width}x{sheet.height}, {len(cells)} cells of height {heights[0]}")
+    print(f"{args.output}: {sheet.width}x{sheet.height}, {plural(len(cells), 'cell')} of height {heights[0]}")
     return 0
 
 

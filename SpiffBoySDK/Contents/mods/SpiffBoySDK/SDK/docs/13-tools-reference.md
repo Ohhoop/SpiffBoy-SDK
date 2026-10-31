@@ -40,13 +40,13 @@ python tools/new_cartridge.py --sdk <SDK media folder> --mod <mod media folder> 
 | `--module` | The script module of the cartridge item. Letters and digits, starting with a letter. |
 | `--id` | The id of the new game. Letters and digits, starting with a letter. |
 | `--title` | The title of the game: one line without quotes, backslashes or tabs. |
-| `--mod-id` | The `id=` of your `mod.info`: letters, digits, spaces, dots, dashes and underscores. |
+| `--mod-id` | The `id=` of your `mod.info`: letters, digits, spaces, dots, dashes and underscores. The tool reads the `mod.info` next to the `--mod` folder and refuses any other id. |
 
-It copies the files listed in [Getting started](01-getting-started.md#or-copy-the-example-by-hand), `Core.lua` aside, under the names of your cartridge. Of the texts of the game it copies `EN.json` only: the console shows the English texts in every language that has no file. It leaves out the comments that point to the exercises of Hello SpiffBoy. The definition of your cartridge gets the loot weight 2 of the cartridges of SpiffBoy, where the example has 0, and its first comment describes your game instead of the example. The header of `Game.lua` no longer lists what Hello SpiffBoy does: it says the file starts as a copy of the example, and keeps the explanation of how the console runs a game. It writes `lua/shared/Translate/EN/ItemName.json` with the English name of the item when your mod has none, and otherwise prints the line to add to it. It writes `lua/shared/<Ns>/Core.lua`, which defines the table `<Ns>` and `<Ns>.MOD_ID`, when your mod has none. An existing `Core.lua` must already define `<Ns>.MOD_ID`.
+It copies the files listed in [Getting started](01-getting-started.md#or-copy-the-example-by-hand), `Core.lua` aside, under the names of your cartridge. Of the texts of the game it copies `EN.json` only: the console shows the English texts in every language that has no file. It leaves out the comments that point to the exercises of Hello SpiffBoy. The definition of your cartridge gets the loot weight 2 of the cartridges of SpiffBoy, where the example has 0, and its first comment describes your game instead of the example. The header of `Game.lua` no longer lists what Hello SpiffBoy does: it says the file starts as a copy of the example, and keeps the explanation of how the console runs a game. It writes `lua/shared/Translate/EN/ItemName.json` with the English name of the item when your mod has none, and otherwise prints the line to add to it. It writes `lua/shared/<Ns>/Core.lua`, which defines the table `<Ns>` and `<Ns>.MOD_ID`, when your mod has none. An existing `Core.lua` must already set `<Ns>.MOD_ID` to `--mod-id`.
 
 In the copied `.lua`, `.json` and `.txt` files it replaces, in this order: the game class `SpiffBoySDKHelloGame` by `<Ns><Id>Game`, the item `SpiffBoySDK.Cartridge_HelloSpiffBoy` by `<Module>.Cartridge_<Id>`, the icon `SpiffBoySDK_Cartridge_HelloSpiffBoy` by `<Module>_Cartridge_<Id>`, `module SpiffBoySDK` by `module <Module>`, the title `Hello SpiffBoy` and `HELLO SPIFFBOY`, the id `HelloSpiffBoy`, and the namespace `SpiffBoySDK`.
 
-It writes nothing when a file to create already exists, when a name of the example is left in a copied file after renaming, or when the definition of the example no longer registers the names it expects; it prints the problems instead. It never writes `mod.info`, and never changes an existing `ItemName.json`.
+It writes nothing when `--mod` has no `mod.info` next to it, when `--mod-id` differs from its `id=`, when a file to create already exists, when a name of the example is left in a copied file after renaming, or when the definition of the example no longer registers the names it expects; it prints the problems instead. It never writes `mod.info`, and never changes an existing `ItemName.json`.
 
 ## shade_layers.py
 
@@ -121,10 +121,10 @@ The Lua scan reads the files of `lua/client`, `lua/shared` and `lua/server` unde
 
 ## tests/robots/run_robots.py
 
-Plays every cartridge of a mod offline on top of SpiffBoy, pressing seeded random buttons with pauses of one to five seconds, and reports for each game its crash, its busiest frame in draw calls, its saves and a digest of its draw calls and chip writes. [Testing](09-testing.md#the-robot) explains the output and what the robot does not see.
+Plays every cartridge of a mod offline on top of SpiffBoy, pressing seeded random buttons, Start only about once a minute, with pauses of one to five seconds and no button during the last fifteen seconds of each minute, and reports for each game its crash, its busiest frame in draw calls, its saves and a digest of its draw calls and chip writes. [Testing](09-testing.md#the-robot) explains the output and what the robot does not see.
 
 ```
-python tests/robots/run_robots.py <SpiffBoy media folder> <mod media folder> [--games A,B] [--ticks N] [--seed N] [--lang LANG] [--json file] [--compare file]
+python tests/robots/run_robots.py <SpiffBoy media folder> <mod media folder> [--games A,B] [--ticks N] [--seed N] [--lang LANG] [--json file] [--compare file] [--state]
 ```
 
 | Option | Default | Meaning |
@@ -135,8 +135,9 @@ python tests/robots/run_robots.py <SpiffBoy media folder> <mod media folder> [--
 | `--lang LANG` | EN | Language the games read their texts in, such as FR or JP. |
 | `--json file` | | Writes the results, to compare later. |
 | `--compare file` | | Fails on any game whose digest or frame count differs from the file. |
+| `--state` | | Then freezes each game at ticks 600, 2400 and 6000, within `--ticks`, restores it in a second Lua and fails when it plays on differently or cannot be frozen ([The save state check](09-testing.md#the-save-state-check)). |
 
-It plays every game with a `lua/shared/<Ns>/Games/<Id>/Definition.lua` and loads `lua/client/<Ns>/Games/<Id>/Game.lua`. It exits with 1 when a game crashed (`CRASH`: a file that fails to load, a missing game class, any error such as more than 300 draw calls), warned (`WARN`: a missing picture, a picture named with another letter case than its file, a text missing in English, a text drawn off screen, an item script missing or without the cartridge tag, a `derive` name that differs from the global class name, a `require` of the mod that finds no file or finds it only in another letter case, a letter the pixel font lacks, a looping tune whose voices differ in length, more than 5 saves within ten seconds that change nothing, a picture loaded in `draw` or with `getTexture`, a field of the game changed by `draw`, a global variable without the namespace of the mod), or differs from the reference. A call from the game to `math.random`, `math.randomseed`, `ZombRand`, `os.time`, `os.clock`, `os.date` or `getTimestampMs` stops it with `SB-REPEAT`. A folder without `mod.info` next to it, or holding no cartridge, such as the `42` folder instead of `42/media`, is refused with a message. A game that never saved gets a `note:` line: check its saves in a test of your own.
+It plays every game with a `lua/shared/<Ns>/Games/<Id>/Definition.lua` and loads `lua/client/<Ns>/Games/<Id>/Game.lua`. It exits with 1 when a game crashed (`CRASH`: a file that fails to load, a missing game class, any error such as more than 300 draw calls), warned (`WARN`: a missing picture, a picture named with another letter case than its file, a text missing in English, a text drawn off screen, two different texts with letters on the same pixels, an item script missing or without the cartridge tag, a `derive` name that differs from the global class name, a `require` of the mod that finds no file or finds it only in another letter case, a letter the pixel font lacks in any text of the language played, a looping tune whose voices differ in length, a save that writes exactly what the save before held, a picture loaded in `draw` or with `getTexture`, a field of the game changed by `draw`, a global variable without the namespace of the mod), differs from the reference, or with `--state` plays on differently from its save state (`DIFF`), cannot be frozen (`FREEZE`) or crashes before a check. A call from the game to `math.random`, `math.randomseed`, `ZombRand`, `os.time`, `os.clock`, `os.date` or `getTimestampMs` stops it with `SB-REPEAT`. A folder without `mod.info` next to it, or holding no cartridge, such as the `42` folder instead of `42/media`, is refused with a message. A game that never saved, never played a tune it registered or never asked for a key of its `EN.json` gets a `note:` line naming what the robot missed: check it in a test of your own ([The notes](09-testing.md#the-notes-what-the-robot-never-saw)).
 
 ## tests/run_test.py
 
@@ -150,7 +151,7 @@ python tests/run_test.py <SpiffBoy media folder> <mod media folder> <test.lua> [
 |---|---|---|
 | `--lang LANG` | EN | Language the game reads its texts in, such as FR. |
 
-It prints every failed check and every warning, then the number of checks and failures, and exits with 1 when a check failed, a warning came up or the test stopped on an error. The robot's rules apply to the game: `SB-REPEAT`, the letter case of pictures, the warnings of the console, a text drawn off screen. `console:screenshot(path)` writes a PNG picture of the last frame.
+It prints every failed check, every warning and every crash of the game, then the number of checks and failures, and exits with 1 when a check failed, a warning came up, the game crashed or the test stopped on an error. The robot's rules apply to the game: `SB-REPEAT`, the letter case of pictures, the warnings of the console, a text drawn off screen. `console:screenshot(path)` writes a PNG picture of the last frame.
 
 ## tests/spiff_pong/run_link_test.py
 
@@ -200,8 +201,8 @@ python tests/run_all.py <SpiffBoy media folder> <mod media folder> [--ticks N] [
 |---|---|---|
 | `--ticks N` | 20000 | Ticks each robot plays per game. |
 | `--timeout S` | 900 | Seconds a suite may run before it is stopped and fails. |
-| `--verbose` | off | Prints the output of every suite; otherwise only the output of the failed suites, after the summary. |
+| `--verbose` | off | Prints the output of every suite; otherwise only the output of the failed suites, after the summary, and the `note:` lines of the suites that passed, each note once, under the line of its suite. |
 
-The suites are the robots, once per seed (12345, 2718 and 31337), then once with the seed 12345 in each language other than English that a game of the mod has a text file for (`robots FR`, ...), then `tools/check_texts.py`, then every test of your own (`test <name>`), each file ending in `_test.lua` in the `tests` folder of the Workshop folder of the mod, next to `Contents`, run with `tests/run_test.py`, then the tests of the SDK itself, `docs`, `dev_menu`, `hello` and `spiff_pong`. A test of the SDK runs only on a mod holding the folder it tests and prints `skip` on any other mod, so on your own mod the robots and the text checker do the work. Before anything, it checks that both folders have a `mod.info` next to them.
+The suites are the robots, once per seed (12345, 2718 and 31337), then once with the seed 12345 in each language other than English that a game of the mod has a text file for, named with a language code in capitals (`robots FR`, ...), then once with the seed 12345 and `--state` (`robots save state`), then `tools/check_texts.py`, then every test of your own (`test <name>`), each file ending in `_test.lua` in the `tests` folder of the Workshop folder of the mod, next to `Contents`, run with `tests/run_test.py`, then the tests of the SDK itself, `docs`, `dev_menu`, `hello` and `spiff_pong`. A test of the SDK runs only on a mod holding the folder it tests and prints `skip` on any other mod, so on your own mod the robots and the text checker do the work. Before anything, it checks that both folders have a `mod.info` next to them.
 
 Back to the [README](../README.md).

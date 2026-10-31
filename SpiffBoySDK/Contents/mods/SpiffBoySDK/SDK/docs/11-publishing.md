@@ -85,7 +85,7 @@ Upload the folder `Zomboid/Workshop/MyMod`, with `preview.png` and `Contents` as
 4. For the first upload, choose **This is a new workshop item**: Steam gives the item its Workshop ID. For every later upload, choose **This is an existing workshop item I want to update** and enter that ID.
 5. Write the change notes, then click **Upload to Steam Workshop now!**.
 
-The uploader checks the folder first: everything must sit inside `Contents`, each mod needs a valid `mod.info`, and some file types, such as `.exe`, `.bat` or `.zip`, are refused.
+The uploader checks the folder first: everything that ships must sit inside `Contents`, each mod needs a valid `mod.info`, and some file types, such as `.exe`, `.bat` or `.zip`, are refused. Other folders beside `Contents`, such as your `tests` folder, are neither checked nor uploaded.
 
 On the Steam page of your item, add SpiffBoy as a required item, and say in the description that the mod needs SpiffBoy, where the cartridge can be found, and whether it plays on the link cable.
 

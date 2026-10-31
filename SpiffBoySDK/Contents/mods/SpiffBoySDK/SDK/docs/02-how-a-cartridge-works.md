@@ -169,6 +169,19 @@ Spiffo moves while a direction is held; the hello happens once per press of A.
 
 Use only this generator in a game, never `math.random`, `ZombRand` or the clock (`os.time`, `os.clock`, `os.date`, `getTimestampMs`); count time in ticks. The robot stops a game that calls one of them with `SB-REPEAT`, naming the line. The [robot](09-testing.md#the-robot) gives your game a fixed seed, so two runs of the same code play the same game and a change of code can be compared with the run before it. Two consoles on a link cable rely on the same property to compute the same match. For a second independent sequence, create one with `SpiffBoyRandom.new(seed)` (require `SpiffBoy/Core/Random`), as Spiff-Pong does for each match.
 
+## The state of the game
+
+A console switched on keeps playing wherever it lies: in a bag, on the floor, in a crate. When another player of a server takes it, the console freezes your game, sends it to the computer of that player and plays it on there. Your game does nothing for this; it only keeps its state where the console can find it:
+
+- Everything that changes during a game lives in `self` and in the tables it holds. A `local` at the top of a file that the game changes, such as a counter or a list of enemies, stays behind on the first computer, and the game plays on differently on the second.
+- Constants at the top of a file are fine: `local SPEED = 1`, a table of levels the game only reads.
+- The class of every object the game keeps is published in the namespace of your mod, the global table whose name starts the name of your game class (`SpiffBoySDK` for `SpiffBoySDKPongGame`), as Spiff-Pong publishes its computer player with `SpiffBoySDK.SpiffPong.Brain = Brain`. The console names the class by that path on the other computer; a `local` class it cannot name gives `SB-STATE-CLASS`.
+- No function is kept in `self` or in its tables; passing one as an argument, as to `table.sort`, is fine. The parts of the console in `self` (`screen`, `chip`, `sequencer`, `link`, `context`) and the pictures of `self.context.art` are fine. A function outside your namespace, a coroutine or an object of Project Zomboid kept in the state gives `SB-STATE-OBJECT`.
+- A table of your namespace is named by its path instead of copied, down to a path such as `SpiffBoySDK.SpiffPong.Levels[2]`, so it stays the very same table on the other computer. A table of a `local` that `self` holds is copied: publish it in your namespace when the game compares it with `==`, as in `self.level == Levels[2]`.
+- The state holds at most 20000 tables.
+
+Before the game goes on, both computers play it 60 ticks without any button and compare a fingerprint of the result. When they differ, the console stays off for the player who took it and the log says `SB-STATE-DIFF`: a game is never half moved. Both computers also need the same version of SpiffBoy and of your mod, as a server requires; otherwise the log says `SB-STATE-VERSION` and the console stays off. A state the console cannot freeze, `SB-STATE-CLASS` or `SB-STATE-OBJECT`, switches the console off instead of moving it. The robot runs the same check offline: [The save state check](09-testing.md#the-save-state-check).
+
 ## Crashes
 
 Every call the console makes to your game is protected. When your code raises an error in `init`, `tick` or `draw`:

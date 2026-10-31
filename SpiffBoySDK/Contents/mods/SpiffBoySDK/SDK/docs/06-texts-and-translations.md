@@ -4,7 +4,7 @@ Every text the player reads goes through a translation file, never through a str
 
 ## One file per language
 
-The texts of a game live in the `texts` folder of its definition, one JSON file per language, named after the language code:
+The texts of a game live in the `texts` folder of its definition, one JSON file per language, named after the language code in capitals:
 
 ```
 media/lua/shared/MyMod/Games/SpaceRace/Translate/
@@ -68,7 +68,7 @@ A text can hold places for values, `%1` to `%9`, filled by the values given afte
 
 ```lua
 gameText("Best", self.best)
-text("WonLost", self.records.wins, self.records.losses)
+gameText("WonLost", self.records.wins, self.records.losses)
 ```
 
 - A whole number is written without decimals: `3`, never `3.0`. Other values are written with `tostring`.
@@ -89,11 +89,11 @@ A game with only `EN.json` therefore runs in every language, in English.
 
 ## The language codes
 
-The file name is the language code: `EN`, `AR`, `CA`, `CH`, `CN`, `CS`, `DA`, `DE`, `ES`, `ES_CL`, `ES_MX`, `FI`, `FR`, `HU`, `ID`, `IT`, `JP`, `KO`, `NL`, `NO`, `PL`, `PT`, `PTBR`, `RO`, `RU`, `STREW`, `TH`, `TR`, `UA`. The text files of Hello SpiffBoy hold all 29 and show which language each code is; note that `AR` holds Spanish of Argentina, not Arabic.
+The file name is the language code, in capitals, as Linux and the Steam Deck read it: `EN`, `AR`, `CA`, `CH`, `CN`, `CS`, `DA`, `DE`, `ES`, `ES_CL`, `ES_MX`, `FI`, `FR`, `HU`, `ID`, `IT`, `JP`, `KO`, `NL`, `NO`, `PL`, `PT`, `PTBR`, `RO`, `RU`, `STREW`, `TH`, `TR`, `UA`. The text files of Hello SpiffBoy hold all 29 and show which language each code is; note that `AR` holds Spanish of Argentina, not Arabic.
 
 ## Fitting the screen
 
-A translation is often longer than the English text, and the screen is 180 pixels wide: about 30 Latin capitals or 15 Chinese characters ([the widths of the letters](03-screen-and-art.md#the-pixel-font)). Measure texts with `screen:textWidth`, cut long ones with `screen:wrapText` ([Screen and art](03-screen-and-art.md#textwidth-lineheight-and-wraptext)), and tell your translators the room they have, such as "12 letters at most" for a menu entry. A longer text also costs more draw calls.
+A translation is often longer than the English text, and the screen is 180 pixels wide. The robot reports a text drawn past an edge of the screen and two texts whose letters touch the same pixels ([Testing](09-testing.md#reading-the-output)), in every language your game has a file for: about 30 Latin capitals or 15 Chinese characters ([the widths of the letters](03-screen-and-art.md#the-pixel-font)). Measure texts with `screen:textWidth`, cut long ones with `screen:wrapText` ([Screen and art](03-screen-and-art.md#textwidth-lineheight-and-wraptext)), and tell your translators the room they have, such as "12 letters at most" for a menu entry. A longer text also costs more draw calls.
 
 ## Item names
 
@@ -133,7 +133,9 @@ The line of each game counts:
 - the calls whose key is computed at run time, such as `gameText(hint)`;
 - the keys of the `"UI"` section of `EN.json`. It can hold more keys than the code asks for by name: the keys reached through a prefix or a computed key are among them.
 
-It reports a file that is not valid JSON in UTF-8, a key written twice, an `EN.json` without its `"UI"` section, the keys each language lacks or has in excess compared with `EN.json`, every `gameText("Key")` of your code whose key is absent from `EN.json`, a `SpiffBoy.GameTexts.of` given another id than the one of the game, a game whose `EN.json` holds keys while none of its Lua files calls `SpiffBoy.GameTexts.of`, a text with letters drawn straight from the code, such as `screen:textCentre("GAME OVER", ...)`, or through a constant of the same file, `local OVER = "GAME OVER"` or `local LABELS = { over = "GAME OVER" }`, and an item with no name in `lua/shared/Translate/EN/ItemName.json`. A key computed at run time, such as `gameText(hint)`, cannot be checked and is counted as computed: make sure every value it can take exists in `EN.json`. For the same reason, the tool does not list the keys of `EN.json` your code never asks for: a key reached through a prefix or a computed name looks unused to it.
+It reports a file not named after a language code in capitals, such as `fr.json`, a file that is not valid JSON in UTF-8, a key written twice, an `EN.json` without its `"UI"` section, the keys each language lacks or has in excess compared with `EN.json`, every `gameText("Key")` of your code whose key is absent from `EN.json`, a `SpiffBoy.GameTexts.of` given another id than the one of the game, a game whose `EN.json` holds keys while none of its Lua files calls `SpiffBoy.GameTexts.of`, a text with letters drawn straight from the code, anywhere in what a drawing call is given, such as `screen:textCentre("GAME OVER", ...)`, `screen:text(tostring(n) .. " SEC", ...)` or `screen:text(string.format("%s!", "PRESS A"), ...)`, format codes such as `%s` and `%d` and the keys given to `gameText` not counting as letters, or through a constant of the same file, `local OVER = "GAME OVER"` or `local LABELS = { over = "GAME OVER" }`, and an item with no name in `lua/shared/Translate/EN/ItemName.json`. A key computed at run time, such as `gameText(hint)`, cannot be checked and is counted as computed: make sure every value it can take exists in `EN.json`. For the same reason, the tool does not list the keys of `EN.json` your code never asks for: a key reached through a prefix or a computed name looks unused to it.
+
+It does not look at the characters themselves: a letter the pixel font lacks, such as an emoji, is reported by the robot, which measures every text of the language it plays.
 
 The tool is stricter than the console on purpose: the console falls back to English for a missing key, the tool lists it, so you see what each language still lacks. [Tools reference](13-tools-reference.md#check_textspy) has the details.
 

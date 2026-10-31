@@ -14,7 +14,8 @@ example has 0, and the header of the game file says it starts as a copy of Hello
 Hello SpiffBoy does. It also writes
 lua/shared/Translate/EN/ItemName.json, the English name of the item, when the mod has no such file, and otherwise prints the
 line to add to it. It also writes lua/shared/<Namespace>/Core.lua, which defines the global table <Namespace> and <Namespace>.MOD_ID, when the mod
-has none; an existing one must define <Namespace>.MOD_ID.
+has none; an existing one must set <Namespace>.MOD_ID to --mod-id. --mod-id must be the id= of the mod.info next to the media
+folder of the mod.
 
 In the text of the copied files, it replaces, in this order:
     "SpiffBoySDKHelloGame"                  the game class      ->  "<Namespace><Id>Game"
@@ -56,6 +57,7 @@ COMMENT = re.compile(r"^\s*--")
 ITEM_NAMES = Path("lua") / "shared" / "Translate" / "EN" / "ItemName.json"
 NAME = re.compile(r"^[A-Za-z][A-Za-z0-9]*$")
 MOD_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.\- ]*$")
+MOD_INFO_ID = re.compile(r"^id=(.*)$", re.M)
 TITLE = re.compile(r"^[^\"\\\r\n\t]+$")
 DEFINITION = "Definition.lua"
 DEFINITION_CHANGES = [
@@ -159,13 +161,15 @@ def without_exercises(text):
 
 
 def item_names(args):
-    """Returns the English item names file of the mod with the name of the new item, or None with the line to add printed when the mod already has that file."""
+    """Returns the English item names file of the mod to write with the name of the new item, and the line to add by hand to that file when the mod already has it without the item; either one is None."""
     path = args.mod / ITEM_NAMES
-    entry = f'    "{args.module}.Cartridge_{args.id}": "{args.title} Cartridge"'
-    if path.exists():
-        print(f"{ITEM_NAMES.as_posix()} exists: add this line to it:\n{entry}")
-        return None
-    return path, "{\n" + entry + "\n}\n"
+    key = f"{args.module}.Cartridge_{args.id}"
+    entry = f'    "{key}": "{args.title} Cartridge"'
+    if not path.exists():
+        return (path, "{\n" + entry + "\n}\n"), None
+    if f'"{key}"' in path.read_text(encoding="utf-8"):
+        return None, None
+    return None, f"{ITEM_NAMES.as_posix()} exists: add this line to it:\n{entry}"
 
 
 def as_new_cartridge(text):
@@ -212,10 +216,18 @@ def validate(args):
         raise ScaffoldError("--title must be one line without quotes, backslashes or tabs")
     if not args.mod.is_dir():
         raise ScaffoldError(f"no folder {args.mod}: --mod must be the media folder of the mod")
+    info = args.mod.parent / "mod.info"
+    if not info.is_file():
+        raise ScaffoldError(f"no mod.info in {args.mod.parent}: --mod must be the 42/media folder of the mod, next to its mod.info")
+    found = MOD_INFO_ID.search(info.read_text(encoding="utf-8", errors="replace"))
+    if not found:
+        raise ScaffoldError(f"{info} has no id= line: write the id of the mod in it")
+    if found.group(1).strip() != args.mod_id:
+        raise ScaffoldError(f"--mod-id is {args.mod_id}, but {info} has id={found.group(1).strip()}: give --mod-id the id of mod.info")
 
 
 def plan(args):
-    """Returns the files to write as pairs of path and content, bytes for pictures and text otherwise, after every check passed."""
+    """Returns the files to write as pairs of path and content, bytes for pictures and text otherwise, after every check passed, and the line to add by hand to the item names file of the mod, or None."""
     validate(args)
     check_example(args.sdk)
     table = renames(args)
@@ -240,16 +252,19 @@ def plan(args):
         writes.append((target, text))
     core = args.mod / "lua" / "shared" / args.namespace / "Core.lua"
     if core.exists():
-        if f"{args.namespace}.MOD_ID" not in core.read_text(encoding="utf-8"):
+        held = re.search(rf'^\s*{args.namespace}\.MOD_ID\s*=\s*"([^"]*)"', core.read_text(encoding="utf-8"), re.M)
+        if not held:
             problems.append(f"{core} exists and does not define {args.namespace}.MOD_ID, which the new definition reads")
+        elif held.group(1) != args.mod_id:
+            problems.append(f"{core} sets {args.namespace}.MOD_ID to \"{held.group(1)}\", not to --mod-id {args.mod_id}, the id of mod.info")
     else:
         writes.append((core, CORE.format(namespace=args.namespace, mod_id=args.mod_id)))
-    names = item_names(args)
+    names, hint = item_names(args)
     if names:
         writes.append(names)
     if problems:
         raise ScaffoldError("nothing written:\n    " + "\n    ".join(problems))
-    return writes
+    return writes, hint
 
 
 def main():
@@ -264,7 +279,7 @@ def main():
     parser.add_argument("--mod-id", required=True, help="id of the mod in its mod.info")
     args = parser.parse_args()
     try:
-        writes = plan(args)
+        writes, hint = plan(args)
     except (ScaffoldError, OSError) as error:
         print(f"new_cartridge: {error}", file=sys.stderr)
         return 1
@@ -275,6 +290,8 @@ def main():
         else:
             target.write_text(content, encoding="utf-8", newline="\n")
         print(f"written {target.relative_to(args.mod).as_posix()}")
+    if hint:
+        print(hint)
     print(f"cartridge {args.id} created: item {args.module}.Cartridge_{args.id}, game class {args.namespace}{args.id}Game")
     return 0
 

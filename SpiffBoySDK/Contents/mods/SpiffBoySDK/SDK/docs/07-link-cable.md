@@ -41,11 +41,12 @@ The port keeps at most 256 messages waiting and drops the oldest beyond that. Re
 The connection ends when the cable comes out, or when the other console is switched off or changes cartridge. Two cases follow:
 
 - If your game used the port in the last second, by a call to `send` (even one that returned false) or a message `receive` returned, the console freezes on its last picture with a notice of its own, until it is switched off. Your game has nothing to do for this case.
-- Otherwise `isConnected()` simply turns false. Your game must notice it and leave its two player screens, as Spiff-Pong does:
+- Otherwise `isConnected()` simply turns false. Your game must notice it and leave its two player screens, as Spiff-Pong does. Here `twoPlayer` is a field your game sets while it shows a two player screen, and `openTitle` its own method that opens the title:
 
   ```lua
-  if self:onCable() and not port:isConnected() then
-      self:openTitle("CableLost")
+  if self.twoPlayer and not self.link:isConnected() then
+      self.twoPlayer = false
+      self:openTitle()
       return
   end
   ```

@@ -15,7 +15,7 @@
 -- console.game is your game object: a test may read its fields, such as the
 -- score or the screen it shows, to decide what to press next.
 
-TestConsole = { checks = 0, failures = 0 }
+TestConsole = { checks = 0, failures = 0, crashes = {} }
 TestConsole.__index = TestConsole
 
 --- Returns the drawing surface of a console: it keeps the draw calls of the frame being drawn in console.frame, the pictures by the path of their file.
@@ -33,16 +33,13 @@ local function surfaceOf(console)
     }
 end
 
---- Makes the screen warn once for each text drawn past one of its edges, as the robot does.
+--- Makes the screen warn once for each text drawn past one of its edges and for each pair of different texts drawn over each other, as the robot does.
 local function watchEdges(screen)
-    local drawText = screen.text
-    screen.text = function(self, str, x, ...)
-        local width = SpiffBoy.PixelFont.measure(str)
+    ROBOT.watchTexts(screen, function(self, str, x, width)
         if x < 0 or x + width > self.width then
             ROBOT.warnOnce("off screen " .. tostring(str), string.format("text off screen: %q from x %d to %d", str, x, x + width))
         end
-        return drawText(self, str, x, ...)
-    end
+    end)
 end
 
 local UNPLUGGED = {
@@ -78,7 +75,26 @@ local function checkButtons(keys)
     end
 end
 
---- Starts the cartridge of the given game folder, such as "MyMod/Games/SpaceRace", with the given seed and save table, and returns the console playing it: its game in console.game, the saves written in console.saves, the busiest frame in console.most, and the crash, if any, in console.crash.
+--- Records that the game of the console stopped on an error: in console.crash, and in TestConsole.crashes, which the runner counts as failures.
+local function recordCrash(console, text)
+    console.crash = text
+    TestConsole.crashes[#TestConsole.crashes + 1] = text
+end
+
+--- Draws one frame of the console, keeps its draw calls for a screenshot, counts the busiest frame and records the crash, if any.
+local function drawFrame(console)
+    console.frame = {}
+    ROBOT.newFrame()
+    console.runtime:draw()
+    if console.screen.calls > console.most then
+        console.most = console.screen.calls
+    end
+    if console.runtime.crash then
+        recordCrash(console, console.runtime.crash.stage .. ": " .. console.runtime.crash.message)
+    end
+end
+
+--- Starts the cartridge of the given game folder, such as "MyMod/Games/SpaceRace", with the given seed and save table, draws the screen it opens on, and returns the console playing it: its game in console.game, the saves written in console.saves, the busiest frame in console.most, and the crash, if any, in console.crash.
 function TestConsole.start(folder, seed, save)
     require(folder .. "/Definition")
     require(folder .. "/Game")
@@ -91,6 +107,7 @@ function TestConsole.start(folder, seed, save)
     if not gameClass then
         error("TestConsole: no game class named " .. tostring(definition.game), 2)
     end
+    ROBOT.measureTexts(definition)
     local console = setmetatable({ saves = {}, crash = nil, most = 0, ticks = 0, frame = {} }, TestConsole)
     local screen = SpiffBoyScreen.new(surfaceOf(console), 180, 120)
     screen:setPalette(SpiffBoy.Cartridges.SHADES)
@@ -110,11 +127,14 @@ function TestConsole.start(folder, seed, save)
     console.screen = screen
     console.runtime = SpiffBoyRuntime.new(screen)
     if not console.runtime:start(gameClass, context) then
-        console.crash = "init: " .. tostring(console.runtime.crash and console.runtime.crash.message)
+        recordCrash(console, "init: " .. tostring(console.runtime.crash and console.runtime.crash.message))
     end
     console.runtime:setDevices({ sequencer, chip })
     console.input = SpiffBoyInputState.new()
     console.game = console.runtime.game
+    if not console.crash then
+        drawFrame(console)
+    end
     return console
 end
 
@@ -134,15 +154,8 @@ function TestConsole:step(held, pressed)
         input:tap(key)
     end
     self.runtime:advance({ input }, false, 1)
-    self.frame = {}
-    self.runtime:draw()
     self.ticks = self.ticks + 1
-    if self.screen.calls > self.most then
-        self.most = self.screen.calls
-    end
-    if self.runtime.crash then
-        self.crash = self.runtime.crash.stage .. ": " .. self.runtime.crash.message
-    end
+    drawFrame(self)
     return self.crash == nil
 end
 

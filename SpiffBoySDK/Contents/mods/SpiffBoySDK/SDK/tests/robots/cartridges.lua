@@ -1,12 +1,13 @@
 local ids, ticks, seed = ...
 
-local KEYS = { "up", "down", "left", "right", "a", "b", "start" }
+local KEYS = { "up", "down", "left", "right", "a", "b" }
+local START_ODDS = 3600
 local CRASH_EXPECTED = {}
 local PAUSE_ODDS = 300
 local PAUSE_MIN_TICKS = 60
 local PAUSE_SPREAD_TICKS = 240
-local SAVE_WINDOW_TICKS = 600
-local SAVES_PER_WINDOW = 5
+local IDLE_EVERY_TICKS = 3600
+local IDLE_TICKS = 900
 
 local buffer, size = {}, 0
 local function record(...)
@@ -67,15 +68,22 @@ local function missingClass(definition)
     return "init: " .. tostring(problem)
 end
 
---- Presses the buttons of the robot for one tick: a seeded random button held or tapped, or none during a pause of one to five seconds, so a save the game makes on its own meets ticks without a press; returns the next state of the generator and the ticks of pause left.
-local function pressButtons(input, rng, pause)
+--- Presses the buttons of the robot for the given tick: a seeded random button held or tapped, START tapped about once a minute only, so a round that START gives up can reach its end, or none during a pause of one to five seconds, nor during the fifteen seconds that end every minute of play, so a save the game makes on its own, on a timer or when its clock runs out, meets ticks without a press; returns the next state of the generator and the ticks of pause left.
+local function pressButtons(input, rng, pause, tick)
     input:clearHeld()
     rng = (rng * 1103515245 + 12345) % 2147483648
+    if tick % IDLE_EVERY_TICKS > IDLE_EVERY_TICKS - IDLE_TICKS then
+        return rng, pause
+    end
     if pause > 0 then
         return rng, pause - 1
     end
     if rng % PAUSE_ODDS == 0 then
         return rng, PAUSE_MIN_TICKS + rng % PAUSE_SPREAD_TICKS
+    end
+    if math.floor(rng / 65536) % START_ODDS == 0 then
+        input:tap("start")
+        return rng, 0
     end
     local key = KEYS[rng % #KEYS + 1]
     if rng % 3 == 0 then
@@ -125,33 +133,18 @@ local function serialized(value)
     return "{" .. table.concat(parts, ",") .. "}"
 end
 
---- Returns the most saves the game wrote within any span of SAVE_WINDOW_TICKS ticks, from the ticks of those saves in order.
-local function busiestSaves(saveTicks)
-    local busiest, first = 0, 1
-    for last = 1, #saveTicks do
-        while saveTicks[last] - saveTicks[first] >= SAVE_WINDOW_TICKS do
-            first = first + 1
-        end
-        busiest = math.max(busiest, last - first + 1)
-    end
-    return busiest
-end
-
---- Plays a loaded game for the ticks of the run and returns its busiest frame, its frames, its saves, its crash and the first text drawn off screen.
+--- Plays a loaded game for the ticks of the run and returns its busiest frame, its frames, its saves, its crash, the first text drawn off screen, and the tunes it registered and never played and the English texts it never asked for; two different texts drawn over each other in a frame are warned.
 local function playGame(id, definition)
     local screen = SpiffBoyScreen.new(owner, 180, 120)
     screen:setPalette(SpiffBoy.Cartridges.SHADES)
     screen:setWholePixels(true)
     screen:setPlacement(0, 0, 1)
     local offScreen = ""
-    local drawText = screen.text
-    screen.text = function(self, str, x, ...)
-        local width = SpiffBoy.PixelFont.measure(str)
+    ROBOT.watchTexts(screen, function(self, str, x, width)
         if offScreen == "" and (x < 0 or x + width > self.width) then
             offScreen = string.format("%q from x %d to %d", str, x, x + width)
         end
-        return drawText(self, str, x, ...)
-    end
+    end)
     local runtime = SpiffBoyRuntime.new(screen)
     local chip = SpiffBoyChip.new()
     chip.listener = soundListener
@@ -182,6 +175,7 @@ local function playGame(id, definition)
     }
     local crash = nil
     local most = 0
+    ROBOT.measureTexts(definition)
     local gameClass = SpiffBoy.Cartridges.resolveGame(definition)
     if gameClass and gameClass.Type ~= definition.game then
         ROBOT.warnings[#ROBOT.warnings + 1] = "class name: the global " .. definition.game .. " was made by SpiffBoyGameBase:derive(\"" .. tostring(gameClass.Type) .. "\"); give derive the same name, which the crash report prints"
@@ -194,15 +188,16 @@ local function playGame(id, definition)
     runtime:setDevices({ sequencer, chip })
     local input = SpiffBoyInputState.new()
     local rng, pause = seed, 0
-    for _ = 1, ticks do
+    for tick = 1, ticks do
         if crash then
             break
         end
-        rng, pause = pressButtons(input, rng, pause)
+        rng, pause = pressButtons(input, rng, pause, tick)
         runtime:advance({ input }, false, 1)
         local game = runtime.game
         local before = game and plainFields(game)
         drawing = true
+        ROBOT.newFrame()
         runtime:draw()
         drawing = false
         if game and runtime.game == game then
@@ -217,11 +212,11 @@ local function playGame(id, definition)
         end
         flush()
     end
-    local busiest = busiestSaves(sameSaveTicks)
-    if busiest > SAVES_PER_WINDOW then
-        ROBOT.warnings[#ROBOT.warnings + 1] = "saves: " .. busiest .. " writes within ten seconds that change nothing in the save; write it only when something changed, at the end of a game, on a SAVE entry or when the options are left (docs/05-saving.md, When to save)"
+    if #sameSaveTicks > 0 then
+        ROBOT.warnings[#ROBOT.warnings + 1] = "saves: the save at tick " .. sameSaveTicks[1] .. " writes exactly what the save before held, " .. #sameSaveTicks .. " such saves in the run; write it only when something changed, at the end of a game, on a SAVE entry or when the options are left (docs/05-saving.md, When to save)"
     end
-    return most, frames, saves, crash or "", offScreen
+    local unplayed, unasked = ROBOT.coverage(definition)
+    return most, frames, saves, crash or "", offScreen, unplayed, unasked
 end
 
 --- Warns once for each global variable created since the given set of names whose name does not start with the namespace of the game or with SpiffBoy.
@@ -268,7 +263,8 @@ for _, game in ipairs(games) do
     local id = game.id
     ROBOT.warnings, ROBOT.warned = game.warnings, game.warned
     ROBOT.beginGame(id)
-    local most, frames, saves, crash, offScreen = 0, 0, 0, "", ""
+    ROBOT.beginCoverage()
+    local most, frames, saves, crash, offScreen, unplayed, unasked = 0, 0, 0, "", "", "", ""
     local definition = SpiffBoy.Cartridges.byId(id)
     if game.loadError then
         crash = game.loadError
@@ -276,11 +272,11 @@ for _, game in ipairs(games) do
         crash = "load: the Definition.lua of " .. game.folder .. " registers no cartridge with the id " .. id
     else
         local before = ROBOT.globalNames()
-        most, frames, saves, crash, offScreen = playGame(id, definition)
+        most, frames, saves, crash, offScreen, unplayed, unasked = playGame(id, definition)
         warnNewGlobals(before, game.namespace)
     end
     results[#results + 1] = {
-        id = id, most = most, frames = frames, saves = saves, crash = crash, offScreen = offScreen,
+        id = id, most = most, frames = frames, saves = saves, crash = crash, offScreen = offScreen, unplayed = unplayed, unasked = unasked, noted = ROBOT.notedWarning or "",
         warnings = table.concat(ROBOT.warnings, " | "), expected = CRASH_EXPECTED[id] == true, digest = ROBOT.endGame(),
     }
 end

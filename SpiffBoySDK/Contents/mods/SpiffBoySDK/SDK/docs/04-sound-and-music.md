@@ -136,7 +136,7 @@ The higher four bits of a setting choose how low the noise sounds. Some settings
 | `[ ... ]<n>` | Repeats the group `n` times, 1 to 64: `[c e g e]4`. |
 | `L` | The loop point: a looping tune repeats from here instead of its start, after an intro for example. Every voice that has an `L` must reach it at the same time. |
 
-Each voice keeps its own tempo and position. A looping tune loops at the end of its longest voice, every voice restarting together, so write every voice to the same length. A voice of another length writes `SpiffBoy: [SB-REG-TUNE] tune <Id>.<name>, voice <voice> lasts <n> ticks of the <m> of the tune ...` in the log, and the robot marks the game `WARN`.
+Each voice keeps its own tempo and position. A looping tune loops at the end of its longest voice, every voice restarting together, so write every voice to the same length. A voice of another length writes `SpiffBoy: [SB-REG-VOICES] tune <Id>.<name>, voice <voice> lasts <n> ticks of the <m> of the tune ...` in the log, and the robot marks the game `WARN`.
 
 ### Echo and wave tables
 
@@ -167,7 +167,7 @@ The effects are one short string each, fast (`t200` to `t240`), short (`l16`, `l
 - Give each voice one job: melody on pulse 1, accompaniment on pulse 2, bass on the wave voice, drums on the noise.
 - Registers that work: bass in octave 2 or 3, chords in 3 or 4, melody in 4 or 5, octave 6 for an effect or a single peak.
 - Levels that work: melody `v10` to `v12`, accompaniment `v5` to `v8`, wave bass `v2` or `v3`, hats `v2` to `v4`, kick around `v9`.
-- Write tunes for your own cartridge; do not reuse the tunes or the effects of another cartridge. The example scores, the drum kit and the effect recipes of the [Sound chip reference](14-sound-chip-reference.md) belong to no cartridge: copy them into yours as they are or as a starting point.
+- Give your cartridge tunes of its own when you can: a game that sounds like no other is easier to remember, and players meet more variety from one cartridge to the next. Reusing the tunes or the effects of another cartridge is allowed. The example scores, the drum kit and the effect recipes of the [Sound chip reference](14-sound-chip-reference.md) belong to no cartridge: copy them into yours as they are or as a starting point.
 - An option to switch the music off can keep the effects through the mix, as in Spiff-Pong:
 
   ```lua

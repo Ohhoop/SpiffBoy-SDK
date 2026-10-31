@@ -1,6 +1,7 @@
 """Turns the draw calls of one frame of the console screen into a PNG picture, as the game draws them: rectangles, whole pictures, cells of a sheet and turned pictures, each picture a mask painted in its colour.
 
-The tests call image_size to give the pictures of a mod their real size, and render to write a frame; see tests/lib/test_console.lua.
+The tests call image_size to give the pictures of a mod their real size, cell_ink to find the pixels of a letter of the font,
+and render to write a frame; see tests/lib/test_console.lua.
 """
 
 import math
@@ -26,6 +27,12 @@ def image_size(file):
     """Returns the width and height of the picture of a file."""
     image = picture(file)
     return image.width, image.height
+
+
+def cell_ink(file, sx, sy, width, height):
+    """Returns the left, top, right and bottom edges of the pixels a cell of a picture sets, inside the cell, the right and bottom ones just past the last pixel, or None for a cell that sets none."""
+    left, top = int(sx), int(sy)
+    return picture(file).crop((left, top, left + int(width), top + int(height))).getchannel("A").getbbox()
 
 
 def painted(image, r, g, b, a):

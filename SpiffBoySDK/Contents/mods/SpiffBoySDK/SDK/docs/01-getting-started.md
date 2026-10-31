@@ -37,6 +37,7 @@ Zomboid/Workshop/MyMod/
         poster.png
         42/
             mod.info
+            poster.png
             media/
 ```
 

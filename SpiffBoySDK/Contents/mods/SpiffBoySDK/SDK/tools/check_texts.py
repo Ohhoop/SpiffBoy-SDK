@@ -7,7 +7,9 @@ For every game folder lua/shared/<Namespace>/Games/<Id>/ holding a Definition.lu
     every key the Lua files of the game ask for in a literal, gameText("Key"), exists in the "UI" section of EN.json,
     and every literal prefix, gameText("Item_" .. id), starts at least one key of it,
     the files call SpiffBoy.GameTexts.of with the id of the game and no other id,
-    no text with letters is drawn straight from a literal, screen:text("GAME OVER"), or from a constant holding one,
+    no text with letters is drawn straight from a literal anywhere in the text given to screen:text and its kin,
+    screen:text("GAME OVER"), screen:text(tostring(n) .. " SEC") or screen:text(string.format("%s!", "PRESS A")), the format
+    codes such as %s and %d and the keys given to the text function being no letters, or from a constant holding one,
     local OVER = "GAME OVER" then screen:text(OVER), or local LABELS = { over = "GAME OVER" } then screen:text(LABELS.over),
     instead of a language file,
     and lua/shared/Translate/EN/ItemName.json gives a name to the item of the definition.
@@ -40,7 +42,11 @@ KEY = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 TEXTS_OF = re.compile(r"""^[ \t]*(local[ \t]+)?([A-Za-z_][\w.]*)[ \t]*=[ \t]*(?:SpiffBoy\.)?GameTexts\.of\([ \t]*(?:"([^"]*)"|'([^']*)'|([A-Za-z_]\w*))[ \t]*\)""", re.M)
 CONSTANT = re.compile(r"""^[ \t]*(?:local[ \t]+)?([A-Za-z_]\w*)[ \t]*=[ \t]*(?:"([^"]*)"|'([^']*)')[ \t]*$""", re.M)
 COPY = re.compile(r"^[ \t]*(local[ \t]+)?([A-Za-z_][\w.]*)[ \t]*=[ \t]*([A-Za-z_][\w.]*)[ \t]*$", re.M)
-WRITTEN_TEXT = re.compile(r""":(?:text|textCentre|textRight|wrapText)[ \t]*\([ \t]*(?:"([^"\\\n]*)"|'([^'\\\n]*)')""")
+WRITTEN_CALL = re.compile(r":(?:text|textCentre|textRight|wrapText)[ \t]*\(")
+LITERAL = re.compile(r""""((?:[^"\\\n]|\\.)*)"|'((?:[^'\\\n]|\\.)*)'""")
+FORMAT_CODE = re.compile(r"%[-+ #0-9.]*[A-Za-z%]")
+OPENING = "([{"
+CLOSING = ")]}"
 WRITTEN_NAME = re.compile(r""":(?:text|textCentre|textRight|wrapText)[ \t]*\([ \t]*([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)?)[ \t]*[,)]""")
 TABLE_CONSTANT = re.compile(r"""^[ \t]*(?:local[ \t]+)?([A-Za-z_]\w*)[ \t]*=[ \t]*\{([^{}]*)\}""", re.M)
 TABLE_FIELD = re.compile(r"""([A-Za-z_]\w*)[ \t]*=[ \t]*(?:"([^"\\\n]*)"|'([^'\\\n]*)')""")
@@ -92,7 +98,10 @@ def check_languages(folder):
     problems, languages = [], {}
     for path in sorted(folder.iterdir()):
         if path.suffix != ".json" or not path.is_file() or not LANGUAGE.match(path.stem):
-            problems.append(f"{path.name}: not a language file <LANG>.json")
+            if path.suffix == ".json" and LANGUAGE.match(path.stem.upper()):
+                problems.append(f"{path.name}: name it {path.stem.upper()}.json, the language code in capitals, which the game reads")
+            else:
+                problems.append(f"{path.name}: not a language file <LANG>.json")
             continue
         try:
             languages[path.stem] = read_language(path)
@@ -161,18 +170,57 @@ def text_names(files, game):
     return shared, local, others
 
 
-def written_texts(files):
-    """Returns the texts with letters that the files draw straight from a literal, or from a constant of the same file holding one, a plain one or a field of a table of constants, without a language file, with the place of each."""
+def argument_end(text, start):
+    """Returns the index of the comma or closing parenthesis that ends the argument of a call starting at the given index, past the brackets and the texts it holds."""
+    depth = 0
+    index = start
+    while index < len(text):
+        char = text[index]
+        if char in "\"'":
+            literal = LITERAL.match(text, index)
+            index = literal.end() if literal else index + 1
+            continue
+        if char in OPENING:
+            depth += 1
+        elif char in CLOSING:
+            if depth == 0:
+                return index
+            depth -= 1
+        elif char == "," and depth == 0:
+            return index
+        index += 1
+    return index
+
+
+def drawn_literal(text, start, names):
+    """Returns the first literal holding letters, its format codes left out, in the text given to the drawing call whose argument starts at the given index, or None; a literal given as the key of a text function of the given names, or as an index between brackets, is skipped."""
+    end = argument_end(text, start)
+    for literal in LITERAL.finditer(text, start, end):
+        before = text[start:literal.start()].rstrip()
+        if before.endswith("["):
+            continue
+        called = re.search(r"([A-Za-z_][\w.]*)[ \t]*\($", before)
+        if called and called.group(1) in names:
+            continue
+        value = literal.group(1) if literal.group(1) is not None else literal.group(2)
+        if LETTER.search(FORMAT_CODE.sub("", value)):
+            return value
+    return None
+
+
+def written_texts(files, shared, local):
+    """Returns the texts with letters that the files draw from a literal anywhere in the text given to a drawing call, or from a constant of the same file holding one, a plain one or a field of a table of constants, without a language file, with the place of each; the keys given to the text function of the game are no such texts."""
     found = []
     for path in files:
         text = path.read_text(encoding="utf-8", errors="replace")
+        names = shared | local.get(path, set())
         constants = {m.group(1): m.group(2) if m.group(2) is not None else m.group(3) for m in CONSTANT.finditer(text)}
         for table in TABLE_CONSTANT.finditer(text):
             for field in TABLE_FIELD.finditer(table.group(2)):
                 constants[f"{table.group(1)}.{field.group(1)}"] = field.group(2) if field.group(2) is not None else field.group(3)
-        for match in WRITTEN_TEXT.finditer(text):
-            literal = match.group(1) if match.group(1) is not None else match.group(2)
-            if LETTER.search(literal):
+        for match in WRITTEN_CALL.finditer(text):
+            literal = drawn_literal(text, match.end(), names)
+            if literal is not None:
                 found.append((literal, f"{path.name}:{text.count(chr(10), 0, match.start()) + 1}"))
         for match in WRITTEN_NAME.finditer(text):
             literal = constants.get(match.group(1))
@@ -227,7 +275,7 @@ def check_game(media, namespace, game):
     shared, local, others = text_names(files, game)
     for target, place in others:
         problems.append(f"{place}: SpiffBoy.GameTexts.of(\"{target}\") reads the texts of {target}, not of this game, {game}")
-    for literal, place in written_texts(files):
+    for literal, place in written_texts(files, shared, local):
         problems.append(f"{place}: the text \"{literal}\" is written in the code: put it in {REFERENCE}.json and draw gameText(\"<Key>\")")
     if not shared and not any(local.values()):
         if english:

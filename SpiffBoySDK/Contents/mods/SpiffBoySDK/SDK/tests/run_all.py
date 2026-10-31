@@ -1,7 +1,8 @@
 """Runs every offline test suite of the SpiffBoy SDK on a mod and prints one ok, FAIL or skip line per suite.
 
 The suites are the robots of tests/robots/run_robots.py, played once per seed of SEEDS in English, then once more with the first
-seed in each other language a game of the mod has a text file for, the text checker tools/check_texts.py, every test of the mod
+seed in each other language a game of the mod has a text file for, named with a language code in capitals, then once more with the first seed and the save state check
+(--state), the text checker tools/check_texts.py, every test of the mod
 itself (<Workshop folder of the mod>/tests/*_test.lua, next to Contents, run with tests/run_test.py), and the runners of SDK_SUITES, which take <SpiffBoy media folder> <mod media folder> and test a part of the SDK itself: each one
 runs only on a mod holding the folder it tests, and is skipped on any other mod. Each suite runs in its own process; a suite fails
 when it exits with an error.
@@ -20,6 +21,7 @@ Examples:
 """
 
 import argparse
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -31,6 +33,7 @@ RUN_TEST = HERE / "run_test.py"
 OWN_TESTS = "tests"
 SEEDS = (12345, 2718, 31337)
 ENGLISH = "EN"
+LANGUAGE = re.compile(r"^[A-Z]+(_[A-Z]+)?$")
 NOTE = "    note:"
 FRAMEWORK = Path("lua") / "shared" / "SpiffBoy" / "Framework" / "Cartridges.lua"
 SDK_SUITES = {
@@ -42,24 +45,25 @@ SDK_SUITES = {
 
 
 def languages(mod):
-    """Returns the languages other than English that a game of the mod has a text file for, sorted."""
+    """Returns the languages other than English that a game of the mod has a text file for, named with a language code in capitals, sorted; check_texts reports a file named otherwise."""
     files = (mod / "lua" / "shared").glob("*/Games/*/Translate/*.json")
-    return sorted({path.stem for path in files} - {ENGLISH})
+    return sorted({path.stem for path in files if LANGUAGE.match(path.stem)} - {ENGLISH})
 
 
 def own_tests(mod):
     """Returns the tests of the mod itself: every file ending in _test.lua in the tests folder of its Workshop folder, next to Contents, sorted; none for a mod outside a Contents/mods folder."""
-    contents = mod.parents[3]
-    if contents.name != "Contents":
+    parents = mod.resolve().parents
+    if len(parents) < 4 or parents[3].name != "Contents":
         return []
-    return sorted((contents.parent / OWN_TESTS).glob("*_test.lua"))
+    return sorted((parents[3].parent / OWN_TESTS).glob("*_test.lua"))
 
 
 def suites(spiffboy, mod, ticks):
-    """Returns the name and command line of every suite, with None as the command line of a suite the mod does not hold: the robots once per seed, then once per other language, the text checker, the tests of the mod itself, then the SDK suites."""
+    """Returns the name and command line of every suite, with None as the command line of a suite the mod does not hold: the robots once per seed, then once per other language, then once with the save state check, the text checker, the tests of the mod itself, then the SDK suites."""
     robot = [sys.executable, str(ROBOTS), str(spiffboy), str(mod), "--ticks", str(ticks)]
     found = [(f"robots seed {seed}", robot + ["--seed", str(seed)]) for seed in SEEDS]
     found += [(f"robots {language}", robot + ["--seed", str(SEEDS[0]), "--lang", language]) for language in languages(mod)]
+    found.append(("robots save state", robot + ["--seed", str(SEEDS[0]), "--state"]))
     found.append(("check_texts", [sys.executable, str(CHECK_TEXTS), str(mod)]))
     for test in own_tests(mod):
         command = [sys.executable, str(RUN_TEST), str(spiffboy), str(mod), str(test)]
@@ -88,6 +92,7 @@ def run(command, timeout):
 
 def main():
     """Runs every suite, prints one line per suite and the output of the failed ones, and exits with an error when any failed."""
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description="Runs every offline test suite of the SpiffBoy SDK.")
     parser.add_argument("spiffboy", type=Path, help="media folder of the SpiffBoy mod")
     parser.add_argument("mod", type=Path, help="media folder of the mod under test")

@@ -113,6 +113,7 @@ An error of your own code, such as indexing a nil value, or an `error` your game
 |---|---|---|
 | `SB-LUA` | The Lua of the game fails, or the game calls `error`. | The game crashes. |
 | `SB-SAVE-PRESS` | `self:persist()` runs outside the tick of a press: in `init`, in `draw`, on a timer. | The game crashes; nothing is written. |
+| `SB-SAVE-OFTEN` | `self:persist()` runs more than 3 times within a minute of play. | A warning in the log, once per game; the save is written. |
 | `SB-SAVE-LIMIT` | The save breaks a limit: a string or a key too long, too many entries, too deep. | The game crashes; nothing is written. |
 | `SB-SAVE-TABLE` | `SpiffBoy.SaveData.measure` gets something that is not a table. | The game crashes. |
 | `SB-DRAW-LIMIT` | A frame goes past 300 draw calls. | The game crashes. |
@@ -133,13 +134,18 @@ An error of your own code, such as indexing a nil value, or an `error` your game
 | `SB-REG-API` | The `api` of the definition is missing, or above the version of the installed SpiffBoy. | The cartridge is not registered. |
 | `SB-REG-DUPLICATE` | Another cartridge already uses the id, the item or the game class. | The cartridge is not registered. |
 | `SB-REG-TUNES` | `SpiffBoy.Tunes.register` gets an id no cartridge has, runs twice for one id, or gets a tune name too long. | No tune of the call is registered. |
-| `SB-REG-TUNE` | A tune does not compile: a fault in its notation, an echo, its voices or its loop. Also a looping tune whose voices do not all last as long as the tune. | No tune of the call is registered; for the voice lengths, a warning only: the voices fall out of step at each loop. |
+| `SB-REG-TUNE` | A tune does not compile: a fault in its notation, an echo, its voices or its loop. | No tune of the call is registered. |
+| `SB-REG-VOICES` | A looping tune has a voice that does not last as long as the tune. | Warning: the voices fall out of step at each loop. |
 | `SB-REG-ITEM` | No item script defines the `item` of the definition. | Warning. |
 | `SB-REG-TAG` | The item lacks the tag `spiffboy:cartridge`. | Warning: the dismantling recipe does not take it. |
-| `SB-GAME-CLASS` | No global class has the name of the `game` field. | Warning: the console shows that the game is missing. |
+| `SB-GAME-CLASS` | No global class has the name of the `game` field. | Warning in the game: the console shows that the game is missing. The robot and `tests/run_test.py` count it as a crash, since the game cannot start. |
 | `SB-TEXT-MISSING` | A text key is missing from `EN.json`. | Warning: the key is shown. |
 | `SB-ART-MISSING` | `art` finds no file of that name. | Warning: `art` returns nil. |
 | `SB-GLYPH` | A text holds a character the pixel font lacks. | Warning: the character is left out. |
+| `SB-STATE-CLASS` | The console freezes the game for another player, and a table of the game has a class with no global name in the namespace of the mod ([The state of the game](02-how-a-cartridge-works.md#the-state-of-the-game)). | The console switches off instead of moving to the other player. |
+| `SB-STATE-OBJECT` | The console freezes the game for another player, and the game keeps a function outside its namespace, a coroutine or an object of Project Zomboid, or more than 20000 tables; or a frozen game arrives malformed. | The console switches off instead of moving to the other player. |
+| `SB-STATE-DIFF` | The game plays on differently on the computer of the player who took the console. | The console stays off for that player. |
+| `SB-STATE-VERSION` | The two computers run another version of SpiffBoy or of the mod of the cartridge. | The console stays off for the player who took it. |
 
 ## Common mistakes
 

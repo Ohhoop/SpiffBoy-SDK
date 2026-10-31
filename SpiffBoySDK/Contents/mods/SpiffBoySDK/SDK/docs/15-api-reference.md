@@ -15,7 +15,7 @@ A game class is derived from `SpiffBoyGameBase` (`require "SpiffBoy/Core/GameBas
 | `self:init()` | Override it. Called once, by `new`, after the fields are set. | Nothing. | The base version does nothing. |
 | `self:tick(inputs, tick)` | Override it. Called at 60 ticks per second. `inputs` is the list of [input states](#the-input-state). `tick` is 1 on the first call and grows by one on each call. | Nothing. | Not called while Project Zomboid is paused, while the console is frozen, or after a crash. |
 | `self:draw(screen)` | Override it. Called each time the window paints a frame. `screen` is the same object as `self.screen`. | Nothing. | It can run several times with no tick in between, and not at all after a crash. |
-| `self:persist()` | Writes `self.save` on the cartridge, with the battery charge and the volume, on the console; in multiplayer it sends them to the server. | Nothing. | Raises `SpiffBoy: [SB-SAVE-PRESS] the game <id> tried to save without a button press, and nothing was written` outside the tick in which `inputs[1]` has a button or a direction pressed (`pressed`, not `held`): in `init`, in `draw`, in a tick with no press. Raises `SpiffBoy: [SB-SAVE-LIMIT] the game <id> cannot save, <problem>, and nothing was written` when the save breaks a limit, `<problem>` being the message of [`SpiffBoy.SaveData.check`](#spiffboysavedata). In both cases nothing is written. `<id>` is the `id` of the definition. |
+| `self:persist()` | Writes `self.save` on the cartridge, with the battery charge and the volume, on the console; in multiplayer it sends them to the server. | Nothing. | Raises `SpiffBoy: [SB-SAVE-PRESS] the game <id> tried to save without a button press, and nothing was written` outside the tick in which `inputs[1]` has a button or a direction pressed (`pressed`, not `held`): in `init`, in `draw`, in a tick with no press. Raises `SpiffBoy: [SB-SAVE-LIMIT] the game <id> cannot save, <problem>, and nothing was written` when the save breaks a limit, `<problem>` being the message of [`SpiffBoy.SaveData.check`](#spiffboysavedata). In both cases nothing is written. A save that makes more than 3 within a minute of play is written, and writes once per game `SpiffBoy: [SB-SAVE-OFTEN] the game <id> saved <n> times within a minute of play` in the log. `<id>` is the `id` of the definition. |
 
 ### The fields of a game
 
@@ -85,7 +85,7 @@ The text methods write with the pixel font of the screen. A text is a string.
 
 | Call | Does | Returns | Draw calls | Edges |
 |---|---|---|---|---|
-| `screen:text(str, x, y[, r, g, b, a])` | Writes a line, its left edge at `x`, its top at `y`. | Nothing. | 1 per glyph drawn | Without a colour the text is drawn in shade 4. Spaces, characters the font lacks and invisible format characters cost nothing; each accent mark drawn on a letter costs one. A character the font lacks is named once in the log: `SpiffBoy: [SB-GLYPH] pixel font has no glyph for code point <n>`. The glyphs of a font page still loading are left out and cost nothing. |
+| `screen:text(str, x, y[, r, g, b, a])` | Writes a line, its left edge at `x`, its top at `y`. | Nothing. | 1 per glyph drawn | Without a colour the text is drawn in shade 4. Spaces, characters the font lacks and invisible format characters cost nothing; each accent mark drawn on a letter costs one. A character the font lacks is named once in the log: `SpiffBoy: [SB-GLYPH] the text "<text>" holds a character the pixel font lacks, code point <n>, left out on the screen`. The glyphs of a font page still loading are left out and cost nothing. |
 | `screen:textCentre(str, x, y[, r, g, b, a])` | Writes a line centred on `x`: its left edge at `x` minus half its width, taken down to the whole pixel. | Nothing. | As `text` | As `text`. |
 | `screen:textRight(str, x, y[, r, g, b, a])` | Writes a line whose right edge is at `x`. | Nothing. | As `text` | As `text`. |
 | `screen:textWidth(str)` | Measures a line. | Its width in pixels. | 0 | A character the font lacks counts 0. |
@@ -130,7 +130,7 @@ A direction on a controller is held when the stick or the pad goes past 0.45 of 
 
 | Call | Does | Returns | Edges |
 |---|---|---|---|
-| `sequencer:play(name)` | Plays the tune `name` as the music, from its start, in place of the music playing. A tune with `loop = true` repeats; another one ends on its own. The voices an effect holds stay with the effect until it ends. | Nothing. | A name the cartridge did not register raises `SpiffBoy: [SB-TUNE] <id> has no tune named <name>`; when the cartridge registered no tune at all, `<id>` reads `no game`. Playing the tune that already plays starts it again from its start. |
+| `sequencer:play(name)` | Plays the tune `name` as the music, from its start, in place of the music playing. A tune with `loop = true` repeats; another one ends on its own. The voices an effect holds stay with the effect until it ends. | Nothing. | A name the cartridge did not register raises `SpiffBoy: [SB-TUNE] <id> has no tune named <name>`; when the cartridge registered no tune at all, the message reads `SpiffBoy: [SB-TUNE] the game registered no tune, so it has no tune named <name>`. Playing the tune that already plays starts it again from its start. |
 | `sequencer:stop()` | Stops the music and silences its voices. | Nothing. | Effects keep playing. Without music it changes nothing. |
 | `sequencer:effect(name)` | Plays the tune `name` once as a sound effect. It takes each voice its tune uses from the music and from older effects; when it ends, the music plays its last note on those voices again. | Nothing. | An unknown name raises the same error as `play`. The same effect started twice plays twice; the newer one holds the voices. |
 | `sequencer:isPlaying()` | | True while a tune plays as the music. | False before the first `play`, after `stop`, and once a tune without loop has ended. |
@@ -234,6 +234,14 @@ When a game session starts, the console writes a line in the log for each cartri
 | `SpiffBoy.SaveData.MAX_ENTRIES` | 512 | At most 512 entries in all. |
 
 A value is a finite number, a string, a boolean or a table. In multiplayer the server checks every save it receives the same way and takes at most 10 save messages per player per second; it drops the others without an error.
+
+## SpiffBoy.clamp
+
+`SpiffBoy.clamp` (`require "SpiffBoy/Core/Core"`) keeps a number within bounds.
+
+| Call | Does | Returns | Edges |
+|---|---|---|---|
+| `SpiffBoy.clamp(value, low, high)` | | `value` brought back between `low` and `high`: `low` below it, `high` above it, `value` itself between. | |
 
 ## The link port
 
