@@ -22,6 +22,8 @@ The screen shows four green-grey shades and nothing else. They are numbered from
 | 3 | 112, 128, 118 | light details, disabled entries |
 | 4 | 156, 168, 160 | paper: the background |
 
+`tools/palette/screen_shades.png` shows the four shades, darkest first, with the hex and RGB code of each, to pick them from in a drawing program.
+
 Any colour you ask for is replaced by the nearest of the four, at full opacity. The `a` (alpha) arguments of the drawing methods have no visible effect. Draw your art in these four shades from the start.
 
 Hello SpiffBoy turns a shade number into the three values the methods take with a small helper:
