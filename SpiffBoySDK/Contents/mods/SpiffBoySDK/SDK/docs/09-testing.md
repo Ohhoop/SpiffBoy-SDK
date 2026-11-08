@@ -68,6 +68,7 @@ SpaceRace      WARN   frames  20000  most calls  32  saves    6  ab3d28bf403a
 - `getTexture called at <file>:<line>` (or `Texture.getSharedTexture`, `Texture.new`) is a picture loaded around `self.context.art`: the game may show a picture of Project Zomboid with the same name ([The art folder](03-screen-and-art.md#the-art-folder)).
 - `draw changed self.<field>` is a field of your game, a number, a text or a boolean, that `draw` changed: the state of a game changes in `tick` only, or it runs faster on a faster computer ([Common mistakes](10-kahlua-and-pitfalls.md#common-mistakes)).
 - `global <name>` is a global variable your game created without the namespace of your mod at the start of its name ([The game class](02-how-a-cartridge-works.md#the-game-class)).
+- `load order: <file> keeps <names> nil when it loads before the other files of its side` is a file that reads other files at its top without requiring them: the game loads the files in alphabetical order, so these names stay nil when their files come later. `fails when it loads before the other files of its side` is a file that stops with an error then. The robot loads each file of the game alone, a client file after the shared files of the game only, to find them ([Load order](10-kahlua-and-pitfalls.md#load-order)).
 
 ### The notes: what the robot never saw
 

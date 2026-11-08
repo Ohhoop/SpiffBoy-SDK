@@ -8,11 +8,11 @@ A cartridge is a few files, each in the folder the engine reads it from:
 |---|---|---|
 | `lua/shared/<Ns>/Games/<Id>/Definition.lua` | shared | Registers the cartridge with the console. |
 | `lua/shared/<Ns>/Games/<Id>/Translate/<LANG>.json` | shared | The texts of the game, one file per language. |
-| `lua/client/<Ns>/Games/<Id>/Game.lua`, and more files if you split the game | client | The game class: rules and drawing. |
+| `lua/client/<Ns>/Games/<Id>/Game.lua`, and more files if you split the game | client | The game class: rules and drawing. Split over several files, the class goes in a `Class.lua` that each of them requires. |
 | `ui/<Ns>/Games/<Id>/*.png` | | The art: white masks, and the colour `label.png`. |
 | `scripts/<Ns>/<Id>.txt` | | The cartridge item. |
 
-`<Ns>` is the namespace of your mod, `<Id>` the id of the game. Shared files run on the clients and on the server: the server needs every definition to put cartridges in the loot. Client files run only where a player draws the game. Shared files load before client files.
+`<Ns>` is the namespace of your mod, `<Id>` the id of the game. Shared files run on the clients and on the server: the server needs every definition to put cartridges in the loot. Client files run only where a player draws the game. Shared files load before client files, and in each group the game loads the files in alphabetical order of their path: a file requires every file it reads at its top ([Load order](10-kahlua-and-pitfalls.md#load-order)).
 
 ## The definition
 

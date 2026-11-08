@@ -10,6 +10,11 @@
 -- differently on one console and the two matches drift apart for good.
 
 require "SpiffBoySDK/Core"
+require "SpiffBoySDK/Games/SpiffPong/Class"
+require "SpiffBoySDK/Games/SpiffPong/Match"
+require "SpiffBoySDK/Games/SpiffPong/Brain"
+require "SpiffBoySDK/Games/SpiffPong/Music"
+require "SpiffBoySDK/Games/SpiffPong/View"
 
 local Game = SpiffBoySDKPongGame
 local Pong = SpiffBoySDK.SpiffPong

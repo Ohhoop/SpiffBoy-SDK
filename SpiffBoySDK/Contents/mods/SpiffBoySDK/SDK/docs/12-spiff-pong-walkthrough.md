@@ -10,7 +10,8 @@ Under `42/media/` of the SDK mod, the SDK media folder (`../42/media` from the `
 |---|---|
 | `lua/shared/SpiffBoySDK/Games/SpiffPong/Definition.lua` | Registers the cartridge. |
 | `lua/shared/SpiffBoySDK/Games/SpiffPong/Translate/*.json` | The texts. |
-| `lua/client/SpiffBoySDK/Games/SpiffPong/Game.lua` | The class, the table of screens, `tick` and `draw`. |
+| `lua/client/SpiffBoySDK/Games/SpiffPong/Class.lua` | The class and its text function. |
+| `.../Game.lua` | The table of screens, `tick` and `draw`. |
 | `.../Match.lua` | The rules: paddles, ball, score. A pure simulation. |
 | `.../Brain.lua` | The console player. |
 | `.../Link.lua` | The two player protocol over the cable. |
@@ -30,11 +31,19 @@ Each file has one job. The rules (`Match`) know nothing about the screen, the sc
 
 ## Game.lua: the class and its screens
 
+The class lives in a file of its own, `Class.lua`:
+
 ```lua
 SpiffBoySDKPongGame = SpiffBoyGameBase:derive("SpiffBoySDKPongGame")
 
 local Game = SpiffBoySDKPongGame
 Game.text = SpiffBoy.GameTexts.of("SpiffPong")
+```
+
+`Game.lua` requires it, then names the screens:
+
+```lua
+local Game = SpiffBoySDKPongGame
 
 Game.MODE_TITLE = "title"
 Game.MODE_OPTIONS = "options"
@@ -84,7 +93,7 @@ function Game:init()
 end
 ```
 
-At its end, `Game.lua` requires `Menus`, `Play` and `Results`. Those files add methods to the class (`function Game:tickTitle(input)`...), so they must load after the class exists: a simple way to split one class over several files.
+At its end, `Game.lua` requires `Menus`, `Play` and `Results`, the files that add methods to the class (`function Game:tickTitle(input)`...), so the class is whole once `Game.lua` has loaded. The game itself loads the files in alphabetical order, `Menus.lua` before `Music.lua` and `View.lua`, so each of these files requires `Class.lua` and every file it reads at its top: a simple way to split one class over several files ([Load order](10-kahlua-and-pitfalls.md#load-order)).
 
 ## Match.lua: the rules and nothing else
 

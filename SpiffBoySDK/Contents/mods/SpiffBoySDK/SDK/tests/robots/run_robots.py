@@ -12,7 +12,9 @@ language of the game, such as FR or JP (EN unless given), with the texts of that
 A game fails with CRASH when a file of it fails to load, when its game class is missing, or when it raises an error; it fails
 with WARN when it asks for a picture no file has with exactly that name, letter case included, asks for a text missing in
 English, draws a text past an edge of the screen or over another text, or has a text in the language played holding a character
-the pixel font lacks. math.random stops the game: only self.random repeats a game.
+the pixel font lacks. math.random stops the game: only self.random repeats a game. It also loads each Lua file of a game
+alone, as the game does with the file that comes first in alphabetical order, and warns about a file that fails then, or
+whose top keeps a local nil that holds a value once the game has loaded.
 
 --state then freezes each game that did not crash at ticks 600, 2400 and 6000 of a run of its own, as the console does when
 another player takes it, restores it in a second Lua, and fails when the restored game does not play on exactly as the first
@@ -194,6 +196,48 @@ def state_lua(spiffboy, mod, language):
     return load(str(HERE / "state.lua")), holder, lua
 
 
+def game_modules(media, folder):
+    """Returns the Lua files of a game folder under lua/shared and under lua/client, by side, as the paths require names them by, each side sorted by path, letter case ignored, as the game loads them."""
+    sides = {}
+    for side in ("shared", "client"):
+        base = media / "lua" / side
+        found = [p.relative_to(base).as_posix()[:-4] for p in (base / folder).rglob("*.lua")] if (base / folder).is_dir() else []
+        sides[side] = sorted(found, key=lambda name: (name + ".lua").lower())
+    return sides
+
+
+def top_locals(spiffboy, mod, language, order, watched):
+    """Requires the given modules in order in a fresh Lua with the robot preamble and returns, for each watched module, the type of each local of the top of its file by name, or None when its top never ran, and the error it raised, or None."""
+    lua = LuaRuntime(unpack_returned_tuples=True)
+    load = load_preamble(lua, spiffboy, mod, language)
+    results = load(str(HERE / "load_order.lua"), lua.table_from(order), lua.table_from(watched))
+    return {name: (dict(results[name].locals.items()) if results[name].locals is not None else None, results[name].error) for name in watched}
+
+
+def check_load_order(spiffboy, mod, games, language):
+    """Loads every Lua file of each given game alone, after the shared files of the game for a client file, as the game does when the file comes first of its side in alphabetical order, and once the game has loaded as the robot loads it, Definition.lua and Game.lua first, and returns by game id one warning per file whose top keeps a local nil alone that holds a value in the loaded game, or that fails alone and loads in the game."""
+    warnings = {}
+    for folder in games:
+        found = []
+        sides = game_modules(mod, folder)
+        modules = sides["shared"] + sides["client"]
+        whole = top_locals(spiffboy, mod, language, [f"{folder}/Definition", f"{folder}/Game"] + modules, modules)
+        for target in modules:
+            before = sides["shared"] if target in sides["client"] else []
+            alone, alone_error = top_locals(spiffboy, mod, language, before + [target], [target])[target]
+            after, after_error = whole[target]
+            if alone_error and not after_error:
+                found.append(f"load order: {target}.lua fails when it loads before the other files of its side: "
+                             f"{alone_error.splitlines()[0]}; require at its top every file it reads there (docs/10-kahlua-and-pitfalls.md, Load order)")
+            elif alone is not None and after is not None:
+                names = sorted(name for name, kind in alone.items() if kind == "nil" and after.get(name, "nil") != "nil")
+                if names:
+                    found.append(f"load order: {target}.lua keeps {', '.join(names)} nil when it loads before the other files of its side; "
+                                 "require at its top every file it reads there (docs/10-kahlua-and-pitfalls.md, Load order)")
+        warnings[folder.rsplit("/", 1)[1]] = found
+    return warnings
+
+
 def from_lua(value):
     """Returns a Lua value as Python data: tables as dicts keyed by their Lua keys."""
     if lupa.lua_type(value) == "table":
@@ -286,6 +330,10 @@ def main():
         if not games:
             sys.exit(f"no game {args.games} among the cartridges of {mod}")
     results, missing = play(spiffboy, mod, games, args.ticks, args.seed, args.lang)
+    load_order = check_load_order(spiffboy, mod, games, args.lang)
+    for row in results:
+        played = [row["warnings"]] if row["warnings"] else []
+        row["warnings"] = " | ".join(played + load_order[row["id"]])
     reference = {}
     if args.compare:
         reference = {row["id"]: row for row in json.loads(Path(args.compare).read_text(encoding="utf-8"))["games"]}

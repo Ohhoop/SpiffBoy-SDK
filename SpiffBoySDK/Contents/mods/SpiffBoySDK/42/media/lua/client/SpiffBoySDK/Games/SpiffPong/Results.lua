@@ -3,6 +3,10 @@
 -- scores, the entry of the initials of the player.
 
 require "SpiffBoySDK/Core"
+require "SpiffBoySDK/Games/SpiffPong/Class"
+require "SpiffBoySDK/Games/SpiffPong/Music"
+require "SpiffBoySDK/Games/SpiffPong/Records"
+require "SpiffBoySDK/Games/SpiffPong/View"
 
 local Game = SpiffBoySDKPongGame
 local Pong = SpiffBoySDK.SpiffPong

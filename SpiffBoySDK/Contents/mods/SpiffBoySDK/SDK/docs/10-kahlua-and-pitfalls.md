@@ -1,6 +1,6 @@
 # 10. Kahlua and pitfalls
 
-Project Zomboid runs Kahlua, a Lua 5.1 written in Java, not the standard Lua interpreter. Everyday code behaves the same, but a few differences break code that works everywhere else, the offline robot included. This page lists them, then the rules of determinism, then the most common mistakes in a cartridge.
+Project Zomboid runs Kahlua, a Lua 5.1 written in Java, not the standard Lua interpreter. Everyday code behaves the same, but a few differences break code that works everywhere else, the offline robot included. This page lists them, then the order in which the game loads the files of a mod, then the rules of determinism, then the most common mistakes in a cartridge.
 
 ## Kahlua differences
 
@@ -62,7 +62,7 @@ end
 Lua 5.1 refuses a function, or a whole file, with more than 200 local variables at the same level: the file stops loading with `main function has more than 200 local variables`. A game file with a long list of `local CONSTANT = ...` at its top reaches it.
 
 - Group constants in tables: `local LAYOUT = { menuY = 54, menuStep = 20, barWidth = 104 }`.
-- Split the game by role into several files, as Spiff-Pong does (`Match`, `Brain`, `Link`, `Menus`, `View`...). Each file has its own 200.
+- Split the game by role into several files, as Spiff-Pong does (`Match`, `Brain`, `Link`, `Menus`, `View`...). Each file has its own 200. Each file requires what it reads at its top ([Load order](#load-order)).
 
 ### Strings are Java strings
 
@@ -76,6 +76,25 @@ In the game, a string holds UTF-16 units: `string.len`, `string.sub` and `string
 A cartridge reads its files only through the console: its texts through `SpiffBoy.GameTexts`, its art through `context.art`, its save through `self.save`. It counts time in ticks, never with the clock of the computer.
 
 A cartridge also stays out of the world of Project Zomboid: no `getPlayer()`, no character, no inventory, no map. The console isolates the game, as a real handheld knows nothing of the room around it, and the world gives wrong answers anyway: with several players on one computer, `getPlayer()` does not always return the one holding the console.
+
+## Load order
+
+The game loads every Lua file of a mod by itself, in a fixed order: the files under `lua/shared`, then the files under `lua/client`, each group in alphabetical order of its path, letter case ignored. A `require` runs the file it names at once when that file has not loaded yet, and does nothing when it has. Your `require` lines decide what a file finds when it loads; they do not decide when the game loads it. In Spiff-Pong, `Menus.lua` comes before `Music.lua` in that order.
+
+The top of a file, outside its functions, runs when the file loads. A name it reads there from another file is nil when that other file has not loaded yet:
+
+```lua
+local Pong = SpiffBoySDK.SpiffPong
+local Music = Pong.Music -- nil when Music.lua has not loaded yet
+```
+
+The file loads without an error. The game stops later, the first time it uses the name, with an error such as `attempted index: RESULTS of non-table: null`. A function reads its names when it runs, once every file has loaded, so only the top of a file matters.
+
+- At the top of each file, require every file it reads there.
+- When several files add methods to the class of the game, give the class a file of its own, `Class.lua`: the `derive` line and the fields the other files read at their top, such as the text function. `Game.lua` and every file that adds methods require it, as in Spiff-Pong ([walkthrough](12-spiff-pong-walkthrough.md#gamelua-the-class-and-its-screens)). `Game.lua` requires the files that add methods at its end.
+- Two files never require each other. The game refuses the second `require` of the loop and writes `recursive require()` in the log.
+
+The robot loads each file of a game alone, a client file after the shared files of the game only, as the game does with the file that comes first, and warns with `load order` about a file that fails then, or whose top keeps a local nil that holds a value once the game has loaded ([Reading the output](09-testing.md#reading-the-output)).
 
 ## Determinism
 
@@ -152,6 +171,7 @@ An error of your own code, such as indexing a nil value, or an `error` your game
 | Symptom | Cause | Fix |
 |---|---|---|
 | The console shows that the game is missing; log: `no game class named` | The `game` field and the global class name differ, or `Game.lua` failed to load. | Use the same name in `derive`, in the global and in the definition. Look for an error above in the log. |
+| `attempted index: <name> of non-table: null` on a name a method takes from the top of its file | The file read another file at its top before that file had loaded: the game loads the files in alphabetical order. | Require at the top of each file every file it reads there ([Load order](#load-order)). The robot warns with `load order`. |
 | An error about indexing a nil value in `tick` | A field used before it was set: set on another screen, or misspelled. | Set every field in `init` or in the `open`/`enter` method of the screen. |
 | An error about calling a nil value | A misspelled method name, or `self.method()` instead of `self:method()`. | Call the methods of the game with `:`. |
 | `attempt to call global 'next' (a nil value)` | `next` does not exist in the game. | Use `pairs` ([There is no next()](#there-is-no-next)). |

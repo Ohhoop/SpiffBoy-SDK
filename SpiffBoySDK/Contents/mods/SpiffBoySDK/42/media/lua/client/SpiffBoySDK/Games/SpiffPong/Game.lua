@@ -8,7 +8,8 @@
 -- and best scores.
 --
 -- The code is split by role, each file small:
---   Game.lua     this file: the class, the screens table, tick and draw
+--   Class.lua    the class itself, required by every file that adds methods
+--   Game.lua     this file: the screens table, tick and draw
 --   Match.lua    the rules: paddles, ball, score (pure simulation)
 --   Brain.lua    the console player
 --   Link.lua     the two player protocol over the cable
@@ -43,9 +44,8 @@
 -- in the shades they use.
 
 require "SpiffBoySDK/Core"
-require "SpiffBoy/Core/GameBase"
 require "SpiffBoy/Framework/Cartridges"
-require "SpiffBoy/Framework/GameTexts"
+require "SpiffBoySDK/Games/SpiffPong/Class"
 require "SpiffBoySDK/Games/SpiffPong/Match"
 require "SpiffBoySDK/Games/SpiffPong/Brain"
 require "SpiffBoySDK/Games/SpiffPong/Link"
@@ -54,19 +54,12 @@ require "SpiffBoySDK/Games/SpiffPong/Records"
 require "SpiffBoySDK/Games/SpiffPong/Options"
 require "SpiffBoySDK/Games/SpiffPong/View"
 
--- The global name given as `game` in Definition.lua.
-SpiffBoySDKPongGame = SpiffBoyGameBase:derive("SpiffBoySDKPongGame")
-
 local Game = SpiffBoySDKPongGame
 local Pong = SpiffBoySDK.SpiffPong
 local Link = Pong.Link
 local Music = Pong.Music
 local Records = Pong.Records
 local Options = Pong.Options
-
--- Every text of the game goes through this function, which picks the language
--- of the player from the Translate folder of the cartridge.
-Game.text = SpiffBoy.GameTexts.of("SpiffPong")
 
 Game.MODE_TITLE = "title"
 Game.MODE_OPTIONS = "options"

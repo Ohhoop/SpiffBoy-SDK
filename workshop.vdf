@@ -6,5 +6,5 @@
 	"visibility"		"0"
 	"contentfolder"		"SpiffBoySDK/Contents"
 	"previewfile"		"../Development/art/poster/thumbnail.gif"
-	"changenote"		"0.1.4 for SpiffBoy 0.2.3: picture of the four screen shades with their hex and RGB codes, in tools/palette"
+	"changenote"		"0.1.5 for SpiffBoy 0.2.5: Spiff-Pong keeps its game class in Class.lua; new Load order section in docs 10; the robot warns about a file that reads another one before it has loaded"
 }
