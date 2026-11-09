@@ -1,3 +1,4 @@
+-- SpiffBoy SDK (c) 2026 Ohhoop. Use limited to making SpiffBoy cartridges. See LICENSE.txt.
 -- Plays rounds of Hello SpiffBoy on one console with tests/lib/test_console.lua
 -- and checks when the game writes its save: never during a round nor when a
 -- round is given up, once when the end of a round is confirmed with a

@@ -1,3 +1,4 @@
+-- SpiffBoy SDK (c) 2026 Ohhoop. Use limited to making SpiffBoy cartridges. See LICENSE.txt.
 -- A console for tests of your own: it starts one cartridge offline on top of
 -- the real code of SpiffBoy and plays it with the buttons your test chooses,
 -- through the same runtime as the game, so every rule of the console applies:

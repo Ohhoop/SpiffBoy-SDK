@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Solution of exercise 5: save a new value.
 -- Files: lua/shared/SpiffBoySDK/Games/HelloSpiffBoy/Translate/EN.json
 --        lua/client/SpiffBoySDK/Games/HelloSpiffBoy/Game.lua

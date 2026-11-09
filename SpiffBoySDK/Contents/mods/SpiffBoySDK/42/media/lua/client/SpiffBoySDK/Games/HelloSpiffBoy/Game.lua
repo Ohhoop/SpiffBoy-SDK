@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Hello SpiffBoy: the game itself.
 --
 -- Read this file first if you want to make a cartridge. It shows every piece

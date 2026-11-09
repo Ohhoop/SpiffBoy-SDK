@@ -33,5 +33,7 @@ A: 可以。SDK 不會在你的世界中儲存任何內容。移除它只會移�
 
 [img]https://i.imgur.com/lja52Fs.gif[/img]
 
+SpiffBoy SDK © 2026 Ohhoop. 範例可以自由複製到你自己的 SpiffBoy 遊戲中。 [url=https://github.com/Ohhoop/SpiffBoy-SDK/blob/main/LICENSE]授權條款[/url]
+
 Workshop ID: 3825220785
 Mod ID: SpiffBoySDK

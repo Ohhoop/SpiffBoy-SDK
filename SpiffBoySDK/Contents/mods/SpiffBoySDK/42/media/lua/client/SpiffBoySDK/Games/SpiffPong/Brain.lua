@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- The console player of Spiff-Pong: it presses up and down for the right paddle.
 --
 -- The brain does not move the paddle itself. It returns the same kind of input

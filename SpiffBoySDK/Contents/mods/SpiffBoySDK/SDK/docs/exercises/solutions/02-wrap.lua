@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Solution of exercise 2: wrap around the edges.
 -- File: lua/client/SpiffBoySDK/Games/HelloSpiffBoy/Game.lua
 --

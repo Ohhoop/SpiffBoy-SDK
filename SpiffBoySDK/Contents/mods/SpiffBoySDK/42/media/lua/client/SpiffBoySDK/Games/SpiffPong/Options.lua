@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- The options of Spiff-Pong: music on or off, the speed of the ball and the
 -- points to win. They are part of the save, read with the same care as the
 -- best scores, and written only when the player leaves the options screen

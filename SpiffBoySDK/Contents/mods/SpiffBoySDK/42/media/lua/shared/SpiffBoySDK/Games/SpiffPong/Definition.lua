@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Spiff-Pong, the complete example cartridge of the SpiffBoy SDK.
 --
 -- A cartridge is made of five kinds of files, each in the folder the engine

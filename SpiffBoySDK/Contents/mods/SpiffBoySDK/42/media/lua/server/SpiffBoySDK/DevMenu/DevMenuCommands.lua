@@ -1,3 +1,4 @@
+-- SpiffBoy SDK (c) 2026 Ohhoop. Use limited to making SpiffBoy cartridges. See LICENSE.txt.
 require "SpiffBoySDK/DevMenu/DevMenuItems"
 
 local Items = SpiffBoySDK.DevMenuItems

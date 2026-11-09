@@ -33,5 +33,7 @@ A: Так. SDK нічого не зберігає у вашому світі. П
 
 [img]https://i.imgur.com/lja52Fs.gif[/img]
 
+SpiffBoy SDK © 2026 Ohhoop. Приклади можна вільно копіювати у власні ігри для SpiffBoy. [url=https://github.com/Ohhoop/SpiffBoy-SDK/blob/main/LICENSE]Ліцензія[/url]
+
 Workshop ID: 3825220785
 Mod ID: SpiffBoySDK

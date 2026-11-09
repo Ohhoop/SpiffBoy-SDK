@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- The menu screens of Spiff-Pong: title, options, best scores and the screen
 -- that waits for the other player on the cable. Each screen is an open method,
 -- a tick method and a draw method of the game class (see SCREENS in Game.lua).

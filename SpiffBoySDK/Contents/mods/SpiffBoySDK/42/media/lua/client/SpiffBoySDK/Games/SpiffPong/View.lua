@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Drawing helpers of Spiff-Pong and the drawing of the field.
 --
 -- The handheld screen is 180x120 logical pixels and shows only four

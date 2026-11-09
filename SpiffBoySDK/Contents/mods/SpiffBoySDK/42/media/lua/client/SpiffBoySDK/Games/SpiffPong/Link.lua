@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- The two player protocol of Spiff-Pong over the link cable.
 --
 -- WHY LOCKSTEP

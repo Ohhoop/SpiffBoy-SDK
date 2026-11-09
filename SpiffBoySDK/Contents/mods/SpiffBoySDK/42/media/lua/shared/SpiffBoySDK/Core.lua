@@ -1,3 +1,4 @@
+-- SpiffBoy SDK (c) 2026 Ohhoop. Use limited to making SpiffBoy cartridges. See LICENSE.txt.
 -- The SpiffBoy SDK keeps everything it shares between its files in one global
 -- table, named after the mod, so it never clashes with another mod.
 SpiffBoySDK = SpiffBoySDK or {}

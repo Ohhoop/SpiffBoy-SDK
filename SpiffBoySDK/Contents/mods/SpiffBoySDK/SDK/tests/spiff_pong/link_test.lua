@@ -1,3 +1,4 @@
+-- SpiffBoy SDK (c) 2026 Ohhoop. Use limited to making SpiffBoy cartridges. See LICENSE.txt.
 -- Plays Spiff-Pong on two consoles joined by a simulated link cable, loaded
 -- after tests/robots/preamble.lua. The cable delivers each message a fixed
 -- number of ticks late, in order, and refuses a fifth message in one tick as

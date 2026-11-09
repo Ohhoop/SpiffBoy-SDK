@@ -33,5 +33,7 @@ Cứ thoải mái chia sẻ góp ý, báo lỗi, ý tưởng và những game b�
 
 [img]https://i.imgur.com/lja52Fs.gif[/img]
 
+SpiffBoy SDK © 2026 Ohhoop. Bạn được tự do sao chép các ví dụ vào trò chơi SpiffBoy của riêng mình. [url=https://github.com/Ohhoop/SpiffBoy-SDK/blob/main/LICENSE]Giấy phép[/url]
+
 Workshop ID: 3825220785
 Mod ID: SpiffBoySDK

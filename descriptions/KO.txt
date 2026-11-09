@@ -33,5 +33,7 @@ A: 네. SDK는 월드에 아무것도 저장하지 않습니다. 제거하면 �
 
 [img]https://i.imgur.com/lja52Fs.gif[/img]
 
+SpiffBoy SDK © 2026 Ohhoop. 예제는 나만의 SpiffBoy 게임에 자유롭게 복사해 쓸 수 있습니다. [url=https://github.com/Ohhoop/SpiffBoy-SDK/blob/main/LICENSE]라이선스[/url]
+
 Workshop ID: 3825220785
 Mod ID: SpiffBoySDK

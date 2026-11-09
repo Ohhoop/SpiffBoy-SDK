@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Spiff-Pong: the game class, in a file of its own.
 --
 -- LOAD ORDER

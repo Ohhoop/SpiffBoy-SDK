@@ -1,3 +1,4 @@
+-- SpiffBoy SDK (c) 2026 Ohhoop. Use limited to making SpiffBoy cartridges. See LICENSE.txt.
 local ids, ticks, seed = ...
 
 local KEYS = { "up", "down", "left", "right", "a", "b" }

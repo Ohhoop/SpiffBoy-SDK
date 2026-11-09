@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- The match of Spiff-Pong: the pure simulation of two paddles and a ball.
 --
 -- This file knows nothing about the screen, the sound, the buttons or the

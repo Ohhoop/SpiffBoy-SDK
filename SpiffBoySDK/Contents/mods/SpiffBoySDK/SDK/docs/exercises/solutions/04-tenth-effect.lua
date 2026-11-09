@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Solution of exercise 4: a different effect every tenth hello.
 -- Files: lua/client/SpiffBoySDK/Games/HelloSpiffBoy/Music.lua
 --        lua/client/SpiffBoySDK/Games/HelloSpiffBoy/Game.lua

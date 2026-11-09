@@ -33,5 +33,7 @@ A: ได้ SDK ไม่บันทึกอะไรลงในโลกข
 
 [img]https://i.imgur.com/lja52Fs.gif[/img]
 
+SpiffBoy SDK © 2026 Ohhoop. คุณคัดลอกตัวอย่างไปใช้ในเกม SpiffBoy ของคุณเองได้อย่างอิสระ [url=https://github.com/Ohhoop/SpiffBoy-SDK/blob/main/LICENSE]สัญญาอนุญาต[/url]
+
 Workshop ID: 3825220785
 Mod ID: SpiffBoySDK

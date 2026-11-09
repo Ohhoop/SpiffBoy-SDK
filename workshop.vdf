@@ -6,5 +6,5 @@
 	"visibility"		"0"
 	"contentfolder"		"SpiffBoySDK/Contents"
 	"previewfile"		"../Development/art/poster/thumbnail.gif"
-	"changenote"		"0.1.5 for SpiffBoy 0.2.5: Spiff-Pong keeps its game class in Class.lua; new Load order section in docs 10; the robot warns about a file that reads another one before it has loaded"
+	"changenote"		"0.1.6 for SpiffBoy 0.2.6: the SDK now has a licence (LICENSE.txt, a licence line at the top of every Lua file and in the description), the examples are free to copy into your own cartridges; new_cartridge.py leaves the example licence line out of a new cartridge"
 }

@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- The best scores of Spiff-Pong and how they live in the save of the cartridge.
 --
 -- SAVE AND PERSIST

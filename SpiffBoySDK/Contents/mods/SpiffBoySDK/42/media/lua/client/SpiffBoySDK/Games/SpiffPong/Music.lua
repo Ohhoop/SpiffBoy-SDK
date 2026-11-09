@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- The music and sound effects of Spiff-Pong, written for the sound chip.
 --
 -- A cartridge ships notes, never audio files. Each tune gives a string of

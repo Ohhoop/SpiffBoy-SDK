@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Solution of exercise 6: a second sprite that follows.
 -- File: lua/client/SpiffBoySDK/Games/HelloSpiffBoy/Game.lua
 --

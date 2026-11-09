@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Playing a match of Spiff-Pong: alone against the console, or with another
 -- player on the link cable in deterministic lockstep (see Link.lua for why).
 --

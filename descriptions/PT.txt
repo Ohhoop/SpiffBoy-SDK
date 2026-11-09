@@ -33,5 +33,7 @@ Sente-te à vontade para partilhar a tua opinião, relatórios de bugs, ideias e
 
 [img]https://i.imgur.com/lja52Fs.gif[/img]
 
+SpiffBoy SDK © 2026 Ohhoop. Podes copiar livremente os exemplos para os teus próprios jogos SpiffBoy. [url=https://github.com/Ohhoop/SpiffBoy-SDK/blob/main/LICENSE]Licença[/url]
+
 Workshop ID: 3825220785
 Mod ID: SpiffBoySDK

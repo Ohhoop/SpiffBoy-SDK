@@ -1,0 +1,65 @@
+SpiffBoy SDK Licence
+
+Copyright (c) 2026 Ohhoop. All rights reserved, except as written below.
+
+This licence covers the SpiffBoy SDK: its guide, its tools, its tests, its
+development menu, its example cartridges and its exercises, in this
+repository, in the Steam Workshop items that ship it, and in every copy of
+them. SpiffBoy itself is covered by the SpiffBoy Licence.
+
+The SpiffBoy SDK follows the Project Zomboid Modding Policy and the Project
+Zomboid Terms and Conditions of The Indie Stone. Where this licence and them
+disagree, they prevail.
+
+1. The Indie Stone
+
+   The Indie Stone may use, modify, reproduce, create derivative works from,
+   distribute, transmit, perform, communicate and exploit the SpiffBoy SDK
+   and its code, in whole or in part, in connection with Project Zomboid,
+   including in the game itself, as the Project Zomboid Modding Policy
+   describes.
+
+2. Example cartridges and code samples
+
+   The example cartridges Hello SpiffBoy and Spiff-Pong (code, art and
+   texts), the exercise solutions and the code samples of the guide may be
+   copied, modified and published freely, in whole or in part, in cartridge
+   mods made for SpiffBoy. Credit is welcome but not required.
+
+3. Guide, tools, tests and development menu
+
+   a. You may read the guide, and use the tools, the tests and the
+      development menu, to make, test and publish cartridge mods for
+      SpiffBoy, and modify them for your own personal use.
+   b. What the tools make for your cartridge (labels, art, the files of a
+      new cartridge) belongs to you.
+   c. Without the written permission of Ohhoop, you may not copy, upload or
+      redistribute the guide, the tools, the tests or the development menu,
+      including in a public or unlisted modpack, publish a modified version
+      of them, or use them, or the programming interfaces of SpiffBoy they
+      describe, to build or document any other console, framework or game
+      system.
+
+4. Cartridge mods
+
+   A cartridge mod made with the SpiffBoy SDK belongs to its author. It must
+   require SpiffBoy and run on it, and it must follow the Project Zomboid
+   Modding Policy: it may not be sold or put behind a paywall or a
+   donation.
+
+5. Project Zomboid
+
+   Thanks to The Indie Stone for creating Project Zomboid
+   (https://projectzomboid.com/), which made this possible. This is an
+   unofficial fan production for non-commercial purposes made under the
+   Indie Stone Terms (https://projectzomboid.com/blog/support/terms-conditions/).
+   Project Zomboid and Spiffo belong to The Indie Stone. The SpiffBoy SDK is
+   not official and is not affiliated with The Indie Stone.
+
+6. No warranty
+
+   The SpiffBoy SDK is provided as is, without warranty of any kind. Ohhoop
+   is not liable for any damage arising from its use.
+
+To ask for a permission, write to Ohhoop on the Steam Workshop page of the
+SpiffBoy SDK.

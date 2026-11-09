@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- The tunes of Hello SpiffBoy.
 --
 -- A cartridge ships no audio file. It ships notes, written in the music

@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- Hello SpiffBoy: the smallest complete cartridge of the SpiffBoy SDK.
 --
 -- This file registers the cartridge with the console. It lives in the

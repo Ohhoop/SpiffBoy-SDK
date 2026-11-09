@@ -68,6 +68,7 @@ DEFINITION_CHANGES = [
      "    -- SpiffBoy; a higher weight spawns it more often, 0 never.\n    loot = { weight = 2 },"),
 ]
 GAME = "Game.lua"
+EXAMPLE_LICENSE_LINE = "-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt."
 GAME_FEATURES = re.compile(r"^-- Read this file first.*?^--   \* every text comes from the translation files of the game\.\n", re.M | re.S)
 GAME_START = ("-- It starts as a copy of the smallest example cartridge of the SpiffBoy SDK:\n"
               "-- replace its screens with the ones of your game.\n")
@@ -136,6 +137,14 @@ def check_example(sdk):
             raise ScaffoldError(f"the example definition no longer registers {field} = \"{value}\"; update the renames of this tool")
     if not re.search(rf"^\s*mod\s*=\s*{EXAMPLE_NAMESPACE}\.MOD_ID\s*,", definition, re.M):
         raise ScaffoldError(f"the example definition no longer registers mod = {EXAMPLE_NAMESPACE}.MOD_ID; update this tool")
+
+
+def without_license_line(text):
+    """Returns a Lua text of the example without the licence line opening it; raises an error when the example no longer opens with it."""
+    first, _, rest = text.partition("\n")
+    if first.rstrip("\r") != EXAMPLE_LICENSE_LINE:
+        raise ScaffoldError("an example Lua file no longer opens with the example licence line; update this tool")
+    return rest
 
 
 def without_exercises(text):
@@ -241,7 +250,7 @@ def plan(args):
             continue
         text = source.read_text(encoding="utf-8")
         if source.suffix == ".lua":
-            text = without_exercises(text)
+            text = without_exercises(without_license_line(text))
         if source.name == DEFINITION:
             text = as_new_cartridge(text)
         if source.name == GAME:

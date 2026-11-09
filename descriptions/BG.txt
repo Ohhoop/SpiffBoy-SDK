@@ -33,5 +33,7 @@ A: Да. SDK не записва нищо във вашия свят. Према
 
 [img]https://i.imgur.com/lja52Fs.gif[/img]
 
+SpiffBoy SDK © 2026 Ohhoop. Примерите могат свободно да се копират в собствените ви игри за SpiffBoy. [url=https://github.com/Ohhoop/SpiffBoy-SDK/blob/main/LICENSE]Лиценз[/url]
+
 Workshop ID: 3825220785
 Mod ID: SpiffBoySDK

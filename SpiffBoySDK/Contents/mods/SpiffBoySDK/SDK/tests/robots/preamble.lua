@@ -1,3 +1,4 @@
+-- SpiffBoy SDK (c) 2026 Ohhoop. Use limited to making SpiffBoy cartridges. See LICENSE.txt.
 local LUA_ROOTS, MOD_FOLDERS, LANGUAGE, MOD_FILES = ...
 
 ROBOT = { nowMs = 1000, warnings = {}, warned = {}, loadFailure = nil, language = LANGUAGE, frameTexts = {}, playedTunes = {}, askedTexts = {} }

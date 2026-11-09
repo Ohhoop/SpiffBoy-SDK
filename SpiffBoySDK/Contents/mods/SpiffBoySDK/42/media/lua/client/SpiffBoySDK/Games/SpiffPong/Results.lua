@@ -1,3 +1,4 @@
+-- SpiffBoy SDK example (c) 2026 Ohhoop. Free to copy into SpiffBoy cartridges. See LICENSE.txt.
 -- The end of a match of Spiff-Pong: the result over the final field, then,
 -- after a match against the console whose longest rally enters the best
 -- scores, the entry of the initials of the player.
