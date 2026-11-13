@@ -119,7 +119,7 @@ function TestConsole.start(folder, seed, save)
     chip:boot()
     local sequencer = SpiffBoySequencer.new(chip, SpiffBoy.Tunes.set(id))
     local context = {
-        seed = seed, definition = definition, art = SpiffBoy.Textures.folder(definition.mod, definition.art, true),
+        seed = seed, definition = definition, art = SpiffBoy.Textures.folder(SpiffBoy.Textures.cartridgeFolder(definition), definition.art, true),
         chip = chip, sequencer = sequencer, link = UNPLUGGED, save = save,
         persist = function(written)
             console.saves[#console.saves + 1] = copyOf(written)

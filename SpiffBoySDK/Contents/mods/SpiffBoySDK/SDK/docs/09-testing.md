@@ -18,7 +18,7 @@ The offline tests are Python scripts of the kit. Run them from the `SDK` folder 
 python tests/robots/run_robots.py <SpiffBoy media folder> <mod media folder> [--games A,B] [--ticks N] [--seed N] [--lang LANG] [--json file] [--compare file] [--state]
 ```
 
-The SpiffBoy media folder is the `42/media` folder of the SpiffBoy mod, the mod media folder the one of your mod, `.../mods/MyMod/42/media`. To play the examples of the SDK, give `../42/media` as the mod media folder. The robot plays every game that has a `lua/shared/<Ns>/Games/<Id>/Definition.lua`, and loads its `lua/client/<Ns>/Games/<Id>/Game.lua`: keep these names. Given a folder that holds no such game, such as the `42` folder instead of `42/media`, it stops with a message. Its options are listed in the [Tools reference](13-tools-reference.md#testsrobotsrun_robotspy); by default it plays 20000 ticks per game, about five and a half minutes of play.
+The SpiffBoy media folder is the `common/media` folder of the SpiffBoy mod, the mod media folder the one of your mod, `.../mods/MyMod/common/media`. To play the examples of the SDK, give `../common/media` as the mod media folder. The robot plays every game that has a `lua/shared/<Ns>/Games/<Id>/Definition.lua`, and loads its `lua/client/<Ns>/Games/<Id>/Game.lua`: keep these names. Given a folder that holds no such game, such as the `42` folder instead of `42/media`, it stops with a message. Its options are listed in the [Tools reference](13-tools-reference.md#testsrobotsrun_robotspy); by default it plays 20000 ticks per game, about five and a half minutes of play.
 
 ### Reading the output
 

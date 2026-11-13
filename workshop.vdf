@@ -6,5 +6,5 @@
 	"visibility"		"0"
 	"contentfolder"		"SpiffBoySDK/Contents"
 	"previewfile"		"../Development/art/poster/thumbnail.gif"
-	"changenote"		"0.1.6 for SpiffBoy 0.2.6: the SDK now has a licence (LICENSE.txt, a licence line at the top of every Lua file and in the description), the examples are free to copy into your own cartridges; new_cartridge.py leaves the example licence line out of a new cartridge"
+	"changenote"		"0.1.7 for SpiffBoy 0.3.0: a mod keeps its files in a common folder, the examples and new_cartridge.py follow it; api 2 reads the art of a cartridge from the common folder of its mod, cartridges of api 1 keep working; new tool check_layout.py checks the folders of a mod; the docs explain how to ship a file that differs from one version of the game to another"
 }

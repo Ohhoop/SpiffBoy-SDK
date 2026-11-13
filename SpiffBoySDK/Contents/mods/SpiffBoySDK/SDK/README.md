@@ -11,7 +11,7 @@ The whole kit comes with the SpiffBoy SDK mod. Once you subscribe to it on the S
 ```
 <Steam>/steamapps/workshop/content/108600/<SDK id>/mods/SpiffBoySDK/
     mod.info
-    42/                 the files of the mod, which the game loads
+    common/             the files of the mod, which the game loads
         media/          the SDK media folder: the example cartridges and the developer menu
     SDK/                this kit, which the game ignores
         README.md       this page
@@ -22,17 +22,17 @@ The whole kit comes with the SpiffBoy SDK mod. Once you subscribe to it on the S
 
 `<Steam>` is the folder where Steam is installed, `108600` is the number of Project Zomboid on Steam, and `<SDK id>` is the number at the end of the address of the Workshop page of the SpiffBoy SDK. The SpiffBoy mod sits beside it under its own number; the [Tools reference](docs/13-tools-reference.md#folders) gives its media folder.
 
-Every command of these pages runs from the `SDK` folder. From there, the SDK media folder is `../42/media`. The tools and the tests also run from any other folder when you give their full paths.
+Every command of these pages runs from the `SDK` folder. From there, the SDK media folder is `../common/media`. The tools and the tests also run from any other folder when you give their full paths.
 
-The tests play your cartridges on top of the real code of SpiffBoy: they need the `42/media` folder of the SpiffBoy mod, which you get by subscribing to it. The [Tools reference](docs/13-tools-reference.md#folders) says where it is.
+The tests play your cartridges on top of the real code of SpiffBoy: they need the `common/media` folder of the SpiffBoy mod, which you get by subscribing to it. The [Tools reference](docs/13-tools-reference.md#folders) says where it is.
 
 ## What the kit holds
 
 | Part | Where, in the mod folder | Content |
 |---|---|---|
-| Hello SpiffBoy | the `HelloSpiffBoy` folders under `42/media` | The smallest complete cartridge: a title menu, a round of 30 seconds with Spiffo walking around, a sound effect, music, and a best count saved when the end of a round is confirmed, commented line by line. |
-| Spiff-Pong | the `SpiffPong` folders under `42/media` | A complete game: menus, a match against the console or against a second player on the link cable, best scores with initials, options, music. |
-| The developer menu | the `DevMenu` folders under `42/media` | A window that gives a console, the devices of the console and every registered cartridge of every mod. |
+| Hello SpiffBoy | the `HelloSpiffBoy` folders under `common/media` | The smallest complete cartridge: a title menu, a round of 30 seconds with Spiffo walking around, a sound effect, music, and a best count saved when the end of a round is confirmed, commented line by line. |
+| Spiff-Pong | the `SpiffPong` folders under `common/media` | A complete game: menus, a match against the console or against a second player on the link cable, best scores with initials, options, music. |
+| The developer menu | the `DevMenu` folders under `common/media` | A window that gives a console, the devices of the console and every registered cartridge of every mod. |
 | The documentation | `SDK/docs/` | The pages below, and exercises with solutions. |
 | The tools | `SDK/tools/` | Python scripts that create a new cartridge, turn your drawings into screen art, put your label on the cartridge model and icon, and check your texts. |
 | The tests | `SDK/tests/` | The robot, which plays your cartridges offline, and a runner for every test at once. |

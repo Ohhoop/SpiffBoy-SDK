@@ -3,7 +3,7 @@
 Usage:
     python run_robots.py <SpiffBoy media folder> <mod media folder> [--ticks N] [--seed N] [--games A,B] [--lang LANG] [--json out.json] [--compare reference.json] [--state]
 
-A media folder is the media folder of a mod, such as .../mods/SpiffBoy/42/media. Every game folder of the mod holding a
+A media folder is the media folder of a mod, such as .../mods/SpiffBoy/common/media. Every game folder of the mod holding a
 Definition.lua (lua/shared/<Namespace>/Games/<Id>/Definition.lua) is played. The robot holds or taps a seeded random button on
 each tick, START only about once a minute, and now and then pauses one to five seconds without any button. Two runs with the same ticks and seed give the same
 digests when the games behave the same; --compare fails on any digest that differs from the reference. --lang plays in another
@@ -43,20 +43,39 @@ COMMENT = re.compile(r"/\*.*?\*/", re.S)
 BLOCK = re.compile(r"\b(module|item)\s+(\w+)\s*\{")
 TAGS = re.compile(r"\bTags\s*=\s*([^,\n]+)")
 FRAMEWORK = Path("lua") / "shared" / "SpiffBoy" / "Framework" / "Cartridges.lua"
+COMMON = "common"
+BASE_VERSION = "42"
+VERSION_NAME = re.compile(r"^\d+(\.\d+)?$")
 
 
 def require_spiffboy(media):
     """Stops the test with a message naming the folder when it is not the media folder of the SpiffBoy mod, which every test loads."""
     if not (media / FRAMEWORK).is_file():
         sys.exit(f"{media} is not the media folder of the SpiffBoy mod: it has no {FRAMEWORK.as_posix()}. "
-                 "Give the 42/media folder of SpiffBoy, the mod the SDK requires.")
+                 "Give the common/media folder of SpiffBoy, the mod the SDK requires.")
 
 
 def require_mod(media):
     """Stops the test with a message naming the folder when it is not the media folder of a mod, with a mod.info next to it."""
     if not (media.parent / "mod.info").is_file():
         sys.exit(f"{media} is not the media folder of a mod: there is no mod.info in {media.parent}. "
-                 "Give the 42/media folder of your mod, next to its mod.info.")
+                 "Give the common/media folder of your mod, next to its mod.info.")
+
+
+def version_folder(media):
+    """Returns the version folder the game loads beside the common folder of the mod a media folder belongs to: the folder of the media folder itself when it is a version folder, otherwise the highest version folder next to common, or 42 when the mod has none."""
+    folder = media.resolve().parent
+    if folder.name != COMMON:
+        return folder
+    versions = sorted((path for path in folder.parent.iterdir() if path.is_dir() and VERSION_NAME.match(path.name)), key=lambda path: tuple(int(part) for part in path.name.split(".")))
+    if versions:
+        return versions[-1]
+    return folder.parent / BASE_VERSION
+
+
+def common_folder(media):
+    """Returns the common folder of the mod a media folder belongs to, loaded by every version of the game."""
+    return media.resolve().parents[1] / COMMON
 
 
 def mod_id(media):
@@ -81,15 +100,31 @@ def english_texts(*medias):
     return texts
 
 
+def slashed(path):
+    """Returns a path as text with forward slashes, as the Lua of the tests names files."""
+    return str(path).replace("\\", "/")
+
+
+def lua_roots(*medias):
+    """Returns the Lua folders the files of the given mods are required from, in the order of the mods given: for each mod its version folder first, whose files the game reads in place of the ones of its common folder, then its common folder."""
+    roots = []
+    for media in medias:
+        for folder in {version_folder(media): None, common_folder(media): None}:
+            lua = folder / "media" / "lua"
+            if lua.is_dir():
+                roots.append(slashed(lua))
+    return roots
+
+
 def mod_files(*medias):
     """Returns the path of every file of the given mods, as the game names them: the folder of the mod, a slash, then the path from it, letter case kept."""
     files = {}
     for media in medias:
-        folder = media.parent
-        prefix = str(folder).replace("\\", "/") + "/"
-        for path in folder.rglob("*"):
-            if path.is_file():
-                files[prefix + path.relative_to(folder).as_posix()] = True
+        for folder in {common_folder(media): None, version_folder(media): None}:
+            prefix = slashed(folder) + "/"
+            for path in folder.rglob("*"):
+                if path.is_file():
+                    files[prefix + path.relative_to(folder).as_posix()] = True
     return files
 
 
@@ -140,8 +175,8 @@ def lua_calls(calls):
 
 def load_preamble(lua, spiffboy, mod, language):
     """Loads the preamble of the robots in the given Lua runtime, the given mod and SpiffBoy giving its code, its files, its item scripts and the English texts of the console, and returns the loader of further Lua files."""
-    roots = lua.table_from([str(mod / "lua").replace("\\", "/"), str(spiffboy / "lua").replace("\\", "/")])
-    folders = lua.table_from({mod_id(media): str(media.parent).replace("\\", "/") for media in (spiffboy, mod)})
+    roots = lua.table_from(lua_roots(mod, spiffboy))
+    folders = lua.table_from({mod_id(media): lua.table_from({"common": slashed(common_folder(media)), "version": slashed(version_folder(media))}) for media in (spiffboy, mod)})
     load = lua.eval("function(path, ...) local f = assert(loadfile(path)); return f(...) end")
     load(str(HERE / "preamble.lua"), roots, folders, language, lua.table_from(mod_files(spiffboy, mod)))
     robot = lua.globals().ROBOT
@@ -323,7 +358,7 @@ def main():
     games = games_of(mod)
     if not games:
         sys.exit(f"{mod} holds no cartridge: no lua/shared/<Namespace>/Games/<Id>/Definition.lua under it. "
-                 "Give the 42/media folder of your mod, the one that holds lua, ui and scripts.")
+                 "Give the common/media folder of your mod, the one that holds lua, ui and scripts.")
     if args.games:
         wanted = set(args.games.split(","))
         games = [g for g in games if g.rsplit("/", 1)[1] in wanted]

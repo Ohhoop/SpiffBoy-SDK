@@ -10,8 +10,9 @@
 - [ ] You played it in the game from start to end, including on a new cartridge with an empty save.
 - [ ] If it plays on the cable, you played a two player game with a second player.
 - [ ] `mod.info` requires SpiffBoy, and every id of the definition points at your mod, not at the SDK.
-- [ ] The definition gives `api = 1`, its own `art` and `texts` folders, and an `id`, an `item` and a `game` class no other mod uses ([The definition](02-how-a-cartridge-works.md#the-definition)).
+- [ ] The definition gives `api = 2`, its own `art` and `texts` folders, and an `id`, an `item` and a `game` class no other mod uses ([The definition](02-how-a-cartridge-works.md#the-definition)).
 - [ ] The item script gives `Tags = base:hasmetal;spiffboy:cartridge`, and `console.txt` holds no line about your cartridge after a game starts ([Dismantling](08-the-cartridge-item.md#dismantling)).
+- [ ] `tools/check_layout.py` finds no fault in the folders of your mod ([Folder layout](#folder-layout)).
 - [ ] Your mod does not depend on the SDK: the SDK is a tool for you, not for your players.
 
 ## mod.info
@@ -28,7 +29,7 @@ The `mod.info` of [Getting started](01-getting-started.md#create-your-own-mod), 
 | `poster`, `icon` | Pictures in the same folder as `mod.info`, shown in the mod list. |
 | `versionMin` | The oldest build of the game your mod runs on. |
 
-The same file goes in `Contents/mods/MyMod/` and in `Contents/mods/MyMod/42/`.
+The same file goes in `Contents/mods/MyMod/` and in `Contents/mods/MyMod/common/`.
 
 ## Folder layout
 
@@ -41,9 +42,15 @@ Zomboid/Workshop/MyMod/
         mod.info
         poster.png
         42/
+            media/
+                AnimSets/keep.txt                                empty files that keep the two folders
+                actiongroups/keep.txt                            the game looks into for every mod
+        common/
             mod.info
             poster.png
             media/
+                AnimSets/keep.txt
+                actiongroups/keep.txt
                 lua/
                     shared/
                         MyMod/
@@ -70,6 +77,10 @@ Zomboid/Workshop/MyMod/
                     MyMod/
                         SpaceRace.txt                            the cartridge item and its 3D model
 ```
+
+The game loads `common/`, then one version folder only: the highest one not above its own version. `42/` is loaded by every version of build 42 below the next version folder of your mod, so it must exist even when it holds nothing of yours. `tools/new_cartridge.py` creates the `keep.txt` files.
+
+When a file must differ from one version of the game to another, take it out of `common/` and put one copy in each version folder: `42/media/lua/client/MyMod/Thing.lua` for the versions before 42.22, `42.22/media/lua/client/MyMod/Thing.lua` from 42.22 on. A file kept in one version folder alone is missing for the versions that load another one. `tools/check_layout.py` finds these faults ([Tools reference](13-tools-reference.md#check_layoutpy)).
 
 One mod can hold several cartridges: a folder per game under `Games/`, a script per item, and all their names in the same `ItemName.json`.
 
@@ -107,7 +118,7 @@ The code, the art and the music can change freely, and new tunes, texts and save
 
 ## Versions of the framework
 
-The `api` field of your definition is the version of the SpiffBoy framework your game is written for, not the version of your mod: leave it at 1 when your mod changes. SpiffBoy follows two rules ([Versions of the framework](02-how-a-cartridge-works.md#versions-of-the-framework)):
+The `api` field of your definition is the version of the SpiffBoy framework your game is written for, not the version of your mod: leave it as it is when your mod changes. SpiffBoy follows two rules ([Versions of the framework](02-how-a-cartridge-works.md#versions-of-the-framework)):
 
 - A new version of the framework never removes or reduces anything an older version offers. A change that would break existing games creates a new version, and SpiffBoy keeps accepting every older one, so a cartridge published with `api = 1` keeps working with every later SpiffBoy.
 - A player whose SpiffBoy is older than the `api` of your cartridge gets an error naming your cartridge and both versions, instead of a game that breaks halfway.

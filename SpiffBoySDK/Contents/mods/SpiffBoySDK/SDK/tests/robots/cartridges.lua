@@ -155,7 +155,7 @@ local function playGame(id, definition)
     local sameSaveTicks = {}
     local lastSave = nil
     local frames = 0
-    local art = SpiffBoy.Textures.folder(definition.mod, definition.art, true)
+    local art = SpiffBoy.Textures.folder(SpiffBoy.Textures.cartridgeFolder(definition), definition.art, true)
     local drawing = false
     local context = {
         seed = seed, definition = definition, chip = chip, sequencer = sequencer, link = port, save = {},

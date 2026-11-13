@@ -21,7 +21,7 @@ require "SpiffBoy/Framework/Cartridges"
 SpiffBoy.Cartridges.register({
     -- The version of the SpiffBoy framework this game is written for. A SpiffBoy
     -- too old to know it refuses the cartridge with a clear error.
-    api = 1,
+    api = 2,
     -- The id identifies the game: its texts and its tunes are looked up by it,
     -- and by convention its folders carry the same name.
     id = "SpiffPong",

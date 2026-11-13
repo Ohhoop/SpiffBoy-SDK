@@ -6,9 +6,10 @@ Every tool is a Python 3 script. The tools need Pillow and numpy, the tests lupa
 
 Every command on this page runs from the `SDK` folder of the SpiffBoy SDK mod, so `tools/...` and `tests/...` name the scripts of the kit. The [README](../README.md#where-the-kit-is) shows where Steam puts that folder. The paths in the examples:
 
-- **SpiffBoy media folder**: the media folder of the SpiffBoy mod, `<Steam>/steamapps/workshop/content/108600/<SpiffBoy id>/mods/SpiffBoy/42/media`, where `<SpiffBoy id>` is the number at the end of the address of the Workshop page of SpiffBoy.
-- **SDK media folder**: the media folder of the SpiffBoy SDK mod, `../42/media` from the `SDK` folder.
-- **Mod media folder**: the media folder of your mod, `C:/Users/<you>/Zomboid/Workshop/MyMod/Contents/mods/MyMod/42/media`.
+- **SpiffBoy media folder**: the media folder of the SpiffBoy mod, `<Steam>/steamapps/workshop/content/108600/<SpiffBoy id>/mods/SpiffBoy/common/media`, where `<SpiffBoy id>` is the number at the end of the address of the Workshop page of SpiffBoy.
+- **SDK media folder**: the media folder of the SpiffBoy SDK mod, `../common/media` from the `SDK` folder.
+- **Mod media folder**: the media folder of your mod, `C:/Users/<you>/Zomboid/Workshop/MyMod/Contents/mods/MyMod/common/media`.
+- **Mod folder**: the folder of your mod that holds `common` and the version folders, `C:/Users/<you>/Zomboid/Workshop/MyMod/Contents/mods/MyMod`.
 
 | Tool | Does |
 |---|---|
@@ -16,6 +17,7 @@ Every command on this page runs from the `SDK` folder of the SpiffBoy SDK mod, s
 | [tools/shade_layers.py](#shade_layerspy) | Turns pictures into a layered sheet and reports the draw calls of each cell. |
 | [tools/cartridge_label.py](#cartridge_labelpy) | Puts a label on the blank cartridge: the 3D model texture, the inventory icon and the picture of the mod. |
 | [tools/check_texts.py](#check_textspy) | Checks the text files of every game and the keys the code asks for. |
+| [tools/check_layout.py](#check_layoutpy) | Checks that the folders of your mod are laid out as the game loads them. |
 | [tests/robots/run_robots.py](#testsrobotsrun_robotspy) | Plays every cartridge offline with random buttons. |
 | [tests/run_test.py](#testsrun_testpy) | Runs a test of your own, written with `tests/lib/test_console.lua`. |
 | [tests/spiff_pong/run_link_test.py](#testsspiff_pongrun_link_testpy) | Plays Spiff-Pong on two simulated consoles joined by a cable. |
@@ -118,6 +120,29 @@ For every game folder `lua/shared/<Ns>/Games/<Id>/` with a `Definition.lua`, it 
 - every prefix asked for, `gameText("Item_" .. id)`, starts at least one key.
 
 The Lua scan reads the files of `lua/client`, `lua/shared` and `lua/server` under `<Ns>/Games/<Id>/` without running them. It follows the names given to `SpiffBoy.GameTexts.of("<Id>")` and the variables copied from them. Keys computed at run time cannot be checked and are counted. A game with problems shows `FAIL` and one indented line per problem.
+
+## check_layout.py
+
+Checks that the folders of a mod are laid out as the game loads them. [Folder layout](11-publishing.md#folder-layout) explains the layout.
+
+```
+python tools/check_layout.py <mod folder>
+```
+
+| Option | Meaning |
+|---|---|
+| `<mod folder>` | The folder of your mod that holds `common` and the version folders. |
+
+The game loads `common`, then one version folder only: the highest one not above its own version. The check fails when:
+
+- `common` holds no `mod.info`, or a version folder holds one;
+- the version folder `42` is missing;
+- a file of a version folder is missing from another version folder;
+- a file of a version folder is the same in every version folder, so it belongs in `common`;
+- a file of a version folder also exists in `common`, where the game never reads it;
+- `common` or a version folder lacks `media/AnimSets` or `media/actiongroups`, the two folders the game looks into for every mod.
+
+It prints one line per fault, then `layout: N failures`.
 
 ## tests/robots/run_robots.py
 

@@ -25,8 +25,8 @@ Usage:
     python check_texts.py <mod media folder> [--games A,B]
 
 Examples:
-    python check_texts.py "C:/Users/me/Zomboid/Workshop/MyMod/Contents/mods/MyMod/42/media"
-    python check_texts.py .../MyMod/42/media --games MyGame
+    python check_texts.py "C:/Users/me/Zomboid/Workshop/MyMod/Contents/mods/MyMod/common/media"
+    python check_texts.py .../MyMod/common/media --games MyGame
 """
 
 import argparse

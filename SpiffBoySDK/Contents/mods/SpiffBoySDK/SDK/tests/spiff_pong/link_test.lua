@@ -73,7 +73,7 @@ local function newConsole(port, seed)
     local sequencer = SpiffBoySequencer.new(chip, SpiffBoy.Tunes.set("SpiffPong"))
     local console = { screen = screen, runtime = runtime, input = SpiffBoyInputState.new(), saves = 0, most = 0, ticks = 0 }
     local context = {
-        seed = seed, definition = definition, art = SpiffBoy.Textures.folder(definition.mod, definition.art, true),
+        seed = seed, definition = definition, art = SpiffBoy.Textures.folder(SpiffBoy.Textures.cartridgeFolder(definition), definition.art, true),
         chip = chip, sequencer = sequencer, link = port, save = {},
         persist = function() console.saves = console.saves + 1 end,
     }

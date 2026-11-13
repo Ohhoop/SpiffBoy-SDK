@@ -37,14 +37,14 @@ SpiffBoy.Cartridges.register({
 
 | Field | Required | Meaning |
 |---|---|---|
-| `api` | yes | The version of the SpiffBoy framework the game is written for, a whole number from 1. Write `api = 1`. See [Versions of the framework](#versions-of-the-framework). |
+| `api` | yes | The version of the SpiffBoy framework the game is written for, a whole number from 1. Write `api = 2`. See [Versions of the framework](#versions-of-the-framework). |
 | `id` | yes | The name of the game: its folders, its texts and its tunes are found by it. Use letters and digits. |
 | `item` | yes | The full type of the cartridge item, `Module.ItemName`, as your item script defines it, 64 characters at most. |
 | `title` | yes | The title printed on a paper label when the art folder holds no `label.png`. |
 | `mod` | yes | The id of the mod that holds the art and the texts, as in its `mod.info`. Hello SpiffBoy gives `SpiffBoySDK.MOD_ID`, defined in `Core.lua`. |
 | `game` | yes | The global name of the game class, as a string: the class only exists on the client, the definition also runs on the server. |
-| `art` | yes | The art folder, from the version folder (`42/`) of the mod, ending with `/`. |
-| `texts` | yes | The folder of the text files, from the version folder of the mod, ending with `/`. |
+| `art` | yes | The art folder, from the `common/` folder of the mod, ending with `/`. |
+| `texts` | yes | The folder of the text files, from the `common/` folder of the mod, ending with `/`. |
 | `loot` | no | `{ weight = n }`, optionally with `lists = { ... }`. Without it the weight is 2. See [The cartridge item](08-the-cartridge-item.md#loot). |
 
 A missing or malformed required field stops the file with an error that names the cartridge, such as `SpiffBoy: [SB-REG-CARTRIDGE] cartridge MyGame needs a title`.
@@ -59,9 +59,14 @@ Prefixing the item module and the class name with your namespace, and choosing a
 
 ### Versions of the framework
 
-`SpiffBoy.API_VERSION` is the version of the framework the installed SpiffBoy provides; it is 1 today. A definition whose `api` is above it is refused with `SpiffBoy: [SB-REG-API] cartridge MyGame needs a newer SpiffBoy`, followed by both numbers, so a player with an old SpiffBoy reads why your cartridge does not load.
+`SpiffBoy.API_VERSION` is the version of the framework the installed SpiffBoy provides; it is 2 today. A definition whose `api` is above it is refused with `SpiffBoy: [SB-REG-API] cartridge MyGame needs a newer SpiffBoy`, followed by both numbers, so a player with an old SpiffBoy reads why your cartridge does not load.
 
 A new version of the framework never removes or reduces what an older version offers. A change that would break existing games creates a new version, and SpiffBoy keeps accepting every older one: a cartridge written for `api = 1` keeps working.
+
+| `api` | What it brings |
+|---|---|
+| 1 | The art folder of the cartridge is read from the version folder (`42/`) of its mod. |
+| 2 | The art folder of the cartridge is read from the `common/` folder of its mod, so one copy of the art serves every version of the game. |
 
 ## The game class
 

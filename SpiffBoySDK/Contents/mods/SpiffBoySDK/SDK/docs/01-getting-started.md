@@ -35,13 +35,17 @@ Zomboid/Workshop/MyMod/
     Contents/mods/MyMod/
         mod.info
         poster.png
-        42/
+        common/
             mod.info
             poster.png
             media/
+        42/
+            media/
 ```
 
-Write the same `mod.info` in `Contents/mods/MyMod/` and in `Contents/mods/MyMod/42/`:
+The game loads `common/`, then one version folder, `42/`. Everything you make goes in `common/`; `42/` stays for the files that differ from one version of the game to another ([Folder layout](11-publishing.md#folder-layout)).
+
+Write the same `mod.info` in `Contents/mods/MyMod/` and in `Contents/mods/MyMod/common/`:
 
 ```
 id=MyMod
@@ -60,10 +64,10 @@ Keep the real files in `Zomboid/Workshop/MyMod`. A mod folder reached through a 
 
 ## Copy the example with new_cartridge.py
 
-`tools/new_cartridge.py` copies Hello SpiffBoy into your mod and renames everything: the folders, the game class, the item, the title and the id. From the `SDK` folder of the SpiffBoy SDK mod, where `../42/media` is the media folder of the SDK, on one line:
+`tools/new_cartridge.py` copies Hello SpiffBoy into your mod and renames everything: the folders, the game class, the item, the title and the id. From the `SDK` folder of the SpiffBoy SDK mod, where `../common/media` is the media folder of the SDK, on one line:
 
 ```
-python tools/new_cartridge.py --sdk "../42/media" --mod "C:/Users/<you>/Zomboid/Workshop/MyMod/Contents/mods/MyMod/42/media" --namespace MyMod --module MyMod --id SpaceRace --title "Space Race" --mod-id MyMod
+python tools/new_cartridge.py --sdk "../common/media" --mod "C:/Users/<you>/Zomboid/Workshop/MyMod/Contents/mods/MyMod/common/media" --namespace MyMod --module MyMod --id SpaceRace --title "Space Race" --mod-id MyMod
 ```
 
 - `--namespace` is the folder name of your mod under `lua`, `ui`, `scripts` and `textures`, and the name of its global Lua table.

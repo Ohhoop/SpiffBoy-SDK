@@ -13,7 +13,8 @@ new cartridge describes it as a cartridge of its own and gives it the loot weigh
 example has 0, and the header of the game file says it starts as a copy of Hello SpiffBoy instead of listing what
 Hello SpiffBoy does. It also writes
 lua/shared/Translate/EN/ItemName.json, the English name of the item, when the mod has no such file, and otherwise prints the
-line to add to it. It also writes lua/shared/<Namespace>/Core.lua, which defines the global table <Namespace> and <Namespace>.MOD_ID, when the mod
+line to add to it. It also writes an empty keep.txt in AnimSets and actiongroups, the two folders the game looks into for every mod, in the media
+folder of the mod and in the media folder of its version folder 42, where no file keeps them yet. It also writes lua/shared/<Namespace>/Core.lua, which defines the global table <Namespace> and <Namespace>.MOD_ID, when the mod
 has none; an existing one must set <Namespace>.MOD_ID to --mod-id. --mod-id must be the id= of the mod.info next to the media
 folder of the mod.
 
@@ -34,11 +35,12 @@ Usage:
                             --id <Id> --title "<Title>" --mod-id <mod id>
 
 Examples:
-    python new_cartridge.py --sdk ".../SpiffBoySDK/42/media" --mod "C:/Users/me/Zomboid/Workshop/MyMod/Contents/mods/MyMod/42/media"
+    python new_cartridge.py --sdk ".../SpiffBoySDK/common/media" --mod "C:/Users/me/Zomboid/Workshop/MyMod/Contents/mods/MyMod/common/media"
         --namespace MyMod --module MyMod --id SpaceRace --title "Space Race" --mod-id MyMod
 """
 
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
@@ -59,6 +61,9 @@ NAME = re.compile(r"^[A-Za-z][A-Za-z0-9]*$")
 MOD_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.\- ]*$")
 MOD_INFO_ID = re.compile(r"^id=(.*)$", re.M)
 TITLE = re.compile(r"^[^\"\\\r\n\t]+$")
+SEARCHED_FOLDERS = ("AnimSets", "actiongroups")
+PLACEHOLDER = "keep.txt"
+BASE_VERSION = "42"
 DEFINITION = "Definition.lua"
 DEFINITION_CHANGES = [
     ("-- Hello SpiffBoy: the smallest complete cartridge of the SpiffBoy SDK.",
@@ -227,12 +232,24 @@ def validate(args):
         raise ScaffoldError(f"no folder {args.mod}: --mod must be the media folder of the mod")
     info = args.mod.parent / "mod.info"
     if not info.is_file():
-        raise ScaffoldError(f"no mod.info in {args.mod.parent}: --mod must be the 42/media folder of the mod, next to its mod.info")
+        raise ScaffoldError(f"no mod.info in {args.mod.parent}: --mod must be the common/media folder of the mod, next to its mod.info")
     found = MOD_INFO_ID.search(info.read_text(encoding="utf-8", errors="replace"))
     if not found:
         raise ScaffoldError(f"{info} has no id= line: write the id of the mod in it")
     if found.group(1).strip() != args.mod_id:
         raise ScaffoldError(f"--mod-id is {args.mod_id}, but {info} has id={found.group(1).strip()}: give --mod-id the id of mod.info")
+
+
+def placeholders(mod):
+    """Returns the empty files to write, as pairs of path and content, that keep the folders the game looks into for every mod: AnimSets and actiongroups in the media folder of the mod and in the media folder of its version folder 42, leaving out the folders a file already keeps."""
+    medias = {mod.resolve(): None, (mod.resolve().parents[1] / BASE_VERSION / "media"): None}
+    found = []
+    for media in medias:
+        for folder in SEARCHED_FOLDERS:
+            kept = media / folder
+            if not kept.is_dir() or not any(kept.iterdir()):
+                found.append((kept / PLACEHOLDER, ""))
+    return found
 
 
 def plan(args):
@@ -271,6 +288,7 @@ def plan(args):
     names, hint = item_names(args)
     if names:
         writes.append(names)
+    writes += placeholders(args.mod)
     if problems:
         raise ScaffoldError("nothing written:\n    " + "\n    ".join(problems))
     return writes, hint
@@ -298,7 +316,7 @@ def main():
             target.write_bytes(content)
         else:
             target.write_text(content, encoding="utf-8", newline="\n")
-        print(f"written {target.relative_to(args.mod).as_posix()}")
+        print(f"written {Path(os.path.relpath(target.resolve(), args.mod.resolve())).as_posix()}")
     if hint:
         print(hint)
     print(f"cartridge {args.id} created: item {args.module}.Cartridge_{args.id}, game class {args.namespace}{args.id}Game")

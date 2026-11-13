@@ -117,7 +117,7 @@ These files belong to the whole mod: when it holds several cartridges, all their
 `tools/check_texts.py` reads the text files and the Lua files of every game of your mod, without running them:
 
 ```
-python tools/check_texts.py "C:/Users/<you>/Zomboid/Workshop/MyMod/Contents/mods/MyMod/42/media"
+python tools/check_texts.py "C:/Users/<you>/Zomboid/Workshop/MyMod/Contents/mods/MyMod/common/media"
 ```
 
 ```

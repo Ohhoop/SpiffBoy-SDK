@@ -4,7 +4,7 @@ These exercises change Hello SpiffBoy one step at a time. Do them in order: each
 
 ## Before you start
 
-The files of the game, under `42/media/` in the folder of the SpiffBoy SDK mod, the SDK media folder:
+The files of the game, under `common/media/` in the folder of the SpiffBoy SDK mod, the SDK media folder:
 
 | File | Content |
 |---|---|
@@ -17,7 +17,7 @@ The files of the game, under `42/media/` in the folder of the SpiffBoy SDK mod, 
 You can check your work in two ways. In the game, take Hello SpiffBoy **In a console** from the developer menu and play it. Offline, run the robot from the `SDK` folder of the mod:
 
 ```
-python tests/robots/run_robots.py "<SpiffBoy media folder>" "../42/media" --games HelloSpiffBoy
+python tests/robots/run_robots.py "<SpiffBoy media folder>" "../common/media" --games HelloSpiffBoy
 ```
 
 [Tools reference](../13-tools-reference.md#folders) says where the SpiffBoy media folder is.

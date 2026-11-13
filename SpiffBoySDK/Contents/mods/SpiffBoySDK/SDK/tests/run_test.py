@@ -11,7 +11,7 @@ The runner prints every failed check, warning and crash of a game, then one line
 exits with 1 when a check failed, a warning came up, a game crashed or the test itself stopped on an error.
 
 Example:
-    python run_test.py ".../mods/SpiffBoy/42/media" ".../mods/MyMod/42/media" ".../MyMod/tests/race_test.lua" --lang FR
+    python run_test.py ".../mods/SpiffBoy/common/media" ".../mods/MyMod/common/media" ".../MyMod/tests/race_test.lua" --lang FR
 """
 
 import argparse

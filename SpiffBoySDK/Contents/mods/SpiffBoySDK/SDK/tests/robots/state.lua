@@ -65,7 +65,7 @@ local function partsOf(folder, seed)
     local artNames = {}
     local context = {
         seed = seed, definition = definition,
-        art = SpiffBoy.SaveState.namedArt(SpiffBoy.Textures.folder(definition.mod, definition.art, true), artNames),
+        art = SpiffBoy.SaveState.namedArt(SpiffBoy.Textures.folder(SpiffBoy.Textures.cartridgeFolder(definition), definition.art, true), artNames),
         chip = chip, sequencer = sequencer, link = port, save = {},
         persist = function() end,
     }

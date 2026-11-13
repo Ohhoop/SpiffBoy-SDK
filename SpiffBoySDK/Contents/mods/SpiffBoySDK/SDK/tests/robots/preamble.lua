@@ -42,12 +42,25 @@ Events = setmetatable({}, { __index = function(t, name)
 end })
 Translator = { getLanguage = function() return { name = function() return LANGUAGE end } end }
 SandboxVars = { SpiffBoy = { PlayingEasesMood = true, NoiseAttractsZombies = true, BatteriesDrain = true, Dismantling = true, CartridgeLoot = 3, LinkCableLoot = 3, ConsoleCartridgeChance = 50, ZombiesCarryCartridges = true, OthersHearConsole = true } }
-function getModFileReader(modId, path, create)
-    local folder = MOD_FOLDERS[modId]
-    if not folder or not MOD_FILES[folder .. "/" .. path] then
+--- Returns the full path of a file of a mod as the game finds it: in the version folder of the mod, otherwise in its common folder, or nil when neither holds it.
+local function modFile(modId, path)
+    local folders = MOD_FOLDERS[modId]
+    if not folders then
         return nil
     end
-    local file = io.open(folder .. "/" .. path, "rb")
+    for _, folder in ipairs({ folders.version, folders.common }) do
+        if MOD_FILES[folder .. "/" .. path] then
+            return folder .. "/" .. path
+        end
+    end
+    return nil
+end
+function getModFileReader(modId, path, create)
+    local found = modFile(modId, path)
+    if not found then
+        return nil
+    end
+    local file = io.open(found, "rb")
     if not file then
         return nil
     end
@@ -63,11 +76,11 @@ function getModFileReader(modId, path, create)
     }
 end
 function getModInfoByID(modId)
-    local folder = MOD_FOLDERS[modId]
-    if not folder then
+    local folders = MOD_FOLDERS[modId]
+    if not folders then
         return nil
     end
-    return { getVersionDir = function() return folder end, getModVersion = function() return "test" end }
+    return { getCommonDir = function() return folders.common end, getVersionDir = function() return folders.version end, getModVersion = function() return "test" end }
 end
 --- Returns the texture of the robot for a file of a mod: its path from the mod folder, the full path of its file, and the width and height of the picture, read once when first asked.
 function ROBOT.texture(path, file)
@@ -85,9 +98,11 @@ function ROBOT.texture(path, file)
     }
 end
 local function shortPath(path)
-    for _, folder in pairs(MOD_FOLDERS) do
-        if string.sub(path, 1, string.len(folder) + 1) == folder .. "/" then
-            return string.sub(path, string.len(folder) + 2)
+    for _, folders in pairs(MOD_FOLDERS) do
+        for _, folder in ipairs({ folders.common, folders.version }) do
+            if string.sub(path, 1, string.len(folder) + 1) == folder .. "/" then
+                return string.sub(path, string.len(folder) + 2)
+            end
         end
     end
     return path

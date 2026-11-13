@@ -2,7 +2,7 @@
 
 The suites are the robots of tests/robots/run_robots.py, played once per seed of SEEDS in English, then once more with the first
 seed in each other language a game of the mod has a text file for, named with a language code in capitals, then once more with the first seed and the save state check
-(--state), the text checker tools/check_texts.py, every test of the mod
+(--state), the text checker tools/check_texts.py, the folder layout checker tools/check_layout.py, every test of the mod
 itself (<Workshop folder of the mod>/tests/*_test.lua, next to Contents, run with tests/run_test.py), and the runners of SDK_SUITES, which take <SpiffBoy media folder> <mod media folder> and test a part of the SDK itself: each one
 runs only on a mod holding the folder it tests, and is skipped on any other mod. Each suite runs in its own process; a suite fails
 when it exits with an error.
@@ -16,8 +16,8 @@ fail is printed, after the summary; the notes of a suite that passed, such as a 
 under its line in any case, each note once. Every test of the mod itself runs in English, then once in each other language.
 
 Examples:
-    python run_all.py ".../mods/SpiffBoy/42/media" ".../mods/SpiffBoySDK/42/media"
-    python run_all.py ".../mods/SpiffBoy/42/media" ".../mods/MyMod/42/media" --ticks 5000 --verbose
+    python run_all.py ".../mods/SpiffBoy/common/media" ".../mods/SpiffBoySDK/common/media"
+    python run_all.py ".../mods/SpiffBoy/common/media" ".../mods/MyMod/common/media" --ticks 5000 --verbose
 """
 
 import argparse
@@ -29,6 +29,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROBOTS = HERE / "robots" / "run_robots.py"
 CHECK_TEXTS = HERE.parent / "tools" / "check_texts.py"
+CHECK_LAYOUT = HERE.parent / "tools" / "check_layout.py"
 RUN_TEST = HERE / "run_test.py"
 OWN_TESTS = "tests"
 SEEDS = (12345, 2718, 31337)
@@ -65,6 +66,7 @@ def suites(spiffboy, mod, ticks):
     found += [(f"robots {language}", robot + ["--seed", str(SEEDS[0]), "--lang", language]) for language in languages(mod)]
     found.append(("robots save state", robot + ["--seed", str(SEEDS[0]), "--state"]))
     found.append(("check_texts", [sys.executable, str(CHECK_TEXTS), str(mod)]))
+    found.append(("check_layout", [sys.executable, str(CHECK_LAYOUT), str(mod.resolve().parents[1])]))
     for test in own_tests(mod):
         command = [sys.executable, str(RUN_TEST), str(spiffboy), str(mod), str(test)]
         found.append((f"test {test.stem}", command))
@@ -102,11 +104,11 @@ def main():
     args = parser.parse_args()
     for folder in (args.spiffboy, args.mod):
         if not (folder.parent / "mod.info").is_file() or not (folder / "lua").is_dir():
-            print(f"run_all: {folder} is not the media folder of a mod: give the 42/media folder, which holds lua and has a mod.info next to it", file=sys.stderr)
+            print(f"run_all: {folder} is not the media folder of a mod: give the common/media folder, which holds lua and has a mod.info next to it", file=sys.stderr)
             return 1
     if not (args.spiffboy / FRAMEWORK).is_file():
         print(f"run_all: {args.spiffboy} is not the media folder of the SpiffBoy mod: it has no {FRAMEWORK.as_posix()}. "
-              "Give the 42/media folder of SpiffBoy, the mod the SDK requires.", file=sys.stderr)
+              "Give the common/media folder of SpiffBoy, the mod the SDK requires.", file=sys.stderr)
         return 1
     failed = []
     shown = set()

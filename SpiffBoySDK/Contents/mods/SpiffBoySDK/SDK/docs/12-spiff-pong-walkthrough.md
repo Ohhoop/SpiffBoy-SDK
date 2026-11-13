@@ -4,7 +4,7 @@ Spiff-Pong puts the pieces of Hello SpiffBoy together in a complete game: a titl
 
 ## The files
 
-Under `42/media/` of the SDK mod, the SDK media folder (`../42/media` from the `SDK` folder):
+Under `common/media/` of the SDK mod, the SDK media folder (`../common/media` from the `SDK` folder):
 
 | File | Role |
 |---|---|
